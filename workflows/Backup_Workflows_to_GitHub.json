@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-16T08:22:19.828Z",
-  "updatedAt": "2025-06-24T07:33:49.072Z",
+  "updatedAt": "2025-06-24T07:35:35.406Z",
   "id": "q1xiiiMxbpKaJsPJ",
   "name": "Backup_Workflows_to_GitHub",
   "active": true,
@@ -10,9 +10,9 @@
       "parameters": {
         "resource": "file",
         "operation": "get",
-        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{$json[\"name\"]}}.json",
+        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{$json[\"name\"]}}.json",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -33,35 +33,6 @@
         }
       },
       "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "repo.owner",
-              "value": "nathankwok"
-            },
-            {
-              "name": "repo.name",
-              "value": "n8n_workflows"
-            },
-            {
-              "name": "repo.path",
-              "value": "workflows/"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "9382e119-1e22-40d8-9a53-f14fb7cb8cb7",
-      "name": "Globals",
-      "type": "n8n-nodes-base.set",
-      "position": [
-        1300,
-        60
-      ],
-      "typeVersion": 1
     },
     {
       "parameters": {
@@ -182,9 +153,9 @@
     {
       "parameters": {
         "resource": "file",
-        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
+        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
         "fileContent": "={{ $('Loop Over Items').item.json.toJsonString()  }}",
         "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
       },
@@ -208,9 +179,9 @@
       "parameters": {
         "resource": "file",
         "operation": "edit",
-        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
+        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
         "fileContent": "={{ \nJSON.stringify(JSON.parse($('Loop Over Items').item.json.toJsonString()), null, 2)\n}}\n\n",
         "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
       },
@@ -404,6 +375,35 @@
       "id": "ada17589-40cf-4b49-bbd0-7d6b3190a025",
       "name": "Check if run",
       "disabled": true
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "repo.owner",
+              "value": "nathankwok"
+            },
+            {
+              "name": "repo.name",
+              "value": "n8n_workflows"
+            },
+            {
+              "name": "repo.path",
+              "value": "workflows/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9382e119-1e22-40d8-9a53-f14fb7cb8cb7",
+      "name": "Global Vars",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1300,
+        60
+      ],
+      "typeVersion": 1
     }
   ],
   "connections": {
@@ -476,17 +476,6 @@
         ]
       ]
     },
-    "Globals": {
-      "main": [
-        [
-          {
-            "node": "n8n",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [],
@@ -547,7 +536,18 @@
       "main": [
         [
           {
-            "node": "Globals",
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "n8n",
             "type": "main",
             "index": 0
           }
@@ -569,7 +569,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "57736a3d-2cda-48dd-b503-7174964dfa0c",
+  "versionId": "52de7872-0a0f-4e1c-ab96-cc94d2940719",
   "triggerCount": 1,
   "tags": []
 }
