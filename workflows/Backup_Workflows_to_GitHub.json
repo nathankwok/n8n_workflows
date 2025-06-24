@@ -1,1 +1,576 @@
-{"createdAt":"2025-06-16T08:22:19.828Z","updatedAt":"2025-06-24T07:28:47.350Z","id":"q1xiiiMxbpKaJsPJ","name":"Backup_Workflows_to_GitHub","active":true,"isArchived":false,"nodes":[{"parameters":{"resource":"file","operation":"get","owner":"={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}","repository":"={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}","filePath":"={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{$json[\"name\"]}}.json","asBinaryProperty":false,"additionalParameters":{}},"id":"4db84afd-98e2-4bc0-85e2-a1eaf49a3897","name":"GitHub","type":"n8n-nodes-base.github","position":[2120,-200],"typeVersion":1,"alwaysOutputData":true,"webhookId":"e8d85f6b-55e5-41c7-8e41-876447e46fc2","credentials":{"githubApi":{"id":"KBH9KG8I0VZ6x3LD","name":"GitHub account"}},"continueOnFail":true},{"parameters":{"values":{"string":[{"name":"repo.owner","value":"nathankwok"},{"name":"repo.name","value":"n8n_workflows"},{"name":"repo.path","value":"workflows/"}]},"options":{}},"id":"9382e119-1e22-40d8-9a53-f14fb7cb8cb7","name":"Globals","type":"n8n-nodes-base.set","position":[1300,60],"typeVersion":1},{"parameters":{"filters":{"activeWorkflows":true},"requestOptions":{}},"id":"5e2b997d-cdce-44b1-85fa-60f205a888b5","name":"n8n","type":"n8n-nodes-base.n8n","position":[1580,-280],"typeVersion":1,"credentials":{"n8nApi":{"id":"RqX64FhD5jWjRPpF","name":"n8n account"}}},{"parameters":{"options":{}},"id":"f6eef8c1-ce35-4c0f-a48e-75338fc78317","name":"Loop Over Items","type":"n8n-nodes-base.splitInBatches","position":[1880,-280],"executeOnce":false,"typeVersion":3},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"combinator":"and","conditions":[{"id":"16a9182d-059d-4774-ba95-654fb4293fdb","operator":{"type":"string","operation":"notExists","singleValue":true},"leftValue":"={{ $json.error }}","rightValue":""}]},"options":{}},"id":"de1b9fd9-c620-437c-a297-ca649ae8770e","name":"If","type":"n8n-nodes-base.if","position":[2320,-200],"typeVersion":2.2},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"combinator":"and","conditions":[{"id":"e0c66624-429a-4f1f-bf7b-1cc1b32bad7b","operator":{"type":"string","operation":"notEquals"},"leftValue":"={{ $json.content }}","rightValue":"={{ $('Loop Over Items').item.json.toJsonString() }}"}]},"options":{}},"id":"17847d82-603e-419a-a7cf-f59d651fec96","name":"If1","type":"n8n-nodes-base.if","position":[3200,100],"typeVersion":2.2},{"parameters":{"jsCode":"let items = $input.all()\n\nfor (item of items) {\n  // item.json.content = Buffer.from(item.json.content, 'base64').toString('utf8')\n\n  const decoded = Buffer.from(item.json.content, 'base64').toString('utf8');\n\n  try {\n    // Parse and pretty-print with indentation\n    const beautified = JSON.stringify(JSON.parse(decoded), null, 2);\n    item.json.content = beautified;\n  } catch (err) {\n    // Fallback: keep the decoded string if it isn’t valid JSON\n    item.json.content = decoded;\n  }\n}\n\nreturn items;\n"},"id":"4895b3d4-cf30-46e3-9567-c66d8e87a070","name":"Code","type":"n8n-nodes-base.code","position":[2880,-220],"typeVersion":2},{"parameters":{"resource":"file","owner":"={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}","repository":"={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}","filePath":"={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json","fileContent":"={{ $('Loop Over Items').item.json.toJsonString()  }}","commitMessage":"=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"},"id":"e1e21c66-8201-4c9a-8dae-f6802df56f7a","name":"Create new file and commit","type":"n8n-nodes-base.github","position":[2500,-40],"typeVersion":1,"webhookId":"e017af62-aeb5-4b55-a3c6-3fcd2da1fc16","credentials":{"githubApi":{"id":"KBH9KG8I0VZ6x3LD","name":"GitHub account"}}},{"parameters":{"resource":"file","operation":"edit","owner":"={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}","repository":"={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}","filePath":"={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json","fileContent":"={{ $('Loop Over Items').item.json.toJsonString()  }}","commitMessage":"=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"},"id":"56fba9ea-1333-418d-8578-fe3ff35c46be","name":"Update file content and commit","type":"n8n-nodes-base.github","position":[3560,300],"typeVersion":1,"webhookId":"ac013b6b-2298-4480-9e28-2aba2f002846","credentials":{"githubApi":{"id":"KBH9KG8I0VZ6x3LD","name":"GitHub account"}}},{"parameters":{"rule":{"interval":[{"field":"cronExpression","expression":"12 */3 * * 1,3,4"},{"field":"cronExpression","expression":"=38 */2 * * 2,5"},{"field":"cronExpression","expression":"23 */5 * * 6"}]}},"id":"f3b7d82e-ab11-4c75-a6ee-7fcad50d53e6","name":"Schedule Trigger","type":"n8n-nodes-base.scheduleTrigger","position":[400,360],"typeVersion":1.2},{"parameters":{"content":"Workflow changes committed to the repository","height":80},"id":"d5a78154-1b36-4e48-9c92-b8109475de45","name":"Sticky Note","type":"n8n-nodes-base.stickyNote","position":[3080,520],"typeVersion":1},{"parameters":{"content":"Check if there are any changes in the workflow ","height":80},"id":"1db37204-c229-44a8-8c82-bb0c350e2dc1","name":"Sticky Note1","type":"n8n-nodes-base.stickyNote","position":[2680,240],"typeVersion":1},{"parameters":{"content":"Create a new file for the workflow","height":80},"id":"d97588a9-8525-4920-a37a-8e716d485b58","name":"Sticky Note2","type":"n8n-nodes-base.stickyNote","position":[2020,160],"typeVersion":1},{"parameters":{"content":"Check if file exists in the repository","height":80},"id":"76136374-d9cd-4d19-aa0c-372adc9191d6","name":"Sticky Note3","type":"n8n-nodes-base.stickyNote","position":[1840,-320],"typeVersion":1},{"parameters":{"content":"Convert the file contents to JSON string","height":80},"id":"efc1d6d1-64e8-4f15-a1b4-b0e023c415ac","name":"Sticky Note4","type":"n8n-nodes-base.stickyNote","position":[2380,-340],"typeVersion":1},{"parameters":{"content":"Get all n8n workflows","height":80},"id":"0377bd83-6f19-4197-9abb-5d136d183672","name":"Sticky Note5","type":"n8n-nodes-base.stickyNote","position":[1480,-400],"typeVersion":1},{"parameters":{"content":"Set variables","height":80},"id":"aae8c75a-8cc2-4e4d-869f-74417f5b6701","name":"Sticky Note6","type":"n8n-nodes-base.stickyNote","position":[1240,240],"typeVersion":1},{"parameters":{"jsCode":"const randomBool = Math.random() < 0.5;\nreturn {\"run_bool\": randomBool};"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[680,360],"id":"2b068680-ec7f-4bee-8ada-6c03a59c9fd7","name":"Random Boolean Generator","disabled":true},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"id":"92d25fb2-c8e0-4217-ac92-84ebf49afc75","leftValue":"={{ $json.run_bool }}","rightValue":"true","operator":{"type":"boolean","operation":"true","singleValue":true}}],"combinator":"and"},"options":{}},"type":"n8n-nodes-base.if","typeVersion":2.2,"position":[960,360],"id":"ada17589-40cf-4b49-bbd0-7d6b3190a025","name":"Check if run","disabled":true}],"connections":{"If":{"main":[[{"node":"Code","type":"main","index":0}],[{"node":"Create new file and commit","type":"main","index":0}]]},"If1":{"main":[[{"node":"Update file content and commit","type":"main","index":0}],[{"node":"Loop Over Items","type":"main","index":0}]]},"n8n":{"main":[[{"node":"Loop Over Items","type":"main","index":0}]]},"Code":{"main":[[{"node":"If1","type":"main","index":0}]]},"GitHub":{"main":[[{"node":"If","type":"main","index":0}]]},"Globals":{"main":[[{"node":"n8n","type":"main","index":0}]]},"Loop Over Items":{"main":[[],[{"node":"GitHub","type":"main","index":0}]]},"Schedule Trigger":{"main":[[{"node":"Random Boolean Generator","type":"main","index":0}]]},"Create new file and commit":{"main":[[{"node":"Loop Over Items","type":"main","index":0}]]},"Update file content and commit":{"main":[[{"node":"Loop Over Items","type":"main","index":0}]]},"Random Boolean Generator":{"main":[[{"node":"Check if run","type":"main","index":0}]]},"Check if run":{"main":[[{"node":"Globals","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":{"node:Schedule Trigger":{"recurrenceRules":[2]}},"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"889d0602-253d-452d-96d3-095247ff0818","triggerCount":1,"tags":[]}
+{
+  "createdAt": "2025-06-16T08:22:19.828Z",
+  "updatedAt": "2025-06-24T07:33:49.072Z",
+  "id": "q1xiiiMxbpKaJsPJ",
+  "name": "Backup_Workflows_to_GitHub",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{$json[\"name\"]}}.json",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "id": "4db84afd-98e2-4bc0-85e2-a1eaf49a3897",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        2120,
+        -200
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "webhookId": "e8d85f6b-55e5-41c7-8e41-876447e46fc2",
+      "credentials": {
+        "githubApi": {
+          "id": "KBH9KG8I0VZ6x3LD",
+          "name": "GitHub account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "repo.owner",
+              "value": "nathankwok"
+            },
+            {
+              "name": "repo.name",
+              "value": "n8n_workflows"
+            },
+            {
+              "name": "repo.path",
+              "value": "workflows/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9382e119-1e22-40d8-9a53-f14fb7cb8cb7",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1300,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "id": "5e2b997d-cdce-44b1-85fa-60f205a888b5",
+      "name": "n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1580,
+        -280
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "RqX64FhD5jWjRPpF",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f6eef8c1-ce35-4c0f-a48e-75338fc78317",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1880,
+        -280
+      ],
+      "executeOnce": false,
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "16a9182d-059d-4774-ba95-654fb4293fdb",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.error }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "de1b9fd9-c620-437c-a297-ca649ae8770e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2320,
+        -200
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "e0c66624-429a-4f1f-bf7b-1cc1b32bad7b",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              },
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "={{ $('Loop Over Items').item.json.toJsonString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "17847d82-603e-419a-a7cf-f59d651fec96",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        3200,
+        100
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "jsCode": "let items = $input.all()\n\nfor (item of items) {\n  item.json.content = Buffer.from(item.json.content, 'base64').toString('utf8')\n}\n\nreturn items;\n"
+      },
+      "id": "4895b3d4-cf30-46e3-9567-c66d8e87a070",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2880,
+        -220
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
+        "fileContent": "={{ $('Loop Over Items').item.json.toJsonString()  }}",
+        "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
+      },
+      "id": "e1e21c66-8201-4c9a-8dae-f6802df56f7a",
+      "name": "Create new file and commit",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        2500,
+        -40
+      ],
+      "typeVersion": 1,
+      "webhookId": "e017af62-aeb5-4b55-a3c6-3fcd2da1fc16",
+      "credentials": {
+        "githubApi": {
+          "id": "KBH9KG8I0VZ6x3LD",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+        "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
+        "fileContent": "={{ \nJSON.stringify(JSON.parse($('Loop Over Items').item.json.toJsonString()), null, 2)\n}}\n\n",
+        "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
+      },
+      "id": "56fba9ea-1333-418d-8578-fe3ff35c46be",
+      "name": "Update file content and commit",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        3560,
+        300
+      ],
+      "typeVersion": 1,
+      "webhookId": "ac013b6b-2298-4480-9e28-2aba2f002846",
+      "credentials": {
+        "githubApi": {
+          "id": "KBH9KG8I0VZ6x3LD",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "12 */3 * * 1,3,4"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "=38 */2 * * 2,5"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "23 */5 * * 6"
+            }
+          ]
+        }
+      },
+      "id": "f3b7d82e-ab11-4c75-a6ee-7fcad50d53e6",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        400,
+        360
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "Workflow changes committed to the repository",
+        "height": 80
+      },
+      "id": "d5a78154-1b36-4e48-9c92-b8109475de45",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3080,
+        520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Check if there are any changes in the workflow ",
+        "height": 80
+      },
+      "id": "1db37204-c229-44a8-8c82-bb0c350e2dc1",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2680,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Create a new file for the workflow",
+        "height": 80
+      },
+      "id": "d97588a9-8525-4920-a37a-8e716d485b58",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2020,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Check if file exists in the repository",
+        "height": 80
+      },
+      "id": "76136374-d9cd-4d19-aa0c-372adc9191d6",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1840,
+        -320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Convert the file contents to JSON string ",
+        "height": 80
+      },
+      "id": "efc1d6d1-64e8-4f15-a1b4-b0e023c415ac",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2380,
+        -340
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Get all n8n workflows",
+        "height": 80
+      },
+      "id": "0377bd83-6f19-4197-9abb-5d136d183672",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1480,
+        -400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Set variables",
+        "height": 80
+      },
+      "id": "aae8c75a-8cc2-4e4d-869f-74417f5b6701",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1240,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "const randomBool = Math.random() < 0.5;\nreturn {\"run_bool\": randomBool};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        360
+      ],
+      "id": "2b068680-ec7f-4bee-8ada-6c03a59c9fd7",
+      "name": "Random Boolean Generator",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "92d25fb2-c8e0-4217-ac92-84ebf49afc75",
+              "leftValue": "={{ $json.run_bool }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        360
+      ],
+      "id": "ada17589-40cf-4b49-bbd0-7d6b3190a025",
+      "name": "Check if run",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create new file and commit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update file content and commit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Random Boolean Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create new file and commit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update file content and commit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random Boolean Generator": {
+      "main": [
+        [
+          {
+            "node": "Check if run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if run": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        2
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "57736a3d-2cda-48dd-b503-7174964dfa0c",
+  "triggerCount": 1,
+  "tags": []
+}
+
