@@ -1,0 +1,71 @@
+{
+  "mcpServers": {
+    "financial-data-mcp": {
+      "command": "npx",
+      "args": ["-y", "@financial-datasets/mcp-server"],
+      "env": {
+        "POLYGON_API_KEY": "${POLYGON_API_KEY}",
+        "ALPHA_VANTAGE_API_KEY": "${ALPHA_VANTAGE_API_KEY}",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    },
+    "financial-pricing-mcp": {
+      "command": "node",
+      "args": ["./node_modules/@mcp-trader/server/dist/index.js"],
+      "env": {
+        "POLYGON_API_KEY": "${POLYGON_API_KEY}",
+        "ALPHA_VANTAGE_API_KEY": "${ALPHA_VANTAGE_API_KEY}",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    },
+    "options-data-mcp": {
+      "command": "python",
+      "args": ["-m", "options_mcp_server"],
+      "env": {
+        "POLYGON_API_KEY": "${POLYGON_API_KEY}",
+        "DATA_SOURCE": "polygon",
+        "CACHE_TTL": "300",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    {
+      "name": "get_stock_symbols",
+      "description": "Retrieve list of liquid stock symbols suitable for options trading",
+      "parameters": {
+        "min_volume": 1000000,
+        "min_market_cap": 1000000000,
+        "sectors": ["technology", "healthcare", "finance", "consumer_discretionary"]
+      }
+    },
+    {
+      "name": "get_options_chain", 
+      "description": "Fetch complete options chain for a symbol",
+      "parameters": {
+        "symbol": "string",
+        "expiry_range": "30-60 days",
+        "include_greeks": true
+      }
+    },
+    {
+      "name": "calculate_implied_volatility",
+      "description": "Calculate implied volatility for options contracts",
+      "parameters": {
+        "contracts": "array",
+        "underlying_price": "number"
+      }
+    },
+    {
+      "name": "get_historical_volatility",
+      "description": "Get historical volatility data for comparison",
+      "parameters": {
+        "symbol": "string",
+        "period": "30 days"
+      }
+    }
+  ]
+}

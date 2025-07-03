@@ -1,0 +1,88 @@
+{
+  "mcpServers": {
+    "broker-execution-mcp": {
+      "command": "npx",
+      "args": ["-y", "@alpaca/mcp-server"],
+      "env": {
+        "ALPACA_API_KEY": "${ALPACA_API_KEY}",
+        "ALPACA_SECRET_KEY": "${ALPACA_SECRET_KEY}",
+        "ALPACA_BASE_URL": "https://paper-api.alpaca.markets",
+        "TRADING_MODE": "paper",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    },
+    "portfolio-management-mcp": {
+      "command": "node",
+      "args": ["./portfolio-mcp-server.js"],
+      "env": {
+        "BROKER_API": "alpaca",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    },
+    "market-data-mcp": {
+      "command": "npx",
+      "args": ["-y", "@polygon/mcp-server"],
+      "env": {
+        "POLYGON_API_KEY": "${POLYGON_API_KEY}",
+        "REALTIME_ENABLED": "true",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    {
+      "name": "place_options_order",
+      "description": "Place multi-leg options order",
+      "parameters": {
+        "symbol": "string",
+        "strategy": "straddle|strangle|iron_condor|butterfly",
+        "legs": "array",
+        "order_type": "limit|market",
+        "time_in_force": "day|gtc"
+      }
+    },
+    {
+      "name": "get_account_info",
+      "description": "Get account balance and buying power",
+      "parameters": {}
+    },
+    {
+      "name": "get_positions",
+      "description": "Get current portfolio positions",
+      "parameters": {
+        "symbol": "string (optional)"
+      }
+    },
+    {
+      "name": "calculate_portfolio_delta",
+      "description": "Calculate current portfolio delta",
+      "parameters": {}
+    },
+    {
+      "name": "place_hedge_order",
+      "description": "Place delta hedging order",
+      "parameters": {
+        "symbol": "string",
+        "quantity": "number",
+        "side": "buy|sell"
+      }
+    },
+    {
+      "name": "get_order_status",
+      "description": "Check order fill status",
+      "parameters": {
+        "order_id": "string"
+      }
+    },
+    {
+      "name": "cancel_order",
+      "description": "Cancel pending order",
+      "parameters": {
+        "order_id": "string"
+      }
+    }
+  ]
+}
