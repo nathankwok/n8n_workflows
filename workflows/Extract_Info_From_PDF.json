@@ -1,1 +1,153 @@
-{"createdAt":"2025-07-02T22:47:26.033Z","updatedAt":"2025-07-02T23:22:49.083Z","id":"gYfyqEB4yVEWXqvB","name":"Extract_Info_From_PDF","active":false,"isArchived":false,"nodes":[{"parameters":{"workflowId":{"__rl":true,"value":"ykM0g56XcKzGPgCM","mode":"list","cachedResultName":"Get_Email_Attachments"},"workflowInputs":{"mappingMode":"defineBelow","value":{},"matchingColumns":[],"schema":[],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{"waitForSubWorkflow":false}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.2,"position":[0,-40],"id":"aafb1ee0-f063-4953-bb74-df20efcfcbb1","name":"Execute Workflow"},{"parameters":{"pollTimes":{"item":[{"mode":"everyX","value":5,"unit":"minutes"}]},"simple":false,"filters":{"q":"=to:pdfextractor@mailrelayer.xyz OR to:pdf@mailrelayer.xyz","readStatus":"unread"},"options":{"downloadAttachments":true}},"type":"n8n-nodes-base.gmailTrigger","typeVersion":1.2,"position":[-220,-40],"id":"24e44905-7982-4cd0-be56-e9e52d66a94c","name":"pdfextractor@mailrelayer.xyz","credentials":{"gmailOAuth2":{"id":"4wzsYdMTAIarBZ2G","name":"Gmail - ngrok"}},"notes":"Fetches unread emails sent to bmcreimbursements@mailrelayer.xyz (and other misspellings)"},{"parameters":{"operation":"pdf","binaryPropertyName":"attachment_0","options":{"joinPages":false,"maxPages":50}},"type":"n8n-nodes-base.extractFromFile","typeVersion":1,"position":[220,-40],"id":"4dc335c8-f1d3-40aa-a49b-e2ea1f8378d5","name":"Extract from File"}],"connections":{"Execute Workflow":{"main":[[{"node":"Extract from File","type":"main","index":0}]]},"pdfextractor@mailrelayer.xyz":{"main":[[{"node":"Execute Workflow","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"988a8e6b-7ee0-4e94-bce9-0d3029827837","triggerCount":0,"tags":[]}
+{
+  "createdAt": "2025-07-02T22:47:26.033Z",
+  "updatedAt": "2025-07-03T09:19:52.902Z",
+  "id": "gYfyqEB4yVEWXqvB",
+  "name": "Extract_Info_From_PDF",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ykM0g56XcKzGPgCM",
+          "mode": "list",
+          "cachedResultName": "Get_Email_Attachments"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -40
+      ],
+      "id": "aafb1ee0-f063-4953-bb74-df20efcfcbb1",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "=to:pdfextractor@mailrelayer.xyz OR to:pdf@mailrelayer.xyz",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -220,
+        -40
+      ],
+      "id": "24e44905-7982-4cd0-be56-e9e52d66a94c",
+      "name": "pdfextractor@mailrelayer.xyz",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4wzsYdMTAIarBZ2G",
+          "name": "Gmail - ngrok"
+        }
+      },
+      "notes": "Fetches unread emails sent to bmcreimbursements@mailrelayer.xyz (and other misspellings)"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "joinPages": false,
+          "maxPages": 50
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -40
+      ],
+      "id": "4dc335c8-f1d3-40aa-a49b-e2ea1f8378d5",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nvar result = [];\nfor (const item of $input.first().json.text) { \n  console.log(item)\n  result.push(JSON.parse(item))\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -40
+      ],
+      "id": "cec53b0c-1d4a-4e87-9fcf-51a5ed3d911c",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfextractor@mailrelayer.xyz": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d9e4c3ef-72ce-49e8-97db-a80ab9525797",
+  "triggerCount": 0,
+  "tags": []
+}
+
