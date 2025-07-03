@@ -1,0 +1,92 @@
+{
+  "mcpServers": {
+    "interactive-brokers-mcp": {
+      "command": "python",
+      "args": ["-m", "ib_mcp_server"],
+      "env": {
+        "IB_HOST": "${IB_HOST}",
+        "IB_PORT": "${IB_PORT}",
+        "IB_CLIENT_ID": "${IB_CLIENT_ID}",
+        "IB_ACCOUNT": "${IB_ACCOUNT}",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    {
+      "name": "connect_ib_gateway",
+      "description": "Connect to Interactive Brokers TWS or Gateway",
+      "parameters": {
+        "host": "string",
+        "port": "number",
+        "client_id": "number"
+      }
+    },
+    {
+      "name": "get_options_chain_ib",
+      "description": "Get options chain data from Interactive Brokers",
+      "parameters": {
+        "symbol": "string",
+        "exchange": "SMART|CBOE|ISE",
+        "expiry_date": "string (optional)"
+      }
+    },
+    {
+      "name": "place_options_combo_ib",
+      "description": "Place complex options combination order",
+      "parameters": {
+        "symbol": "string",
+        "combo_legs": "array",
+        "limit_price": "number",
+        "order_type": "LMT|MKT|STP"
+      }
+    },
+    {
+      "name": "get_market_data_ib",
+      "description": "Get real-time market data",
+      "parameters": {
+        "symbol": "string",
+        "data_type": "bid|ask|last|volume|iv"
+      }
+    },
+    {
+      "name": "calculate_portfolio_risk_ib",
+      "description": "Calculate portfolio risk metrics using IB models",
+      "parameters": {
+        "account": "string"
+      }
+    },
+    {
+      "name": "get_account_summary_ib",
+      "description": "Get account summary including buying power",
+      "parameters": {
+        "account": "string"
+      }
+    },
+    {
+      "name": "place_hedge_order_ib",
+      "description": "Place delta hedging order for stock",
+      "parameters": {
+        "symbol": "string",
+        "quantity": "number",
+        "action": "BUY|SELL",
+        "order_type": "MKT|LMT"
+      }
+    },
+    {
+      "name": "get_option_greeks_ib",
+      "description": "Get real-time option Greeks from IB",
+      "parameters": {
+        "contracts": "array"
+      }
+    },
+    {
+      "name": "monitor_executions_ib",
+      "description": "Monitor order executions and fills",
+      "parameters": {
+        "order_id": "string (optional)"
+      }
+    }
+  ]
+}

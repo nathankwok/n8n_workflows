@@ -1,0 +1,103 @@
+{
+  "mcpServers": {
+    "risk-analysis-mcp": {
+      "command": "python", 
+      "args": ["-m", "risk_management_mcp"],
+      "env": {
+        "RISK_ENGINE": "quantlib",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    },
+    "market-conditions-mcp": {
+      "command": "node",
+      "args": ["./market-conditions-server.js"],
+      "env": {
+        "VIX_API_KEY": "${VIX_API_KEY}",
+        "FRED_API_KEY": "${FRED_API_KEY}",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    {
+      "name": "calculate_portfolio_delta",
+      "description": "Calculate combined portfolio delta across all positions",
+      "parameters": {
+        "positions": "array"
+      }
+    },
+    {
+      "name": "calculate_portfolio_gamma",
+      "description": "Calculate portfolio gamma exposure",
+      "parameters": {
+        "positions": "array"
+      }
+    },
+    {
+      "name": "calculate_var_risk",
+      "description": "Calculate Value at Risk for portfolio",
+      "parameters": {
+        "positions": "array",
+        "confidence_level": "0.95|0.99",
+        "time_horizon": "1|5|10 days"
+      }
+    },
+    {
+      "name": "stress_test_portfolio",
+      "description": "Run stress tests on portfolio under various scenarios",
+      "parameters": {
+        "positions": "array",
+        "scenarios": "array"
+      }
+    },
+    {
+      "name": "check_position_limits",
+      "description": "Validate position sizes against risk limits",
+      "parameters": {
+        "positions": "array",
+        "limits": "object"
+      }
+    },
+    {
+      "name": "calculate_correlation_risk",
+      "description": "Assess correlation risk between positions",
+      "parameters": {
+        "symbols": "array",
+        "period": "30|60|90 days"
+      }
+    },
+    {
+      "name": "get_market_volatility",
+      "description": "Get current market volatility indicators",
+      "parameters": {
+        "indicators": "VIX|SKEW|TERM_STRUCTURE"
+      }
+    },
+    {
+      "name": "validate_strategy_risk",
+      "description": "Validate if strategy meets risk criteria",
+      "parameters": {
+        "strategy": "object",
+        "risk_criteria": "object"
+      }
+    },
+    {
+      "name": "calculate_sharpe_ratio",
+      "description": "Calculate risk-adjusted returns",
+      "parameters": {
+        "returns": "array",
+        "risk_free_rate": "number"
+      }
+    },
+    {
+      "name": "get_earnings_risk",
+      "description": "Check for upcoming earnings that may affect volatility",
+      "parameters": {
+        "symbols": "array",
+        "days_ahead": "7|14|30"
+      }
+    }
+  ]
+}

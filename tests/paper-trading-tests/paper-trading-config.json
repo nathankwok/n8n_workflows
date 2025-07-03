@@ -1,0 +1,175 @@
+{
+  "paper_trading_configuration": {
+    "description": "Configuration for testing stock options workflow with paper trading",
+    "test_environment": {
+      "mode": "paper_trading",
+      "broker": "alpaca_paper",
+      "base_url": "https://paper-api.alpaca.markets",
+      "account_type": "paper"
+    },
+    "test_parameters": {
+      "initial_capital": 100000,
+      "max_risk_per_trade": 1000,
+      "max_portfolio_delta": 0.05,
+      "test_duration_days": 30,
+      "symbols_to_test": [
+        "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", 
+        "NVDA", "META", "JPM", "JNJ", "PG"
+      ]
+    },
+    "mock_data_sources": {
+      "options_data": {
+        "provider": "polygon_paper",
+        "api_key_env": "POLYGON_API_KEY_PAPER",
+        "endpoints": {
+          "options_chain": "/v3/reference/options/contracts",
+          "options_quotes": "/v3/quotes/{symbol}",
+          "greeks": "/v3/options/greeks/{symbol}"
+        }
+      },
+      "market_data": {
+        "provider": "alpha_vantage_paper", 
+        "api_key_env": "ALPHA_VANTAGE_API_KEY_PAPER",
+        "endpoints": {
+          "quote": "/query?function=GLOBAL_QUOTE",
+          "historical": "/query?function=TIME_SERIES_DAILY"
+        }
+      }
+    },
+    "test_scenarios": [
+      {
+        "name": "Bull Market Scenario",
+        "description": "Test delta neutral strategies in rising market",
+        "market_conditions": {
+          "trend": "bullish",
+          "volatility": "normal",
+          "vix_level": 18
+        },
+        "expected_outcomes": {
+          "portfolio_delta": "< 0.05",
+          "max_drawdown": "< 5%",
+          "profit_factor": "> 1.2"
+        }
+      },
+      {
+        "name": "Bear Market Scenario", 
+        "description": "Test delta neutral strategies in falling market",
+        "market_conditions": {
+          "trend": "bearish",
+          "volatility": "high",
+          "vix_level": 35
+        },
+        "expected_outcomes": {
+          "portfolio_delta": "< 0.05",
+          "max_drawdown": "< 8%",
+          "profit_factor": "> 1.0"
+        }
+      },
+      {
+        "name": "High Volatility Scenario",
+        "description": "Test performance during market stress",
+        "market_conditions": {
+          "trend": "sideways",
+          "volatility": "very_high", 
+          "vix_level": 45
+        },
+        "expected_outcomes": {
+          "portfolio_delta": "< 0.03",
+          "max_drawdown": "< 10%",
+          "profit_factor": "> 0.8"
+        }
+      },
+      {
+        "name": "Low Volatility Scenario",
+        "description": "Test strategies in calm market conditions",
+        "market_conditions": {
+          "trend": "sideways",
+          "volatility": "low",
+          "vix_level": 12
+        },
+        "expected_outcomes": {
+          "portfolio_delta": "< 0.05",
+          "max_drawdown": "< 3%",
+          "profit_factor": "> 1.5"
+        }
+      }
+    ],
+    "performance_metrics": {
+      "daily_tracking": [
+        "portfolio_delta",
+        "portfolio_value",
+        "realized_pnl",
+        "unrealized_pnl",
+        "position_count",
+        "cash_balance"
+      ],
+      "risk_metrics": [
+        "value_at_risk_95",
+        "maximum_drawdown",
+        "sharpe_ratio",
+        "sortino_ratio",
+        "calmar_ratio"
+      ],
+      "trading_metrics": [
+        "total_trades",
+        "win_rate",
+        "average_trade_pnl",
+        "profit_factor",
+        "max_consecutive_losses"
+      ]
+    },
+    "alert_thresholds": {
+      "portfolio_delta_breach": 0.10,
+      "drawdown_limit": 0.15,
+      "position_size_limit": 1500,
+      "correlation_limit": 0.8,
+      "vega_exposure_limit": 10000
+    },
+    "test_execution": {
+      "schedule": {
+        "frequency": "daily",
+        "time": "09:30 EST",
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      },
+      "reporting": {
+        "daily_report": true,
+        "weekly_summary": true,
+        "monthly_analysis": true,
+        "export_format": "json"
+      },
+      "data_retention": {
+        "trade_history": "90 days",
+        "performance_data": "1 year",
+        "error_logs": "30 days"
+      }
+    },
+    "mcp_server_overrides": {
+      "broker-execution-mcp": {
+        "env": {
+          "ALPACA_BASE_URL": "https://paper-api.alpaca.markets",
+          "TRADING_MODE": "paper",
+          "ACCOUNT_TYPE": "paper"
+        }
+      },
+      "financial-data-mcp": {
+        "env": {
+          "DATA_SOURCE": "paper",
+          "CACHE_TTL": "60"
+        }
+      },
+      "risk-analysis-mcp": {
+        "env": {
+          "RISK_MODE": "conservative",
+          "VALIDATION_STRICT": "true"
+        }
+      }
+    },
+    "validation_criteria": {
+      "minimum_trades_per_week": 5,
+      "maximum_position_correlation": 0.7,
+      "required_delta_neutrality": 0.05,
+      "minimum_profit_probability": 0.3,
+      "maximum_risk_score": 0.5
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "mcpServers": {
+    "tasty-agent-mcp": {
+      "command": "node",
+      "args": ["./node_modules/tasty-agent/dist/mcp-server.js"],
+      "env": {
+        "TASTYTRADE_USERNAME": "${TASTYTRADE_USERNAME}",
+        "TASTYTRADE_PASSWORD": "${TASTYTRADE_PASSWORD}",
+        "TASTYTRADE_API_KEY": "${TASTYTRADE_API_KEY}",
+        "TASTYTRADE_SANDBOX": "true",
+        "LOG_LEVEL": "info"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    {
+      "name": "get_options_chain_tasty",
+      "description": "Get comprehensive options chain from TastyTrade",
+      "parameters": {
+        "symbol": "string",
+        "expiry_date": "string (optional)",
+        "strike_range": "number (optional)"
+      }
+    },
+    {
+      "name": "calculate_greeks_tasty",
+      "description": "Calculate options Greeks using TastyTrade models",
+      "parameters": {
+        "symbol": "string",
+        "contracts": "array"
+      }
+    },
+    {
+      "name": "place_complex_order_tasty",
+      "description": "Place complex multi-leg options order",
+      "parameters": {
+        "symbol": "string",
+        "legs": "array",
+        "strategy_type": "string",
+        "price": "number",
+        "order_type": "limit|market|stop"
+      }
+    },
+    {
+      "name": "get_position_analysis_tasty",
+      "description": "Get detailed position analysis and P&L",
+      "parameters": {
+        "symbol": "string (optional)"
+      }
+    },
+    {
+      "name": "get_volatility_data_tasty",
+      "description": "Get implied and historical volatility data",
+      "parameters": {
+        "symbol": "string",
+        "period": "30|60|90 days"
+      }
+    },
+    {
+      "name": "simulate_strategy_tasty",
+      "description": "Simulate options strategy performance",
+      "parameters": {
+        "symbol": "string",
+        "strategy": "object",
+        "price_range": "array",
+        "time_decay": "number"
+      }
+    },
+    {
+      "name": "get_earnings_calendar_tasty",
+      "description": "Get earnings announcements that may affect volatility",
+      "parameters": {
+        "symbol": "string",
+        "days_ahead": "number"
+      }
+    }
+  ]
+}
