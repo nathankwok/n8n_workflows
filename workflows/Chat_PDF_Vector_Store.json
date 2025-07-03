@@ -1,1 +1,454 @@
-{"createdAt":"2025-07-03T09:21:17.928Z","updatedAt":"2025-07-03T09:21:17.928Z","id":"20lepQMwf2LRDH0a","name":"Chat_PDF_Vector_Store","active":false,"isArchived":false,"nodes":[{"parameters":{"content":"### Load data into database\nFetch file from Google Drive, split it into chunks and insert into Pinecone index","height":627,"width":918,"color":7},"id":"0375c4af-0660-43cc-8b98-deb492ef812d","name":"Sticky Note","type":"n8n-nodes-base.stickyNote","position":[-480,-280],"typeVersion":1},{"parameters":{"content":"### Chat with database\nEmbed the incoming chat message and use it retrieve relevant chunks from the vector store. These are passed to the model to formulate an answer ","height":627,"width":534,"color":7},"id":"78addf39-0e56-4629-a788-3517b616f46c","name":"Sticky Note1","type":"n8n-nodes-base.stickyNote","position":[720,-280],"typeVersion":1},{"parameters":{"content":"## Try me out\n1. In Pinecone, create an index with 1536 dimensions and select it in *both* Pinecone nodes\n2. Click 'test workflow' at the bottom of the canvas to load data into the vector store\n3. Click 'chat' at the bottom of the canvas to ask questions about the data","height":264.61498034081166},"id":"1bbacc5c-5dc5-4381-8757-c40c0f3c39d7","name":"Sticky Note2","type":"n8n-nodes-base.stickyNote","position":[-760,80],"typeVersion":1},{"parameters":{},"id":"db30c849-dba9-4191-835f-c81601601f49","name":"When clicking 'Test Workflow' button","type":"n8n-nodes-base.manualTrigger","position":[-740,-180],"typeVersion":1},{"parameters":{"mode":"insert","pineconeIndex":{"__rl":true,"mode":"id","value":"test-index"},"options":{"clearNamespace":true}},"id":"9f082aa5-622f-4c7c-97b4-9600ea6495ed","name":"Pinecone Vector Store","type":"@n8n/n8n-nodes-langchain.vectorStorePinecone","position":[60,-180],"typeVersion":1},{"parameters":{"options":{}},"id":"4fa71a2f-1084-45fe-9b8b-bbbbeec31a22","name":"When chat message received","type":"@n8n/n8n-nodes-langchain.chatTrigger","position":[540,-180],"webhookId":"dec328cc-f47e-4727-b1c5-7370be86a958","typeVersion":1.1},{"parameters":{"options":{}},"id":"e56dde13-dae4-45ad-9a45-4d37bf4c746f","name":"Question & Answer","type":"@n8n/n8n-nodes-langchain.agent","position":[780,-180],"typeVersion":1.8},{"parameters":{"assignments":{"assignments":[{"id":"d08ef1f5-932b-4bbb-bb02-0cbdff26a636","name":"file_url","type":"string","value":"https://drive.google.com/file/d/11Koq9q53nkk0F5Y8eZgaWJUVR03I4-MM/view"}]},"options":{}},"id":"17067cb5-6f05-48c2-8c7b-b9b785f3a022","name":"Set Google Drive file URL","type":"n8n-nodes-base.set","position":[-420,-180],"typeVersion":3.4},{"parameters":{"operation":"download","fileId":{"__rl":true,"mode":"url","value":"={{ $json.file_url }}"},"options":{}},"id":"279c29c3-89bd-48b1-a753-792f935a2a69","name":"Google Drive","type":"n8n-nodes-base.googleDrive","position":[-220,-180],"typeVersion":3},{"parameters":{"dataType":"binary","options":{}},"id":"f36ba9d5-716e-4b67-ae15-a3a0e0762585","name":"Default Data Loader","type":"@n8n/n8n-nodes-langchain.documentDefaultDataLoader","position":[160,40],"typeVersion":1},{"parameters":{"chunkSize":3000,"chunkOverlap":200,"options":{}},"id":"ff0e5554-9b22-4bdd-9494-8511e2c83fb7","name":"Recursive Character Text Splitter","type":"@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter","position":[240,160],"typeVersion":1},{"parameters":{"options":{}},"id":"ba35228a-10ab-4487-931b-f53b1cfd935e","name":"Embeddings OpenAI1","type":"@n8n/n8n-nodes-langchain.embeddingsOpenAi","position":[980,160],"typeVersion":1.2},{"parameters":{"options":{}},"id":"e11c0ea6-ed04-4a75-9f96-47535f406dc6","name":"Embeddings OpenAI","type":"@n8n/n8n-nodes-langchain.embeddingsOpenAi","position":[40,40],"typeVersion":1.2},{"parameters":{"mode":"retrieve-as-tool","toolName":"bitcoin_paper","toolDescription":"Call this tool to retrieve facts from the bitcoin whitepaper","pineconeIndex":{"__rl":true,"mode":"id","value":"test-index"},"includeDocumentMetadata":false,"options":{}},"id":"78a29847-6797-4b5e-b8f8-975a7959d6f6","name":"Pinecone Vector Store1","type":"@n8n/n8n-nodes-langchain.vectorStorePinecone","position":[900,40],"typeVersion":1},{"parameters":{"model":{"__rl":true,"mode":"list","value":"gpt-4o-mini"},"options":{}},"id":"03e2ca2e-6772-4b8b-adf4-5ccef9d2b036","name":"OpenAI Chat Model","type":"@n8n/n8n-nodes-langchain.lmChatOpenAi","position":[780,40],"typeVersion":1.2}],"connections":{"Google Drive":{"main":[[{"node":"Pinecone Vector Store","type":"main","index":0}]]},"Embeddings OpenAI":{"ai_embedding":[[{"node":"Pinecone Vector Store","type":"ai_embedding","index":0}]]},"OpenAI Chat Model":{"ai_languageModel":[[{"node":"Question & Answer","type":"ai_languageModel","index":0}]]},"Embeddings OpenAI1":{"ai_embedding":[[{"node":"Pinecone Vector Store1","type":"ai_embedding","index":0}]]},"Default Data Loader":{"ai_document":[[{"node":"Pinecone Vector Store","type":"ai_document","index":0}]]},"Pinecone Vector Store1":{"ai_tool":[[{"node":"Question & Answer","type":"ai_tool","index":0}]]},"Set Google Drive file URL":{"main":[[{"node":"Google Drive","type":"main","index":0}]]},"When chat message received":{"main":[[{"node":"Question & Answer","type":"main","index":0}]]},"Recursive Character Text Splitter":{"ai_textSplitter":[[{"node":"Default Data Loader","type":"ai_textSplitter","index":0}]]},"When clicking 'Test Workflow' button":{"main":[[{"node":"Set Google Drive file URL","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"dd6cc618-4c99-4905-b151-ffa79fb7ea5a","triggerCount":0,"tags":[]}
+{
+  "createdAt": "2025-07-03T09:21:17.928Z",
+  "updatedAt": "2025-07-03T16:35:10.664Z",
+  "id": "20lepQMwf2LRDH0a",
+  "name": "Chat_PDF_Vector_Store",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### Load data into database\nFetch file from Google Drive, split it into chunks and insert into Pinecone index",
+        "height": 627,
+        "width": 918,
+        "color": 7
+      },
+      "id": "0375c4af-0660-43cc-8b98-deb492ef812d",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        -280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Chat with database\nEmbed the incoming chat message and use it retrieve relevant chunks from the vector store. These are passed to the model to formulate an answer ",
+        "height": 627,
+        "width": 534,
+        "color": 7
+      },
+      "id": "78addf39-0e56-4629-a788-3517b616f46c",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        720,
+        -280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Try me out\n1. In Pinecone, create an index with 1536 dimensions and select it in *both* Pinecone nodes\n2. Click 'test workflow' at the bottom of the canvas to load data into the vector store\n3. Click 'chat' at the bottom of the canvas to ask questions about the data",
+        "height": 264.61498034081166
+      },
+      "id": "1bbacc5c-5dc5-4381-8757-c40c0f3c39d7",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -760,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "db30c849-dba9-4191-835f-c81601601f49",
+      "name": "When clicking 'Test Workflow' button",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -740,
+        -180
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "mode": "id",
+          "value": "test-index"
+        },
+        "options": {
+          "clearNamespace": true
+        }
+      },
+      "id": "9f082aa5-622f-4c7c-97b4-9600ea6495ed",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        60,
+        -180
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4fa71a2f-1084-45fe-9b8b-bbbbeec31a22",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        540,
+        -180
+      ],
+      "webhookId": "dec328cc-f47e-4727-b1c5-7370be86a958",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e56dde13-dae4-45ad-9a45-4d37bf4c746f",
+      "name": "Question & Answer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        780,
+        -180
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d08ef1f5-932b-4bbb-bb02-0cbdff26a636",
+              "name": "file_url",
+              "type": "string",
+              "value": "https://drive.google.com/file/d/11Koq9q53nkk0F5Y8eZgaWJUVR03I4-MM/view"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "17067cb5-6f05-48c2-8c7b-b9b785f3a022",
+      "name": "Set Google Drive file URL",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -420,
+        -180
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $json.file_url }}"
+        },
+        "options": {}
+      },
+      "id": "279c29c3-89bd-48b1-a753-792f935a2a69",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        -220,
+        -180
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "id": "f36ba9d5-716e-4b67-ae15-a3a0e0762585",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        160,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chunkSize": 3000,
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "id": "ff0e5554-9b22-4bdd-9494-8511e2c83fb7",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        240,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ba35228a-10ab-4487-931b-f53b1cfd935e",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        980,
+        160
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e11c0ea6-ed04-4a75-9f96-47535f406dc6",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        40,
+        40
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "bitcoin_paper",
+        "toolDescription": "Call this tool to retrieve facts from the bitcoin whitepaper",
+        "pineconeIndex": {
+          "__rl": true,
+          "mode": "id",
+          "value": "test-index"
+        },
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "id": "78a29847-6797-4b5e-b8f8-975a7959d6f6",
+      "name": "Pinecone Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        900,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "03e2ca2e-6772-4b8b-adf4-5ccef9d2b036",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        780,
+        40
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {},
+      "id": "b6a5c1a7-e68f-46c9-857f-69bc9d563b94",
+      "name": "File Ref",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        -520,
+        -540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "official_statement_extractor",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "data",
+          "ignoreBots": true
+        }
+      },
+      "id": "8c7e2dad-2dd1-463c-af67-f3f388d82ef4",
+      "name": "POST /ai_pdf_summariser",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -680,
+        -540
+      ],
+      "webhookId": "a452fbcb-c7c4-4c0b-b435-b1829d411e7a",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        -300,
+        -540
+      ],
+      "id": "caab923e-d911-4b11-b9c1-ba407241eba6",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "Tjd4DnF2L6gIdloo",
+          "name": "Local QdrantApi"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question & Answer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Question & Answer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Google Drive file URL": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Question & Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking 'Test Workflow' button": {
+      "main": [
+        [
+          {
+            "node": "Set Google Drive file URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST /ai_pdf_summariser": {
+      "main": [
+        [
+          {
+            "node": "File Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Ref": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8a84dec1-9030-45eb-9170-93aa6b4f260e",
+  "triggerCount": 0,
+  "tags": []
+}
+
