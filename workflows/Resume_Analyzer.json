@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-17T08:26:34.908Z",
-  "updatedAt": "2025-06-24T07:39:53.328Z",
+  "updatedAt": "2025-07-02T23:18:17.633Z",
   "id": "lfsBxGDFnGgserxW",
   "name": "Resume_Analyzer",
   "active": false,
@@ -63,11 +63,12 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        880,
+        1100,
         -200
       ],
       "id": "2bbe99ed-e7f2-47b1-b852-585d6691536d",
-      "name": "Edit Fields"
+      "name": "Edit Fields",
+      "disabled": true
     },
     {
       "parameters": {
@@ -78,11 +79,12 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1120,
+        1340,
         -200
       ],
       "id": "8e50b1ab-2cc7-49fe-9fd9-2ba1f1fdc2ca",
-      "name": "Split Out"
+      "name": "Split Out",
+      "disabled": true
     },
     {
       "parameters": {
@@ -101,12 +103,13 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1460,
+        1680,
         -80
       ],
       "id": "3d25a64e-eba8-4b68-9d02-375309e3792a",
       "name": "Merge",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "disabled": true
     },
     {
       "parameters": {
@@ -138,8 +141,8 @@
       "name": "resume_analyzer@mailrelayer.xyz emails",
       "credentials": {
         "gmailOAuth2": {
-          "id": "6qrDcdevVT45ACgs",
-          "name": "Gmail account"
+          "id": "4wzsYdMTAIarBZ2G",
+          "name": "Gmail - ngrok"
         }
       },
       "notes": "Fetches unread emails sent to bmcreimbursements@mailrelayer.xyz (and other misspellings)"
@@ -172,7 +175,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        960,
+        1180,
         560
       ],
       "id": "fc02f54c-f7c4-4399-9e13-265c9cae6306",
@@ -198,7 +201,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        1680,
+        1900,
         520
       ],
       "id": "19309a4c-2bd8-4b87-835e-8d625860a311",
@@ -228,7 +231,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        960,
+        1180,
         340
       ],
       "id": "3f78cd35-6b40-435e-bac5-10ea789a8c72",
@@ -244,7 +247,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        1660,
+        1880,
         340
       ],
       "id": "8803255c-b3ca-4aba-887a-da7817a643a5",
@@ -267,7 +270,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        2160,
+        2380,
         -80
       ],
       "id": "30f72a92-8b6e-48d6-b2ca-442ea69d3c39",
@@ -283,7 +286,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        700,
+        920,
         340
       ],
       "id": "2a66a519-fdda-4b08-a061-3ad81c6bab99",
@@ -310,7 +313,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1420,
+        1640,
         340
       ],
       "id": "072480ae-8c29-42c5-ab7d-812050f4f2f0",
@@ -329,7 +332,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        440,
+        660,
         -60
       ],
       "id": "b2c36c3e-c0b5-49cf-879c-59818eda7574",
@@ -340,10 +343,11 @@
       "alwaysOutputData": true,
       "credentials": {
         "gmailOAuth2": {
-          "id": "6qrDcdevVT45ACgs",
-          "name": "Gmail account"
+          "id": "4wzsYdMTAIarBZ2G",
+          "name": "Gmail - ngrok"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -368,7 +372,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2040,
+        2260,
         340
       ],
       "id": "09667d96-0c98-4fe2-8ea8-27858f69a608",
@@ -410,7 +414,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        2460,
+        2680,
         360
       ],
       "id": "1d0eb051-6197-43da-97c4-1a2a8a4a3da1",
@@ -430,7 +434,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2480,
+        2700,
         800
       ],
       "id": "423217f7-dc2c-418d-9f5d-7ab876c5af71",
@@ -448,7 +452,7 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2600,
+        2820,
         800
       ],
       "id": "c6f09189-3bac-48a7-946e-fecec7623924",
@@ -469,7 +473,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        860,
+        1080,
         1320
       ],
       "id": "72059c87-d7ec-4354-b985-de596f527fad",
@@ -511,7 +515,7 @@
       "type": "@n8n/n8n-nodes-langchain.code",
       "typeVersion": 1,
       "position": [
-        880,
+        1100,
         1080
       ],
       "id": "94f15c17-3e5b-46ad-84f2-242741bbddca",
@@ -534,13 +538,40 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        240,
-        -60
+        260,
+        -320
       ],
       "id": "8b4178d8-fef9-4675-8739-587c2a142bb0",
       "name": "Global Vars",
       "notesInFlow": true,
       "notes": "Set an example resume JSON structure"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ykM0g56XcKzGPgCM",
+          "mode": "list",
+          "cachedResultName": "Get_Email_Attachments"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        -60
+      ],
+      "id": "d1c37dc5-df0a-4f35-b9a6-f267f797d36e",
+      "name": "Execute Workflow"
     }
   ],
   "connections": {
@@ -549,6 +580,11 @@
         [
           {
             "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -737,6 +773,11 @@
     },
     "Global Vars": {
       "main": [
+        []
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
         [
           {
             "node": "Gmail Get Message",
@@ -895,7 +936,7 @@
       }
     ]
   },
-  "versionId": "de781751-7433-4cb2-8aed-a23444100215",
+  "versionId": "334c951d-53b3-4d6d-a520-7951ccedec6a",
   "triggerCount": 0,
   "tags": []
 }
