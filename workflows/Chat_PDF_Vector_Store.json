@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-03T09:21:17.928Z",
-  "updatedAt": "2025-07-03T16:35:10.664Z",
+  "updatedAt": "2025-07-07T00:43:27.191Z",
   "id": "20lepQMwf2LRDH0a",
   "name": "Chat_PDF_Vector_Store",
   "active": false,
@@ -133,25 +133,6 @@
         -180
       ],
       "typeVersion": 3.4
-    },
-    {
-      "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "mode": "url",
-          "value": "={{ $json.file_url }}"
-        },
-        "options": {}
-      },
-      "id": "279c29c3-89bd-48b1-a753-792f935a2a69",
-      "name": "Google Drive",
-      "type": "n8n-nodes-base.googleDrive",
-      "position": [
-        -220,
-        -180
-      ],
-      "typeVersion": 3
     },
     {
       "parameters": {
@@ -303,20 +284,49 @@
           "name": "Local QdrantApi"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $json.file_url }}"
+        },
+        "options": {}
+      },
+      "id": "279c29c3-89bd-48b1-a753-792f935a2a69",
+      "name": "Download file",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        -220,
+        -180
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "iQ8WsxQiCJQjKqZe",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "loader": "pdfLoader",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -180,
+        -320
+      ],
+      "id": "c900f376-aefd-4d04-b705-e4452bdbc9ed",
+      "name": "Default Data Loader1"
     }
   ],
   "connections": {
-    "Google Drive": {
-      "main": [
-        [
-          {
-            "node": "Pinecone Vector Store",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Embeddings OpenAI": {
       "ai_embedding": [
         [
@@ -376,7 +386,7 @@
       "main": [
         [
           {
-            "node": "Google Drive",
+            "node": "Download file",
             "type": "main",
             "index": 0
           }
@@ -437,6 +447,28 @@
           }
         ]
       ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -447,7 +479,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "8a84dec1-9030-45eb-9170-93aa6b4f260e",
+  "versionId": "9dda4e57-bc43-49e8-ba09-4ec47513d255",
   "triggerCount": 0,
   "tags": []
 }
