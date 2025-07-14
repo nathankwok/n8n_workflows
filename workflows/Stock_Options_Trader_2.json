@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-03T18:48:16.604Z",
-  "updatedAt": "2025-07-13T07:20:49.207Z",
+  "updatedAt": "2025-07-13T09:49:48.915Z",
   "id": "Qj5jkH3PTR7kcqci",
   "name": "Stock_Options_Trader_2",
   "active": false,
@@ -598,23 +598,6 @@
     },
     {
       "parameters": {},
-      "type": "n8n-nodes-mcp.mcpClient",
-      "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "7f58bc71-d4af-4123-9c1f-9b56146d43b8",
-      "name": "MCP Client",
-      "credentials": {
-        "mcpClientApi": {
-          "id": "5WP0c0jqCHb5LMfO",
-          "name": "n8n-mcp MCP Client"
-        }
-      }
-    },
-    {
-      "parameters": {},
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
@@ -626,7 +609,26 @@
       "credentials": {
         "mcpClientApi": {
           "id": "M6ypncUh4MKAMkeD",
-          "name": "context7 MCP Client"
+          "name": "context7 MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "connectionType": "sse"
+      },
+      "type": "n8n-nodes-mcp.mcpClient",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        -220
+      ],
+      "id": "7958e79f-3d50-4b83-b4b3-d38f6b7f34c4",
+      "name": "MCP Client",
+      "credentials": {
+        "mcpClientSseApi": {
+          "id": "ZektQLsUh4MeA3Uo",
+          "name": "Alpaca MCP"
         }
       }
     }
@@ -910,7 +912,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "5d6fa688-5b2a-412a-abe7-5ae21234b5fc",
+  "versionId": "496f56a3-4501-4a75-8572-59f8528f6cd0",
   "triggerCount": 0,
   "tags": []
 }
