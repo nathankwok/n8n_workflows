@@ -1,18 +1,18 @@
 {
-  "createdAt": "2025-06-16T08:22:19.828Z",
-  "updatedAt": "2025-06-24T07:35:35.406Z",
-  "id": "q1xiiiMxbpKaJsPJ",
+  "createdAt": "2025-08-16T19:50:22.786Z",
+  "updatedAt": "2025-08-16T20:06:46.394Z",
+  "id": "ddeDgxYM6E36WtW9",
   "name": "Backup_Workflows_to_GitHub",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {
         "resource": "file",
         "operation": "get",
-        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{$json[\"name\"]}}.json",
+        "owner": "={{ $node['Global Vars'].json['repo']['owner'] }}",
+        "repository": "={{ $node['Global Vars'].json['repo']['name'] }}",
+        "filePath": "={{ $node['Global Vars'].json['repo']['path'] + $json['name'] + '.json' }}",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -20,41 +20,19 @@
       "name": "GitHub",
       "type": "n8n-nodes-base.github",
       "position": [
-        2120,
-        -200
+        2128,
+        -208
       ],
-      "typeVersion": 1,
+      "typeVersion": 1.1,
       "alwaysOutputData": true,
-      "webhookId": "e8d85f6b-55e5-41c7-8e41-876447e46fc2",
+      "webhookId": "91581b4c-1f47-4bef-b759-1e9a45af9a20",
       "credentials": {
         "githubApi": {
           "id": "KBH9KG8I0VZ6x3LD",
           "name": "GitHub account"
         }
       },
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "filters": {
-          "activeWorkflows": true
-        },
-        "requestOptions": {}
-      },
-      "id": "5e2b997d-cdce-44b1-85fa-60f205a888b5",
-      "name": "n8n",
-      "type": "n8n-nodes-base.n8n",
-      "position": [
-        1580,
-        -280
-      ],
-      "typeVersion": 1,
-      "credentials": {
-        "n8nApi": {
-          "id": "RqX64FhD5jWjRPpF",
-          "name": "n8n account"
-        }
-      }
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -64,8 +42,8 @@
       "name": "Loop Over Items",
       "type": "n8n-nodes-base.splitInBatches",
       "position": [
-        1880,
-        -280
+        1888,
+        -288
       ],
       "executeOnce": false,
       "typeVersion": 3
@@ -100,7 +78,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         2320,
-        -200
+        -208
       ],
       "typeVersion": 2.2
     },
@@ -133,7 +111,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         3200,
-        100
+        112
       ],
       "typeVersion": 2.2
     },
@@ -146,60 +124,63 @@
       "type": "n8n-nodes-base.code",
       "position": [
         2880,
-        -220
+        -224
       ],
-      "typeVersion": 2
+      "typeVersion": 2,
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "resource": "file",
-        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
-        "fileContent": "={{ $('Loop Over Items').item.json.toJsonString()  }}",
+        "owner": "={{ $node['Global Vars'].json['repo']['owner'] }}",
+        "repository": "={{ $node['Global Vars'].json['repo']['name'] }}",
+        "filePath": "={{ $node['Global Vars'].json['repo']['path'] + $('Loop Over Items').item.json.name + '.json' }}",
+        "fileContent": "={{ $('Loop Over Items').item.json.toJsonString() }}",
         "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
       },
       "id": "e1e21c66-8201-4c9a-8dae-f6802df56f7a",
       "name": "Create new file and commit",
       "type": "n8n-nodes-base.github",
       "position": [
-        2500,
-        -40
+        2512,
+        -48
       ],
-      "typeVersion": 1,
-      "webhookId": "e017af62-aeb5-4b55-a3c6-3fcd2da1fc16",
+      "typeVersion": 1.1,
+      "webhookId": "89bca4de-1c07-4d62-8d6a-3f020efe2e7d",
       "credentials": {
         "githubApi": {
           "id": "KBH9KG8I0VZ6x3LD",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "resource": "file",
         "operation": "edit",
-        "owner": "={{$node[\"Global Vars\"].json[\"repo\"][\"owner\"]}}",
-        "repository": "={{$node[\"Global Vars\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Global Vars\"].json[\"repo\"][\"path\"]}}{{ $('Loop Over Items').item.json.name }}.json",
-        "fileContent": "={{ \nJSON.stringify(JSON.parse($('Loop Over Items').item.json.toJsonString()), null, 2)\n}}\n\n",
+        "owner": "={{ $node['Global Vars'].json['repo']['owner'] }}",
+        "repository": "={{ $node['Global Vars'].json['repo']['name'] }}",
+        "filePath": "={{ $node['Global Vars'].json['repo']['path'] + $('Loop Over Items').item.json.name + '.json' }}",
+        "fileContent": "={{ JSON.stringify(JSON.parse($('Loop Over Items').item.json.toJsonString()), null, 2) }}",
         "commitMessage": "=[N8N Backup] {{ $('Loop Over Items').item.json.name }}.json"
       },
       "id": "56fba9ea-1333-418d-8578-fe3ff35c46be",
       "name": "Update file content and commit",
       "type": "n8n-nodes-base.github",
       "position": [
-        3560,
-        300
+        3568,
+        304
       ],
-      "typeVersion": 1,
-      "webhookId": "ac013b6b-2298-4480-9e28-2aba2f002846",
+      "typeVersion": 1.1,
+      "webhookId": "0ade4e7d-b8f9-43cc-b52b-de000a53463e",
       "credentials": {
         "githubApi": {
           "id": "KBH9KG8I0VZ6x3LD",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -211,7 +192,7 @@
             },
             {
               "field": "cronExpression",
-              "expression": "=38 */2 * * 2,5"
+              "expression": "38 */2 * * 2,5"
             },
             {
               "field": "cronExpression",
@@ -225,7 +206,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
         400,
-        360
+        368
       ],
       "typeVersion": 1.2
     },
@@ -238,8 +219,8 @@
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        3080,
-        520
+        3088,
+        528
       ],
       "typeVersion": 1
     },
@@ -252,7 +233,7 @@
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2680,
+        2688,
         240
       ],
       "typeVersion": 1
@@ -266,7 +247,7 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2020,
+        2032,
         160
       ],
       "typeVersion": 1
@@ -280,8 +261,8 @@
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1840,
-        -320
+        1856,
+        -400
       ],
       "typeVersion": 1
     },
@@ -294,8 +275,8 @@
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2380,
-        -340
+        2384,
+        -336
       ],
       "typeVersion": 1
     },
@@ -308,22 +289,23 @@
       "name": "Sticky Note5",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1480,
+        1488,
         -400
       ],
       "typeVersion": 1
     },
     {
       "parameters": {
-        "content": "Set variables",
-        "height": 80
+        "content": "Set variables:\nrepo.owner - Repo owner or org\nrepo.name - Repo name in Github\nrepo.path - Path within the repo to backup to",
+        "height": 112,
+        "width": 272
       },
       "id": "aae8c75a-8cc2-4e4d-869f-74417f5b6701",
       "name": "Sticky Note6",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1240,
-        240
+        1232,
+        224
       ],
       "typeVersion": 1
     },
@@ -334,8 +316,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        680,
-        360
+        688,
+        368
       ],
       "id": "2b068680-ec7f-4bee-8ada-6c03a59c9fd7",
       "name": "Random Boolean Generator",
@@ -370,7 +352,7 @@
       "typeVersion": 2.2,
       "position": [
         960,
-        360
+        368
       ],
       "id": "ada17589-40cf-4b49-bbd0-7d6b3190a025",
       "name": "Check if run",
@@ -378,19 +360,25 @@
     },
     {
       "parameters": {
-        "values": {
-          "string": [
+        "assignments": {
+          "assignments": [
             {
+              "id": "bb6b4bd1-9856-4ef4-879e-7070ed3d9eb1",
               "name": "repo.owner",
-              "value": "nathankwok"
+              "value": "nathankwok",
+              "type": "string"
             },
             {
+              "id": "f93fb912-08e6-422c-a35e-c9ae2e4d4001",
               "name": "repo.name",
-              "value": "n8n_workflows"
+              "value": "n8n_workflows",
+              "type": "string"
             },
             {
+              "id": "192d0f89-3cae-407a-ba5c-c73b4cb5fa69",
               "name": "repo.path",
-              "value": "workflows/"
+              "value": "workflows/",
+              "type": "string"
             }
           ]
         },
@@ -400,10 +388,66 @@
       "name": "Global Vars",
       "type": "n8n-nodes-base.set",
       "position": [
-        1300,
-        60
+        1248,
+        64
       ],
-      "typeVersion": 1
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": false
+        },
+        "requestOptions": {}
+      },
+      "id": "5e2b997d-cdce-44b1-85fa-60f205a888b5",
+      "name": "Get many workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1456,
+        -288
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "RqX64FhD5jWjRPpF",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04707657-2ca1-4924-ac6f-bb7511d9eaa9",
+              "leftValue": "={{ $('Get many workflows').item.json.isArchived }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1648,
+        -288
+      ],
+      "id": "a5a06a75-b27e-4fb6-a218-8a9cbb65d63a",
+      "name": "Filter"
     }
   ],
   "connections": {
@@ -434,17 +478,6 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "n8n": {
-      "main": [
         [
           {
             "node": "Loop Over Items",
@@ -492,7 +525,7 @@
       "main": [
         [
           {
-            "node": "Random Boolean Generator",
+            "node": "Global Vars",
             "type": "main",
             "index": 0
           }
@@ -547,7 +580,29 @@
       "main": [
         [
           {
-            "node": "n8n",
+            "node": "Get many workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many workflows": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -558,19 +613,10 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": {
-    "node:Schedule Trigger": {
-      "recurrenceRules": [
-        2
-      ]
-    }
-  },
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "staticData": null,
+  "meta": null,
   "pinData": {},
-  "versionId": "52de7872-0a0f-4e1c-ab96-cc94d2940719",
-  "triggerCount": 1,
+  "versionId": "45e5a070-3aa4-4d42-bffd-b05710113aec",
+  "triggerCount": 0,
   "tags": []
 }
-
