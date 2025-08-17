@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-16T19:50:22.786Z",
-  "updatedAt": "2025-08-16T20:06:46.394Z",
+  "updatedAt": "2025-08-16T21:12:23.298Z",
   "id": "ddeDgxYM6E36WtW9",
   "name": "Backup_Workflows_to_GitHub",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -395,9 +395,7 @@
     },
     {
       "parameters": {
-        "filters": {
-          "activeWorkflows": false
-        },
+        "filters": {},
         "requestOptions": {}
       },
       "id": "5e2b997d-cdce-44b1-85fa-60f205a888b5",
@@ -613,10 +611,14 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": null,
   "pinData": {},
-  "versionId": "45e5a070-3aa4-4d42-bffd-b05710113aec",
-  "triggerCount": 0,
+  "versionId": "53a31c39-2046-4135-be2d-23c6aea37712",
+  "triggerCount": 1,
   "tags": []
 }
