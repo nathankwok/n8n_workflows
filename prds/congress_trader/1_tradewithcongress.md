@@ -87,29 +87,77 @@ This PRD outlines the integration of Threads social media monitoring into the ex
 }
 ```
 
-#### 2. Code Node (`nodes-base.code` v2)
-**Purpose**: Filter posts to same-day only
-```javascript
-// Filter Threads posts to same day only
-const today = new Date();
-const todayDateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
-
-if (!$json.data || !$json.data.threads_posts) {
-  return [{ json: { threads_posts: [] } }];
-}
-
-const todayPosts = $json.data.threads_posts.filter(post => {
-  try {
-    const postDate = new Date(post.timestamp);
-    const postDateString = postDate.toISOString().split('T')[0];
-    return postDateString === todayDateString;
-  } catch (error) {
-    console.log('Error parsing date:', post.timestamp);
-    return false;
+#### 2A. Date & Time Node (`nodes-base.dateTime` v2)
+**Purpose**: Get current date for comparison
+```json
+{
+  "operation": "getCurrentDate",
+  "outputFieldName": "current_date",
+  "options": {
+    "includeTime": false
   }
-});
+}
+```
 
-return [{ json: { threads_posts: todayPosts, execution_date: todayDateString } }];
+#### 2B. Set Node (`nodes-base.set` v3.4)
+**Purpose**: Extract date from posts and add current date
+```json
+{
+  "mode": "manual",
+  "includeOtherFields": true,
+  "assignments": {
+    "assignments": [
+      {
+        "id": "1",
+        "name": "current_date_string",
+        "value": "={{ $('Date & Time').item.json.current_date.split('T')[0] }}",
+        "type": "string"
+      },
+      {
+        "id": "2", 
+        "name": "threads_posts_with_dates",
+        "value": "={{ $json.data.threads_posts.map(post => ({ ...post, post_date: new Date(post.timestamp).toISOString().split('T')[0] })) }}",
+        "type": "object"
+      }
+    ]
+  }
+}
+```
+
+#### 2C. Filter Node (`nodes-base.filter` v2.2)
+**Purpose**: Filter posts to same-day only
+```json
+{
+  "conditions": {
+    "options": {
+      "version": 2,
+      "leftValue": "",
+      "caseSensitive": true,
+      "typeValidation": "strict"
+    },
+    "combinator": "and",
+    "conditions": [
+      {
+        "id": "1",
+        "operator": {
+          "type": "array",
+          "operation": "notEmpty"
+        },
+        "leftValue": "={{ $json.threads_posts_with_dates }}",
+        "rightValue": ""
+      },
+      {
+        "id": "2",
+        "operator": {
+          "type": "string",
+          "operation": "equals"
+        },
+        "leftValue": "={{ $item.post_date }}",
+        "rightValue": "={{ $json.current_date_string }}"
+      }
+    ]
+  }
+}
 ```
 
 #### 3. Basic LLM Chain Node (`nodes-langchain.chainLlm` v1.7)
@@ -128,25 +176,67 @@ return [{ json: { threads_posts: todayPosts, execution_date: todayDateString } }
 }
 ```
 
-#### 4. Code Node (`nodes-base.code` v2)
-**Purpose**: Merge Threads alerts with QuiverQuant data
-```javascript
-// Merge Threads urgent alerts with QuiverQuant trades data
-const threadsData = $input.first(); // From Threads analysis
-const quiverData = $input.last();   // From existing QuiverQuant flow
+#### 4A. Merge Node (`nodes-base.merge` v3.2)
+**Purpose**: Combine Threads and QuiverQuant data streams
+```json
+{
+  "mode": "combine",
+  "combineBy": "combineAll",
+  "joinMode": "keepEverything",
+  "outputDataFrom": "both",
+  "mergeBy": {
+    "values": []
+  }
+}
+```
 
-const mergedData = {
-  quiver_trades: quiverData?.json?.trades || [],
-  threads_alerts: threadsData?.json?.urgent_posts || [],
-  analysis_date: new Date().toISOString().split('T')[0],
-  has_urgent_alerts: (threadsData?.json?.urgent_posts || []).length > 0,
-  total_quiver_trades: (quiverData?.json?.trades || []).length
-};
-
-// Add context flag for email formatting
-mergedData.send_notification = mergedData.has_urgent_alerts || mergedData.total_quiver_trades > 0;
-
-return [{ json: mergedData }];
+#### 4B. Set Node (`nodes-base.set` v3.4) 
+**Purpose**: Structure merged data and add analysis metadata
+```json
+{
+  "mode": "manual",
+  "includeOtherFields": false,
+  "assignments": {
+    "assignments": [
+      {
+        "id": "1",
+        "name": "quiver_trades",
+        "value": "={{ $input.first().json.trades || [] }}",
+        "type": "object"
+      },
+      {
+        "id": "2",
+        "name": "threads_alerts", 
+        "value": "={{ $input.last().json.urgent_posts || [] }}",
+        "type": "object"
+      },
+      {
+        "id": "3",
+        "name": "analysis_date",
+        "value": "={{ new Date().toISOString().split('T')[0] }}",
+        "type": "string"
+      },
+      {
+        "id": "4",
+        "name": "has_urgent_alerts",
+        "value": "={{ ($input.last().json.urgent_posts || []).length > 0 }}",
+        "type": "boolean"
+      },
+      {
+        "id": "5",
+        "name": "total_quiver_trades",
+        "value": "={{ ($input.first().json.trades || []).length }}",
+        "type": "number"
+      },
+      {
+        "id": "6",
+        "name": "send_notification",
+        "value": "={{ (($input.last().json.urgent_posts || []).length > 0) || (($input.first().json.trades || []).length > 0) }}",
+        "type": "boolean"
+      }
+    ]
+  }
+}
 ```
 
 #### 5. If Node (`nodes-base.if` v2.2)
@@ -190,6 +280,28 @@ return [{ json: mergedData }];
   }
 }
 ```
+
+### Benefits of Using Native n8n Nodes Over Code Nodes
+
+**Advantages of the Updated Architecture:**
+
+1. **Visual Workflow Clarity**: Native nodes provide clear, visual representation of data transformations without needing to read JavaScript code
+2. **Error Handling**: Built-in error handling and validation in native nodes reduces debugging complexity
+3. **Performance**: Native nodes are optimized for specific operations and generally perform better than custom code
+4. **Maintainability**: No-code/low-code approach makes the workflow easier to maintain and modify by non-developers
+5. **Version Compatibility**: Native nodes are maintained by n8n team and automatically compatible with platform updates
+6. **Data Type Safety**: Built-in type validation and conversion in nodes like Set and Filter
+7. **Debugging**: Better debugging capabilities with step-by-step data inspection in the n8n UI
+
+**Specific Node Benefits:**
+
+- **Date & Time Node**: Eliminates date parsing errors and timezone issues with built-in date handling
+- **Filter Node**: Provides robust filtering with multiple condition types and proper type coercion
+- **Set Node**: Safer data transformation with built-in validation and type conversion
+- **Merge Node**: Optimized data combining with multiple merge strategies and error handling
+- **AI Transform Node**: Available as alternative for complex transformations that require natural language instructions (e.g., "Filter posts to only those from today" or "Merge two data arrays with specific structure")
+
+**Migration Path**: The updated design maintains all original functionality while improving reliability and maintainability through native n8n components.
 
 ## Implementation Phases
 
@@ -293,11 +405,14 @@ Schedule Trigger (6 PM Daily)
     ├── HTTP Request (Extract Threads)
     ├── Wait 30 Secs  
     ├── HTTP Request (Get Threads Results)
-    ├── Code (Filter Same-Day Posts)
+    ├── Date & Time (Get Current Date)
+    ├── Set (Extract Post Dates)
+    ├── Filter (Same-Day Posts Only)
     └── LLM Chain (Analyze Urgency)
 
 Merge Point
-├── Code (Merge Data Sources)
+├── Merge (Combine Data Streams)
+├── Set (Structure Final Data)
 ├── If (Check Send Conditions)
 ├── LLM Chain (Format Email)
 └── Gmail (Send Notification)
@@ -309,7 +424,8 @@ Merge Point
   "Schedule Trigger": {
     "main": [
       ["Extract QuiverQuant", 0],
-      ["Extract Threads", 0]
+      ["Extract Threads", 0],
+      ["Date & Time", 0]
     ]
   },
   "Extract QuiverQuant": {
@@ -318,18 +434,33 @@ Merge Point
   "Extract Threads": {
     "main": [["Wait 30 Secs (Threads)", 0]]
   },
+  "Get Threads Results": {
+    "main": [["Set (Extract Post Dates)", 0]]
+  },
+  "Date & Time": {
+    "main": [["Set (Extract Post Dates)", 1]]
+  },
+  "Set (Extract Post Dates)": {
+    "main": [["Filter (Same-Day Posts)", 0]]
+  },
+  "Filter (Same-Day Posts)": {
+    "main": [["LLM Chain (Analyze Urgency)", 0]]
+  },
   "Parse Trades": {
-    "main": [["Merge Data Sources", 0]]
+    "main": [["Merge (Combine Data)", 0]]
   },
-  "Analyze Urgency": {
-    "main": [["Merge Data Sources", 1]]
+  "LLM Chain (Analyze Urgency)": {
+    "main": [["Merge (Combine Data)", 1]]
   },
-  "Merge Data Sources": {
-    "main": [["Check Send Conditions", 0]]
+  "Merge (Combine Data)": {
+    "main": [["Set (Structure Final Data)", 0]]
   },
-  "Check Send Conditions": {
+  "Set (Structure Final Data)": {
+    "main": [["If (Check Send Conditions)", 0]]
+  },
+  "If (Check Send Conditions)": {
     "main": [
-      ["Format Email", 0],
+      ["LLM Chain (Format Email)", 0],
       ["No Action", 0]
     ]
   }
@@ -683,11 +814,14 @@ FORMATTING:
   "Extract Threads": [500, 150],
   "Wait 30 Secs (Threads)": [700, 150], 
   "Get Threads Results": [900, 150],
-  "Filter Same Day": [1100, 150],
-  "Analyze Urgency": [1300, 150],
-  "Merge Data Sources": [1500, 300],
-  "Check Send Conditions": [1700, 300],
-  "Format Email": [1900, 300]
+  "Date & Time": [500, 250],
+  "Set (Extract Post Dates)": [1100, 200],
+  "Filter (Same-Day Posts)": [1300, 150],
+  "LLM Chain (Analyze Urgency)": [1500, 150],
+  "Merge (Combine Data)": [1700, 300],
+  "Set (Structure Final Data)": [1900, 300],
+  "If (Check Send Conditions)": [2100, 300],
+  "LLM Chain (Format Email)": [2300, 300]
 }
 ```
 
