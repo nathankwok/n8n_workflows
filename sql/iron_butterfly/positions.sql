@@ -1,0 +1,25 @@
+-- Positions tracking
+CREATE TABLE positions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  symbol VARCHAR(10) NOT NULL,
+  position_type VARCHAR(20) DEFAULT 'IRON_BUTTERFLY',
+  entry_date TIMESTAMP NOT NULL,
+  expiry_date DATE NOT NULL,
+  atm_strike DECIMAL(10,2) NOT NULL,
+  short_call_strike DECIMAL(10,2) NOT NULL,
+  short_put_strike DECIMAL(10,2) NOT NULL,
+  long_call_strike DECIMAL(10,2) NOT NULL,
+  long_put_strike DECIMAL(10,2) NOT NULL,
+  entry_credit DECIMAL(10,2) NOT NULL,
+  max_loss DECIMAL(10,2) NOT NULL,
+  entry_delta DECIMAL(6,4),
+  entry_theta DECIMAL(6,4),
+  entry_iv DECIMAL(6,4),
+  status VARCHAR(20) DEFAULT 'OPEN',
+  closed_date TIMESTAMP,
+  closed_price DECIMAL(10,2),
+  realized_pnl DECIMAL(10,2),
+  close_reason VARCHAR(100),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
