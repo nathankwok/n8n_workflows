@@ -1,0 +1,13 @@
+-- Create indexes for performance
+CREATE INDEX idx_positions_symbol ON positions(symbol);
+CREATE INDEX idx_positions_status ON positions(status);
+CREATE INDEX idx_opportunities_date ON trade_opportunities(analysis_date);
+CREATE INDEX idx_opportunities_symbol ON trade_opportunities(symbol);
+CREATE INDEX idx_errors_type ON error_logs(error_type);
+CREATE INDEX idx_errors_created ON error_logs(created_at);
+CREATE INDEX idx_api_health_name ON api_health(api_name);
+CREATE INDEX idx_metrics_date ON performance_metrics(metric_date);
+CREATE INDEX idx_universe_symbol ON stock_universe(symbol);
+CREATE INDEX idx_agent_logs_type ON agent_logs(agent_type);
+CREATE INDEX idx_workflow_state_key ON workflow_state(key);
+CREATE INDEX idx_workflow_state_expires ON workflow_state(expires_at);
