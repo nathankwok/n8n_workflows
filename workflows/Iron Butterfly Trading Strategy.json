@@ -1,1 +1,674 @@
-{"createdAt":"2025-08-17T08:51:53.016Z","updatedAt":"2025-08-17T08:56:49.127Z","id":"hRpJ1sdf6Mz3Zddb","name":"Iron Butterfly Trading Strategy","active":false,"isArchived":false,"nodes":[{"id":"1","name":"Schedule Trigger","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1.2,"position":[250,300],"parameters":{"rule":{"interval":[{"field":"minute","interval":5}]},"triggerAtSecond":0}},{"id":"2","name":"Supabase Health Check","type":"n8n-nodes-base.supabase","typeVersion":1,"position":[450,300],"parameters":{"resource":"row","operation":"get","tableId":"api_health","filters":{"conditions":[{"field":"api_name","condition":"equals","value":"system"}]},"options":{"returnAll":false,"limit":1}},"onError":"continueErrorOutput"},{"id":"3","name":"System Health Validation","type":"n8n-nodes-base.code","typeVersion":2,"position":[650,300],"parameters":{"language":"javascript","jsCode":"const memoryUsage = process.memoryUsage();\nconst memoryUsedMB = memoryUsage.heapUsed / 1024 / 1024;\n\nconst healthChecks = {\n  memory: {\n    used: memoryUsedMB,\n    healthy: memoryUsedMB < 1024\n  },\n  timestamp: new Date().toISOString(),\n  supabaseConnection: $input.all().length > 0\n};\n\nconst isHealthy = healthChecks.memory.healthy && healthChecks.supabaseConnection;\n\nif (!isHealthy) {\n  throw new Error('System health check failed: ' + JSON.stringify(healthChecks));\n}\n\nreturn {\n  health: 'OK',\n  checks: healthChecks,\n  canProceed: true\n};"},"onError":"continueErrorOutput"},{"id":"4","name":"Health Error Handler","type":"n8n-nodes-base.errorTrigger","typeVersion":1,"position":[450,450],"parameters":{}},{"id":"5","name":"Market Hours Check","type":"n8n-nodes-base.code","typeVersion":2,"position":[850,300],"parameters":{"language":"javascript","jsCode":"const now = new Date();\nconst easternTime = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));\nconst hour = easternTime.getHours();\nconst minute = easternTime.getMinutes();\nconst dayOfWeek = easternTime.getDay();\n\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\nconst isMarketHours = (hour > 9 || (hour === 9 && minute >= 30)) && (hour < 16 || (hour === 16 && minute === 0));\n\nconst today = easternTime.toDateString();\nconst holidays = ['Mon Jan 01', 'Mon Jan 15', 'Mon Feb 19', 'Fri Mar 29', 'Mon May 27', 'Thu Jun 19', 'Thu Jul 04', 'Mon Sep 02', 'Mon Oct 14', 'Thu Nov 28', 'Fri Nov 29', 'Wed Dec 25'];\n\nconst isHoliday = holidays.some(holiday => today.includes(holiday));\n\nif (isHoliday) {\n  return { skip: true, reason: 'Market holiday', marketStatus: 'CLOSED' };\n}\n\nif (!isWeekday) {\n  return { skip: true, reason: 'Weekend', marketStatus: 'CLOSED' };\n}\n\nif (!isMarketHours) {\n  return { skip: true, reason: 'Outside market hours', marketStatus: 'CLOSED' };\n}\n\nfunction calculateTimeToClose(hour, minute) {\n  const closeHour = 16;\n  const closeMinute = 0;\n  return ((closeHour - hour) * 60) + (closeMinute - minute);\n}\n\nreturn {\n  continue: true,\n  marketStatus: 'OPEN',\n  currentTime: easternTime.toISOString(),\n  timeToClose: calculateTimeToClose(hour, minute)\n};"}},{"id":"6","name":"Account Validation","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[1050,300],"parameters":{"method":"GET","url":"={{$env.ALPACA_API_URL}}/v2/account","authentication":"genericCredentialType","genericAuthType":"headerAuth","sendHeaders":true,"headerParameters":{"parameters":[{"name":"APCA-API-KEY-ID","value":"={{$env.ALPACA_API_KEY}}"},{"name":"APCA-API-SECRET-KEY","value":"={{$env.ALPACA_API_SECRET}}"}]},"options":{"timeout":10000,"retryOnFail":true,"maxTries":3,"waitBetweenTries":2000}},"onError":"continueErrorOutput"},{"id":"7","name":"Account Status Check","type":"n8n-nodes-base.switch","typeVersion":3,"position":[1250,300],"parameters":{"options":{"caseSensitive":true,"ignoreCase":false},"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"leftValue":"={{ $json.status }}","rightValue":"ACTIVE","operator":{"type":"string","operation":"equals"}}],"combineOperation":"all"}}},{"id":"8","name":"Account Error Handler","type":"n8n-nodes-base.switch","typeVersion":3,"position":[1050,450],"parameters":{"options":{"caseSensitive":true,"ignoreCase":false},"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"leftValue":"={{ $json.error.httpCode }}","rightValue":"401","operator":{"type":"number","operation":"equals"}},{"leftValue":"={{ $json.error.httpCode }}","rightValue":"429","operator":{"type":"number","operation":"equals"}},{"leftValue":"={{ $json.error.httpCode }}","rightValue":"503","operator":{"type":"number","operation":"equals"}}],"combineOperation":"any"}}},{"id":"9","name":"Load Workflow State","type":"n8n-nodes-base.supabase","typeVersion":1,"position":[1450,300],"parameters":{"resource":"row","operation":"getAll","tableId":"workflow_state","filters":{"conditions":[{"field":"key","condition":"equals","value":"iron_butterfly_state"},{"field":"expires_at","condition":"greaterThan","value":"={{ new Date().toISOString() }}"}]},"options":{"returnAll":false,"limit":1}},"onError":"continueErrorOutput"},{"id":"10","name":"Load Stock Universe","type":"n8n-nodes-base.supabase","typeVersion":1,"position":[1650,300],"parameters":{"resource":"row","operation":"getAll","tableId":"stock_universe","filters":{"conditions":[{"field":"enabled","condition":"equals","value":true},{"field":"avg_volume","condition":"greaterThan","value":1000000},{"field":"options_volume","condition":"greaterThan","value":10000},{"field":"last_price","condition":"greaterThan","value":10}]},"options":{"returnAll":true,"sort":{"field":"avg_volume","direction":"DESC"},"limit":500}},"onError":"continueErrorOutput"},{"id":"11","name":"Filter Universe","type":"n8n-nodes-base.filter","typeVersion":2,"position":[1850,300],"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"leftValue":"={{ $json.last_price }}","rightValue":500,"operator":{"type":"number","operation":"smaller"}},{"leftValue":"={{ $json.avg_volume }}","rightValue":1000000,"operator":{"type":"number","operation":"largerEqual"}},{"leftValue":"={{ $json.enabled }}","rightValue":true,"operator":{"type":"boolean","operation":"equal"}}],"combineOperation":"all"}}},{"id":"12","name":"Split Into Batches","type":"n8n-nodes-base.splitInBatches","typeVersion":3,"position":[2050,300],"parameters":{"batchSize":100,"options":{}}},{"id":"13","name":"Assign Agent Batches","type":"n8n-nodes-base.code","typeVersion":2,"position":[2250,300],"parameters":{"language":"javascript","jsCode":"const allItems = $input.all();\nconst batchData = allItems[0].json;\n\n// Calculate agent assignment based on batch number\nconst agentId = ((batchData.batchIndex - 1) % 5) + 1;\nconst totalBatches = Math.ceil(batchData.totalItems / 100);\n\nreturn {\n  agentId: agentId,\n  batchIndex: batchData.batchIndex,\n  totalBatches: totalBatches,\n  symbols: batchData.data,\n  batchSize: batchData.data.length,\n  priority: agentId === 1 ? 'high' : 'normal',\n  timestamp: new Date().toISOString()\n};"}},{"id":"research_agent","name":"Research Agent","type":"nodes-langchain.agent","typeVersion":2,"position":[1700,140],"parameters":{"promptType":"define","text":"You are the Research Agent responsible for conducting comprehensive research on potential Iron Butterfly trades. Your tasks include:\n\n1. Analyze current market conditions and volatility environment\n2. Research individual stock fundamentals, technicals, and upcoming events\n3. Evaluate options chain data for optimal strike selection\n4. Assess implied volatility levels and skew patterns\n5. Identify the best candidates for Iron Butterfly strategies\n\nFor each stock symbol provided, conduct thorough research and provide your analysis in the specified JSON format.","hasOutputParser":true,"outputParserType":"structured","jsonSchema":"{\n  \"type\": \"object\",\n  \"properties\": {\n    \"symbol\": {\n      \"type\": \"string\",\n      \"description\": \"Stock symbol analyzed\"\n    },\n    \"market_conditions\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"overall_sentiment\": {\"type\": \"string\"},\n        \"volatility_regime\": {\"type\": \"string\"},\n        \"market_trend\": {\"type\": \"string\"}\n      }\n    },\n    \"fundamental_analysis\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"earnings_date\": {\"type\": \"string\"},\n        \"key_events\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n        \"financial_health\": {\"type\": \"string\"}\n      }\n    },\n    \"technical_analysis\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"price_trend\": {\"type\": \"string\"},\n        \"support_resistance\": {\"type\": \"array\", \"items\": {\"type\": \"number\"}},\n        \"volume_analysis\": {\"type\": \"string\"}\n      }\n    },\n    \"options_analysis\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"implied_volatility\": {\"type\": \"number\"},\n        \"iv_rank\": {\"type\": \"number\"},\n        \"skew_analysis\": {\"type\": \"string\"},\n        \"liquidity_assessment\": {\"type\": \"string\"}\n      }\n    },\n    \"iron_butterfly_suitability\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"overall_score\": {\"type\": \"number\", \"minimum\": 0, \"maximum\": 100},\n        \"reasoning\": {\"type\": \"string\"},\n        \"recommended_strikes\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"short_call\": {\"type\": \"number\"},\n            \"short_put\": {\"type\": \"number\"},\n            \"long_call\": {\"type\": \"number\"},\n            \"long_put\": {\"type\": \"number\"}\n          }\n        }\n      }\n    }\n  },\n  \"required\": [\"symbol\", \"market_conditions\", \"fundamental_analysis\", \"technical_analysis\", \"options_analysis\", \"iron_butterfly_suitability\"]\n}"},"onError":"continueErrorOutput"},{"id":"risk_assessment_agent","name":"Risk Assessment Agent","type":"nodes-langchain.agent","typeVersion":2,"position":[1700,360],"parameters":{"promptType":"define","text":"You are the Risk Assessment Agent responsible for evaluating and quantifying risks associated with Iron Butterfly trades. Your tasks include:\n\n1. Calculate position sizing based on account equity and risk parameters\n2. Assess maximum loss, maximum profit, and breakeven points\n3. Evaluate time decay (theta) impact and optimal holding periods\n4. Analyze correlation risks in the portfolio\n5. Determine appropriate position limits and concentration risks\n6. Validate risk-reward ratios meet minimum thresholds\n\nFor each potential trade, provide comprehensive risk analysis in the specified JSON format.","hasOutputParser":true,"outputParserType":"structured","jsonSchema":"{\n  \"type\": \"object\",\n  \"properties\": {\n    \"symbol\": {\n      \"type\": \"string\",\n      \"description\": \"Stock symbol being assessed\"\n    },\n    \"position_sizing\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"recommended_contracts\": {\"type\": \"integer\"},\n        \"capital_allocation\": {\"type\": \"number\"},\n        \"percentage_of_portfolio\": {\"type\": \"number\"}\n      }\n    },\n    \"risk_metrics\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"max_loss\": {\"type\": \"number\"},\n        \"max_profit\": {\"type\": \"number\"},\n        \"risk_reward_ratio\": {\"type\": \"number\"},\n        \"breakeven_points\": {\"type\": \"array\", \"items\": {\"type\": \"number\"}}\n      }\n    },\n    \"time_decay_analysis\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"theta_exposure\": {\"type\": \"number\"},\n        \"optimal_holding_period\": {\"type\": \"integer\"},\n        \"time_decay_risk\": {\"type\": \"string\"}\n      }\n    },\n    \"portfolio_impact\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"correlation_risk\": {\"type\": \"string\"},\n        \"concentration_risk\": {\"type\": \"string\"},\n        \"diversification_benefit\": {\"type\": \"string\"}\n      }\n    },\n    \"risk_approval\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"approved\": {\"type\": \"boolean\"},\n        \"risk_score\": {\"type\": \"number\", \"minimum\": 0, \"maximum\": 100},\n        \"rejection_reasons\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n        \"conditions\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}\n      }\n    }\n  },\n  \"required\": [\"symbol\", \"position_sizing\", \"risk_metrics\", \"time_decay_analysis\", \"portfolio_impact\", \"risk_approval\"]\n}"},"onError":"continueErrorOutput"},{"id":"analysis_merge","name":"Analysis Merge","type":"n8n-nodes-base.merge","typeVersion":3,"position":[2450,250],"parameters":{"mode":"combine","combinationMode":"mergeByIndex","options":{}},"onError":"continueErrorOutput"},{"id":"candidate_filter","name":"Candidate Filter","type":"n8n-nodes-base.filter","typeVersion":2,"position":[2650,250],"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"leftValue":"={{ $json.research.iron_butterfly_suitability.overall_score }}","rightValue":70,"operator":{"type":"number","operation":"largerEqual"}},{"leftValue":"={{ $json.risk.risk_approval.approved }}","rightValue":true,"operator":{"type":"boolean","operation":"equal"}},{"leftValue":"={{ $json.risk.risk_approval.risk_score }}","rightValue":60,"operator":{"type":"number","operation":"smallerEqual"}}],"combineOperation":"all"}}},{"id":"trading_execution_agent","name":"Trading Execution Agent","type":"nodes-langchain.agent","typeVersion":2,"position":[2850,250],"parameters":{"promptType":"define","text":"You are the Trading Execution Agent responsible for placing Iron Butterfly options orders via Alpaca. Your tasks include:\n\n1. Validate trade candidates meet all execution criteria\n2. Calculate precise order parameters (strikes, quantities, prices)\n3. Execute Iron Butterfly trades using the Alpaca MCP tool\n4. Monitor order fills and handle partial executions\n5. Update position tracking and risk management systems\n6. Implement circuit breakers for risk control\n\nFor each approved trade candidate, execute the Iron Butterfly strategy and report results in the specified JSON format.","hasOutputParser":true,"outputParserType":"structured","jsonSchema":"{\n  \"type\": \"object\",\n  \"properties\": {\n    \"symbol\": {\n      \"type\": \"string\",\n      \"description\": \"Stock symbol traded\"\n    },\n    \"execution_status\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"status\": {\"type\": \"string\", \"enum\": [\"executed\", \"partial\", \"rejected\", \"failed\"]},\n        \"reason\": {\"type\": \"string\"},\n        \"timestamp\": {\"type\": \"string\"}\n      }\n    },\n    \"order_details\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"iron_butterfly_legs\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"leg_type\": {\"type\": \"string\"},\n              \"option_type\": {\"type\": \"string\"},\n              \"strike\": {\"type\": \"number\"},\n              \"quantity\": {\"type\": \"integer\"},\n              \"side\": {\"type\": \"string\"},\n              \"order_id\": {\"type\": \"string\"},\n              \"fill_price\": {\"type\": \"number\"},\n              \"fill_status\": {\"type\": \"string\"}\n            }\n          }\n        },\n        \"net_premium\": {\"type\": \"number\"},\n        \"total_contracts\": {\"type\": \"integer\"}\n      }\n    },\n    \"risk_metrics\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"max_loss\": {\"type\": \"number\"},\n        \"max_profit\": {\"type\": \"number\"},\n        \"capital_deployed\": {\"type\": \"number\"},\n        \"breakeven_points\": {\"type\": \"array\", \"items\": {\"type\": \"number\"}}\n      }\n    },\n    \"monitoring\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"position_id\": {\"type\": \"string\"},\n        \"expiration_date\": {\"type\": \"string\"},\n        \"days_to_expiration\": {\"type\": \"integer\"},\n        \"profit_target\": {\"type\": \"number\"},\n        \"stop_loss\": {\"type\": \"number\"}\n      }\n    }\n  },\n  \"required\": [\"symbol\", \"execution_status\", \"order_details\", \"risk_metrics\", \"monitoring\"]\n}"},"onError":"continueErrorOutput"},{"id":"execution_logger","name":"Execution Logger","type":"n8n-nodes-base.supabase","typeVersion":1,"position":[3050,250],"parameters":{"resource":"row","operation":"create","tableId":"execution_log","columns":{"mappingMode":"defineBelow","value":{"execution_id":"={{ new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9) }}","workflow_id":"iron_butterfly_strategy","symbol":"={{ $json.symbol }}","execution_status":"={{ $json.execution_status.status }}","execution_reason":"={{ $json.execution_status.reason }}","execution_timestamp":"={{ $json.execution_status.timestamp }}","net_premium":"={{ $json.order_details.net_premium }}","total_contracts":"={{ $json.order_details.total_contracts }}","max_loss":"={{ $json.risk_metrics.max_loss }}","max_profit":"={{ $json.risk_metrics.max_profit }}","capital_deployed":"={{ $json.risk_metrics.capital_deployed }}","position_id":"={{ $json.monitoring.position_id }}","expiration_date":"={{ $json.monitoring.expiration_date }}","profit_target":"={{ $json.monitoring.profit_target }}","stop_loss":"={{ $json.monitoring.stop_loss }}","created_at":"={{ new Date().toISOString() }}","updated_at":"={{ new Date().toISOString() }}"}},"options":{}},"onError":"continueErrorOutput"}],"connections":{"Schedule Trigger":{"main":[[{"node":"Supabase Health Check","type":"main","index":0}]]},"Supabase Health Check":{"main":[[{"node":"System Health Validation","type":"main","index":0}]],"error":[[{"node":"Health Error Handler","type":"main","index":0}]]},"System Health Validation":{"main":[[{"node":"Market Hours Check","type":"main","index":0}]]},"Health Error Handler":{"main":[[{"node":"System Health Validation","type":"main","index":0}]]},"Market Hours Check":{"main":[[{"node":"Account Validation","type":"main","index":0}]]},"Account Validation":{"main":[[{"node":"Account Status Check","type":"main","index":0}]],"error":[[{"node":"Account Error Handler","type":"main","index":0}]]},"Account Status Check":{"main":[[{"node":"Load Workflow State","type":"main","index":0}]]},"Load Workflow State":{"main":[[{"node":"Load Stock Universe","type":"main","index":0}]]},"Load Stock Universe":{"main":[[{"node":"Filter Universe","type":"main","index":0}]]},"Filter Universe":{"main":[[{"node":"Split Into Batches","type":"main","index":0}]]},"Split Into Batches":{"main":[[{"node":"Assign Agent Batches","type":"main","index":0}]]},"Assign Agent Batches":{"main":[[{"node":"Research Agent","type":"main","index":0},{"node":"Risk Assessment Agent","type":"main","index":0}]]},"Research Agent":{"main":[[{"node":"Analysis Merge","type":"main","index":0}]]},"Risk Assessment Agent":{"main":[[{"node":"Analysis Merge","type":"main","index":0}]]},"Analysis Merge":{"main":[[{"node":"Candidate Filter","type":"main","index":0}]]},"Candidate Filter":{"main":[[{"node":"Trading Execution Agent","type":"main","index":0}]]},"Trading Execution Agent":{"main":[[{"node":"Execution Logger","type":"main","index":0}]]}},"settings":{"executionOrder":"v1","timezone":"America/New_York","saveDataErrorExecution":"all","saveDataSuccessExecution":"all","saveManualExecutions":true,"saveExecutionProgress":true},"staticData":null,"meta":null,"pinData":null,"versionId":"5d77256d-10ff-41af-9670-0aea69e4951b","triggerCount":0,"tags":[]}
+{
+  "createdAt": "2025-08-17T08:51:53.016Z",
+  "updatedAt": "2025-08-25T00:58:35.452Z",
+  "id": "hRpJ1sdf6Mz3Zddb",
+  "name": "Iron Butterfly Trading Strategy",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minute"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "api_health",
+        "filters": {
+          "conditions": [
+            {}
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Supabase Health Check",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        464,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "language": "javascript"
+      },
+      "id": "3",
+      "name": "System Health Validation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "id": "4",
+      "name": "Health Error Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        464,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javascript"
+      },
+      "id": "5",
+      "name": "Market Hours Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.ALPACA_API_URL}}/v2/account",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "={{$env.ALPACA_API_KEY}}"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "={{$env.ALPACA_API_SECRET}}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "6",
+      "name": "Account Validation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "id": "7",
+      "name": "Account Status Check",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1264,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "id": "8",
+      "name": "Account Error Handler",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "workflow_state",
+        "filters": {
+          "conditions": [
+            {
+              "condition": "equals"
+            },
+            {
+              "condition": "greaterThan"
+            }
+          ]
+        }
+      },
+      "id": "9",
+      "name": "Load Workflow State",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "stock_universe",
+        "filters": {
+          "conditions": [
+            {
+              "condition": "equals"
+            },
+            {
+              "condition": "greaterThan"
+            },
+            {
+              "condition": "greaterThan"
+            },
+            {
+              "condition": "greaterThan"
+            }
+          ]
+        }
+      },
+      "id": "10",
+      "name": "Load Stock Universe",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.last_price }}",
+              "rightValue": 500,
+              "operator": {
+                "type": "number",
+                "operation": "smaller"
+              }
+            },
+            {
+              "leftValue": "={{ $json.avg_volume }}",
+              "rightValue": 1000000,
+              "operator": {
+                "type": "number",
+                "operation": "largerEqual"
+              }
+            },
+            {
+              "leftValue": "={{ $json.enabled }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combineOperation": "all"
+        },
+        "options": {}
+      },
+      "id": "11",
+      "name": "Filter Universe",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "id": "12",
+      "name": "Split Into Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2064,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javascript"
+      },
+      "id": "13",
+      "name": "Assign Agent Batches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "research_agent",
+      "name": "Research Agent",
+      "type": "nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        80
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "id": "risk_assessment_agent",
+      "name": "Risk Assessment Agent",
+      "type": "nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        560
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "options": {}
+      },
+      "id": "analysis_merge",
+      "name": "Analysis Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2960,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.research.iron_butterfly_suitability.overall_score }}",
+              "rightValue": 70,
+              "operator": {
+                "type": "number",
+                "operation": "largerEqual"
+              }
+            },
+            {
+              "leftValue": "={{ $json.risk.risk_approval.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            },
+            {
+              "leftValue": "={{ $json.risk.risk_approval.risk_score }}",
+              "rightValue": 60,
+              "operator": {
+                "type": "number",
+                "operation": "smallerEqual"
+              }
+            }
+          ],
+          "combineOperation": "all"
+        },
+        "options": {}
+      },
+      "id": "candidate_filter",
+      "name": "Candidate Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        3152,
+        272
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "trading_execution_agent",
+      "name": "Trading Execution Agent",
+      "type": "nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "tableId": "execution_log"
+      },
+      "id": "execution_logger",
+      "name": "Execution Logger",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3552,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase Health Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Health Check": {
+      "main": [
+        [
+          {
+            "node": "System Health Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Health Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "System Health Validation": {
+      "main": [
+        [
+          {
+            "node": "Market Hours Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Health Error Handler": {
+      "main": [
+        [
+          {
+            "node": "System Health Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Market Hours Check": {
+      "main": [
+        [
+          {
+            "node": "Account Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account Validation": {
+      "main": [
+        [
+          {
+            "node": "Account Status Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Account Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account Status Check": {
+      "main": [
+        [
+          {
+            "node": "Load Workflow State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Workflow State": {
+      "main": [
+        [
+          {
+            "node": "Load Stock Universe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Stock Universe": {
+      "main": [
+        [
+          {
+            "node": "Filter Universe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Universe": {
+      "main": [
+        [
+          {
+            "node": "Split Into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Into Batches": {
+      "main": [
+        [
+          {
+            "node": "Assign Agent Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assign Agent Batches": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Risk Assessment Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Analysis Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Risk Assessment Agent": {
+      "main": [
+        [
+          {
+            "node": "Analysis Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analysis Merge": {
+      "main": [
+        [
+          {
+            "node": "Candidate Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Candidate Filter": {
+      "main": [
+        [
+          {
+            "node": "Trading Execution Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trading Execution Agent": {
+      "main": [
+        [
+          {
+            "node": "Execution Logger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "2f66c9f9-990f-4afc-abb9-9125e27ba352",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-17T08:51:53.016Z",
+      "updatedAt": "2025-08-17T08:51:53.016Z",
+      "role": "workflow:owner",
+      "workflowId": "hRpJ1sdf6Mz3Zddb",
+      "projectId": "w7JTueqTYNrmBYZn"
+    }
+  ],
+  "tags": []
+}
