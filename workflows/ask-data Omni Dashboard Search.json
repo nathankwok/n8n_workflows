@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-06T09:08:28.315Z",
+  "updatedAt": "2025-09-06T09:37:23.558Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -30,29 +30,14 @@
     },
     {
       "parameters": {
-        "toolDescription": "Code_Tool",
-        "text": "you are a helpful assistant",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agentTool",
-      "typeVersion": 2.2,
-      "position": [
-        192,
-        304
-      ],
-      "id": "185f8237-2808-43d3-b2ac-e47160384138",
-      "name": "AI Agent Tool"
-    },
-    {
-      "parameters": {
         "model": "gpt-4",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        64,
-        512
+        -48,
+        464
       ],
       "id": "80dc83f2-bc74-4374-8bbb-90945747be0f",
       "name": "Azure OpenAI Chat Model",
@@ -62,26 +47,41 @@
           "name": "Azure Open AI gpt-4"
         }
       }
+    },
+    {
+      "parameters": {
+        "toolDescription": "omni_dashboard_discovery",
+        "text": "you are a helpful assistant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        240
+      ],
+      "id": "185f8237-2808-43d3-b2ac-e47160384138",
+      "name": "Omni Dashboard Discovery"
     }
   ],
   "connections": {
-    "AI Agent Tool": {
-      "ai_tool": [
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
         [
           {
-            "node": "MCP Server Trigger",
-            "type": "ai_tool",
+            "node": "Omni Dashboard Discovery",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "Azure OpenAI Chat Model": {
-      "ai_languageModel": [
+    "Omni Dashboard Discovery": {
+      "ai_tool": [
         [
           {
-            "node": "AI Agent Tool",
-            "type": "ai_languageModel",
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -96,7 +96,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "321773f2-b89e-4231-bca0-debb4bb240df",
+  "versionId": "401e95be-dfc7-41e4-940b-b0e87af44c70",
   "triggerCount": 1,
   "shared": [
     {
