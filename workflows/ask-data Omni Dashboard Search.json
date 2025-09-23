@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-06T09:37:23.558Z",
+  "updatedAt": "2025-09-23T08:36:51.754Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -26,7 +26,8 @@
           "id": "wzBcRrX0vk64pMBK",
           "name": "Zapier Inbound MCP Server"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -46,7 +47,8 @@
           "id": "amfaI9YXiWesQ4eT",
           "name": "Azure Open AI gpt-4"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -61,7 +63,266 @@
         240
       ],
       "id": "185f8237-2808-43d3-b2ac-e47160384138",
-      "name": "Omni Dashboard Discovery"
+      "name": "Omni Dashboard Discovery",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "toolDescription": "Semantic search for documents (dashboards) using the name",
+        "method": "POST",
+        "url": "https://ml16699-hya89079.snowflakecomputing.com/api/v2/databases/analytics_dev/schemas/dev_omni/cortex-search-services/omni_documents_search_service_dev:query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": \"customer breakdown\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"owner_name\",\n        \"folder_name\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        464
+      ],
+      "id": "ca85f5ca-3561-4c18-96bd-cd39b57c7a87",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "PnKZCKVe26AxmdDj",
+          "name": "Snowflake API"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8394a134-6af3-4ec0-b605-3270129037cc",
+        "authentication": "basicAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        0
+      ],
+      "id": "af795adf-5242-4155-ba03-29e0ebe3feb9",
+      "name": "Webhook",
+      "webhookId": "8394a134-6af3-4ec0-b605-3270129037cc",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "qYqaYFYnJhcQuBMI",
+          "name": "Zapier Inbound Basic Auth Webhook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use both the Cortex Search Service and the Cortex Analyst tools to find the best document that would answer this request:\n{{ $('Webhook').item.json.body.message }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are an expert data analyst who has built many dashboards in the Omni Analytics tool, which is a business intelligence tool, that sits on top of Snowflake data through dbt. You triage natural language queries from Stakeholders within the company in order to find the best dashboard (otherwise known as document) to answer the question. Documents, also known as dashboards, are parents of document queries, which are individual queries that run against the data within the parent document. Metadata on the documents and document queries and document query filters are stored in Snowflake and can be accessed through the Cortex Search Service and the Cortex Analyst tools."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "e1bb31d5-9392-42ca-8f5a-2ab313d56474",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        288
+      ],
+      "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
+      "name": "Azure o4-mini",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        368
+      ],
+      "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
+      "name": "Gemini 2.5 Pro",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yw1nLb6Dxz18ENh2",
+          "name": "Gemini - Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Snowflake Cortex Analyst tool to find relevant documents, document queries, and document query filters using SQL",
+        "workflowId": {
+          "__rl": true,
+          "value": "d0l6ZepnDYgKyq5P",
+          "mode": "list",
+          "cachedResultName": "Snowflake Cortex Analyst Subworkflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1392,
+        368
+      ],
+      "id": "b4a77a1c-2d31-4929-bc49-8f86d3ad408f",
+      "name": "Snowflake Cortex Analyst"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Semantic search for documents (dashboards) using the name",
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.snowflake_database }}/schemas/{{ $('Global Vars').item.json.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.snowflake_cortex_search_document_search_service }}:query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": \"{{ $('Webhook').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"owner_name\",\n        \"folder_name\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1584,
+        304
+      ],
+      "id": "d7066b20-a3bd-488a-a693-2fa3b4955056",
+      "name": "Snowflake Cortex Search Service",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "PnKZCKVe26AxmdDj",
+          "name": "Snowflake API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d827ee3-9901-4f0f-b53f-730bf603ee6e",
+              "name": "snowflake_base_url",
+              "value": "https://ml16699-hya89079.snowflakecomputing.com",
+              "type": "string"
+            },
+            {
+              "id": "f56917e6-10bf-47a7-965e-3306a2da1f45",
+              "name": "snowflake_database",
+              "value": "ANALYTICS_DEV",
+              "type": "string"
+            },
+            {
+              "id": "fe44fc50-ba53-4aa9-9bab-c9341415c2e5",
+              "name": "snowflake_schema",
+              "value": "DEV_OMNI",
+              "type": "string"
+            },
+            {
+              "id": "26654413-518d-4543-a16d-412c72be3c9c",
+              "name": "snowflake_cortex_analyst_agent_name",
+              "value": "OMNI_DOCUMENTS_AGENT",
+              "type": "string"
+            },
+            {
+              "id": "155a8d4e-8413-4dd4-ae9c-a808e140740d",
+              "name": "snowflake_cortex_search_document_search_service",
+              "value": "omni_documents_search_service_dev",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "bf957f8a-c5a3-47cc-83d5-6cec5c9049c2",
+      "name": "Global Vars"
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {
+          "responseFormat": "json_object"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        80
+      ],
+      "id": "735fdd14-681d-4841-897d-58b1c7cb9730",
+      "name": "Azure OpenAI Chat Model1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are given several document ",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert data analyst who is well versed with the dashboards you have built in Omni Analytics Business Intelligence tool. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        0
+      ],
+      "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
+      "name": "AI Agent1"
     }
   ],
   "connections": {
@@ -86,6 +347,94 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "Omni Dashboard Discovery",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure o4-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini 2.5 Pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Snowflake Cortex Analyst": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Snowflake Cortex Search Service": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -95,8 +444,132 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "401e95be-dfc7-41e4-940b-b0e87af44c70",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "agenticflows.xyz",
+            "x-real-ip": "18.232.51.165",
+            "x-forwarded-for": "18.232.51.165",
+            "x-forwarded-proto": "https",
+            "x-forwarded-host": "agenticflows.xyz",
+            "x-forwarded-port": "443",
+            "content-length": "247",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "content-type": "application/json; charset=utf-8",
+            "user-agent": "Zapier",
+            "accept": "*/*",
+            "accept-encoding": "gzip,deflate"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "message": "customer breakdown",
+            "message_ts": "1758612094.293819",
+            "user_email": "nkwok@cribl.io",
+            "user_first_name": "Nathan",
+            "user_last_name": "Kwok"
+          },
+          "webhookUrl": "https://agenticflows.xyz/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Global Vars": [
+      {
+        "json": {
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "snowflake_database": "ANALYTICS_DEV",
+          "snowflake_schema": "DEV_OMNI",
+          "snowflake_cortex_analyst_agent_name": "OMNI_DOCUMENTS_AGENT",
+          "snowflake_cortex_search_document_search_service": "omni_documents_search_service_dev"
+        }
+      }
+    ],
+    "AI Agent": [
+      {
+        "json": {
+          "output": {
+            "documents": [
+              {
+                "id": "de229002",
+                "name": "Customer: Customer Breakdown",
+                "owner": "Chuck Morris",
+                "folder": "Customer Experience",
+                "scope": "organization",
+                "queries": [
+                  {
+                    "id": "q_1",
+                    "name": "Customer Count by Segment",
+                    "filters": [
+                      {
+                        "filter_name": "Date Filter",
+                        "operator": "between",
+                        "values": [
+                          "2023-01-01",
+                          "2023-12-31"
+                        ]
+                      },
+                      {
+                        "filter_name": "Segment",
+                        "operator": "in",
+                        "values": [
+                          "Retail",
+                          "Wholesale"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "q_2",
+                    "name": "Customer Revenue by Region",
+                    "filters": [
+                      {
+                        "filter_name": "Date Filter",
+                        "operator": "between",
+                        "values": [
+                          "2023-01-01",
+                          "2023-12-31"
+                        ]
+                      },
+                      {
+                        "filter_name": "Region",
+                        "operator": "in",
+                        "values": [
+                          "North America",
+                          "Europe"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "q_3",
+                    "name": "New vs Returning Customers",
+                    "filters": [
+                      {
+                        "filter_name": "Date Filter",
+                        "operator": "between",
+                        "values": [
+                          "2023-06-01",
+                          "2023-06-30"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "7cf4ea6a-37c4-400f-a131-dbd113e616ee",
   "triggerCount": 1,
   "shared": [
     {
