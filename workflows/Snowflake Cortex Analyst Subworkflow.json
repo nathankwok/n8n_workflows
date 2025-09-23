@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T07:33:17.693Z",
-  "updatedAt": "2025-09-23T09:30:47.973Z",
+  "updatedAt": "2025-09-23T22:12:17.997Z",
   "id": "d0l6ZepnDYgKyq5P",
   "name": "Snowflake Cortex Analyst Subworkflow",
   "active": false,
@@ -47,7 +47,8 @@
     },
     {
       "parameters": {
-        "inputSource": "passthrough"
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"message\": \"user prompt\",\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\"\n}"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -61,40 +62,11 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "8d827ee3-9901-4f0f-b53f-730bf603ee6e",
-              "name": "snowflake_base_url",
-              "value": "https://ml16699-hya89079.snowflakecomputing.com",
-              "type": "string"
-            },
-            {
-              "id": "f56917e6-10bf-47a7-965e-3306a2da1f45",
-              "name": "snowflake_database",
-              "value": "ANALYTICS_DEV",
-              "type": "string"
-            },
-            {
-              "id": "fe44fc50-ba53-4aa9-9bab-c9341415c2e5",
-              "name": "snowflake_schema",
-              "value": "DEV_OMNI",
-              "type": "string"
-            },
-            {
-              "id": "26654413-518d-4543-a16d-412c72be3c9c",
-              "name": "snowflake_cortex_analyst_agent_name",
-              "value": "OMNI_DOCUMENTS_AGENT",
-              "type": "string"
-            },
-            {
-              "id": "155a8d4e-8413-4dd4-ae9c-a808e140740d",
-              "name": "snowflake_cortex_search_document_search_service",
-              "value": "omni_documents_search_service_dev",
-              "type": "string"
-            }
-          ]
-        },
+        "mode": "raw",
+        "jsonOutput": "{\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  }\n}\n",
+        "includeOtherFields": true,
+        "include": "selected",
+        "includeFields": "message,snowflake_base_url",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -109,12 +81,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.snowflake_database }}/schemas/{{ $('Global Vars').item.json.snowflake_schema }}/agents/{{ $('Global Vars').item.json.snowflake_cortex_analyst_agent_name }}:run",
+        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_documents_analyst_agent.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_documents_analyst_agent.snowflake_schema }}/agents/{{ $('Global Vars').item.json.omni_documents_analyst_agent.agent_name }}:run",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"thread_id\": {{ $('Create Cortex Thread').item.json.thread_id }},\n  \"parent_message_id\": 0,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": {{ $('Global Vars').item.json.user_query || '\"Please analyze the data and provide insights.\"' }}\n        }\n      ]\n    }\n  ],\n  \"tool_choice\": {\n    \"type\": \"auto\"\n  }\n}",
+        "jsonBody": "={\n  \"thread_id\": {{ $('Create Cortex Thread').item.json.thread_id }},\n  \"parent_message_id\": 0,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"{{ $('Global Vars').item.json.message }}\"\n        }\n      ]\n    }\n  ],\n  \"tool_choice\": {\n    \"type\": \"auto\"\n  }\n}",
         "options": {}
       },
       "id": "send-agent-request",
@@ -125,6 +97,7 @@
         944,
         0
       ],
+      "alwaysOutputData": false,
       "credentials": {
         "httpBearerAuth": {
           "id": "PnKZCKVe26AxmdDj",
@@ -166,6 +139,11 @@
           }
         ]
       ]
+    },
+    "Send Agent Request": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -174,30 +152,29 @@
   "staticData": null,
   "meta": null,
   "pinData": {
-    "Global Vars": [
+    "Trigger": [
       {
         "json": {
-          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
-          "snowflake_database": "ANALYTICS_DEV",
-          "snowflake_schema": "DEV_OMNI",
-          "snowflake_cortex_analyst_agent_name": "OMNI_DOCUMENTS_AGENT",
-          "snowflake_cortex_search_document_search_service": "omni_documents_search_service_dev"
+          "message": "customer breakdown",
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com"
         }
       }
     ],
-    "Create Cortex Thread": [
+    "Global Vars": [
       {
         "json": {
-          "thread_id": 1082229688,
-          "thread_name": "",
-          "origin_application": "slack_bot",
-          "created_on": 1758619739828,
-          "updated_on": 1758619739828
+          "message": "customer breakdown",
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          }
         }
       }
     ]
   },
-  "versionId": "1a0645ea-d8ff-4f00-b19e-b319689681c9",
+  "versionId": "e1037201-1dff-4de4-8e55-4bbc77a6349c",
   "triggerCount": 0,
   "shared": [
     {
