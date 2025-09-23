@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-23T08:36:51.754Z",
+  "updatedAt": "2025-09-23T09:31:48.055Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -125,7 +125,8 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Use both the Cortex Search Service and the Cortex Analyst tools to find the best document that would answer this request:\n{{ $('Webhook').item.json.body.message }}",
+        "text": "=Use both the Cortex Search Service and the Cortex Analyst tools to find the best document that would answer this request:\n{{ $('Webhook').item.json.body.message }}\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
+        "hasOutputParser": true,
         "needsFallback": true,
         "options": {
           "systemMessage": "You are an expert data analyst who has built many dashboards in the Omni Analytics tool, which is a business intelligence tool, that sits on top of Snowflake data through dbt. You triage natural language queries from Stakeholders within the company in order to find the best dashboard (otherwise known as document) to answer the question. Documents, also known as dashboards, are parents of document queries, which are individual queries that run against the data within the parent document. Metadata on the documents and document queries and document query filters are stored in Snowflake and can be accessed through the Cortex Search Service and the Cortex Analyst tools."
@@ -219,7 +220,7 @@
         "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('Webhook').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"owner_name\",\n        \"folder_name\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $('Webhook').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequestTool",
@@ -286,6 +287,73 @@
     },
     {
       "parameters": {
+        "promptType": "define",
+        "text": "=You are given several documents (outputs) in a JSON here:\n```json\n {{ $json.output.toJsonString() }}\n```\nGo through each one of the documents to filter out ones that have has_dashboard=false . \n\nThen extract out the fields from each output.\n- Use the document_id to craft a dashboard_url https://cribl.omniapp.co/dashboards/{document_id} \n- Use the folder_path to craft a folder_url like https://cribl.omniapp.co/f/{folder_path}\n\nThen craft a well formatted slack_message in the tone of a helpful data analyst, using each output document. \n- The message should address the user `{{ $('Webhook').item.json.body.user_first_name }} {{ $('Webhook').item.json.body.user_last_name }}`. \n- The message should list out documents after addressing them\n- Each document in the slack message should include the {document_name} that is linked to the respective {dashboard_url} and that the document exists in the {folder_name}, which is also linked to the respective {folder_url}. \n\nThen output in a structured JSON output format with the following keys:\n- message\n- dashboard_url\n- folder_url",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are an expert data analyst who is well versed with the dashboards you have built in Omni Analytics Business Intelligence tool. You triage requests from company stakeholders who want to find relevant dashboards in the Omni BI tool."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        0
+      ],
+      "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n          \"type\": \"string\"\n      },\n      \"document_name\": {\n          \"type\": \"string\"\n      },\n      \"scope\": {\n          \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n          \"type\": \"boolean\"\n      },\n      \"folder_id\": {\n          \"type\": \"string\"\n      },\n      \"folder_name\": {\n          \"type\": \"string\"\n      },\n      \"folder_path\": {\n          \"type\": \"string\"\n      }\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1760,
+        240
+      ],
+      "id": "2d22b38a-3f89-47bf-b7b5-155dccfcaf42",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n      \"message\": {\n        \"type\": \"string\"\n      },\n      \"dashboard_url\": {\n        \"type\": \"string\"\n      },\n      \"folder_url\": {\n        \"type\": \"string\"\n      }\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2480,
+        224
+      ],
+      "id": "3d2c3dd2-8853-4d2a-af31-395b981b2cfa",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        336
+      ],
+      "id": "a0ef0bdb-c292-4cdf-a29d-4dfedcc63681",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yw1nLb6Dxz18ENh2",
+          "name": "Gemini - Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
         "model": "o4-mini",
         "options": {
           "responseFormat": "json_object"
@@ -294,35 +362,17 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        1952,
-        80
+        2064,
+        272
       ],
       "id": "735fdd14-681d-4841-897d-58b1c7cb9730",
-      "name": "Azure OpenAI Chat Model1",
+      "name": "Azure o4-mini1",
       "credentials": {
         "azureOpenAiApi": {
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
       }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "You are given several document ",
-        "hasOutputParser": true,
-        "options": {
-          "systemMessage": "You are an expert data analyst who is well versed with the dashboards you have built in Omni Analytics Business Intelligence tool. "
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
-      "position": [
-        1600,
-        0
-      ],
-      "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
-      "name": "AI Agent1"
     }
   ],
   "connections": {
@@ -435,6 +485,50 @@
           }
         ]
       ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Azure o4-mini1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -494,82 +588,51 @@
     "AI Agent": [
       {
         "json": {
+          "output": [
+            {
+              "document_id": "de229002",
+              "document_name": "Customer: Customer Breakdown",
+              "scope": "organization",
+              "has_dashboard": true,
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
+              "folder_name": "Customer Experience",
+              "folder_path": "customer-experience"
+            },
+            {
+              "document_id": "3bd15a19",
+              "document_name": "Overview: Customer Account Engagement ",
+              "scope": "organization",
+              "has_dashboard": true,
+              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
+              "folder_name": "Marketing",
+              "folder_path": "marketing"
+            },
+            {
+              "document_id": "c4d4e6ec",
+              "document_name": "Customer: Research Report",
+              "scope": "organization",
+              "has_dashboard": true,
+              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
+              "folder_name": "Marketing",
+              "folder_path": "marketing"
+            }
+          ]
+        }
+      }
+    ],
+    "AI Agent1": [
+      {
+        "json": {
           "output": {
-            "documents": [
-              {
-                "id": "de229002",
-                "name": "Customer: Customer Breakdown",
-                "owner": "Chuck Morris",
-                "folder": "Customer Experience",
-                "scope": "organization",
-                "queries": [
-                  {
-                    "id": "q_1",
-                    "name": "Customer Count by Segment",
-                    "filters": [
-                      {
-                        "filter_name": "Date Filter",
-                        "operator": "between",
-                        "values": [
-                          "2023-01-01",
-                          "2023-12-31"
-                        ]
-                      },
-                      {
-                        "filter_name": "Segment",
-                        "operator": "in",
-                        "values": [
-                          "Retail",
-                          "Wholesale"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "id": "q_2",
-                    "name": "Customer Revenue by Region",
-                    "filters": [
-                      {
-                        "filter_name": "Date Filter",
-                        "operator": "between",
-                        "values": [
-                          "2023-01-01",
-                          "2023-12-31"
-                        ]
-                      },
-                      {
-                        "filter_name": "Region",
-                        "operator": "in",
-                        "values": [
-                          "North America",
-                          "Europe"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "id": "q_3",
-                    "name": "New vs Returning Customers",
-                    "filters": [
-                      {
-                        "filter_name": "Date Filter",
-                        "operator": "between",
-                        "values": [
-                          "2023-06-01",
-                          "2023-06-30"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+            "message": "Hi Nathan Kwok,\n\nHere are the dashboards you requested:\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> in the <https://cribl.omniapp.co/f/customer-experience|Customer Experience> folder.\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> in the <https://cribl.omniapp.co/f/marketing|Marketing> folder.\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> in the <https://cribl.omniapp.co/f/marketing|Marketing> folder.\n\nLet me know if you need anything else!",
+            "dashboard_url": "https://cribl.omniapp.co/dashboards/de229002, https://cribl.omniapp.co/dashboards/3bd15a19, https://cribl.omniapp.co/dashboards/c4d4e6ec",
+            "folder_url": "https://cribl.omniapp.co/f/customer-experience, https://cribl.omniapp.co/f/marketing"
           }
         }
       }
     ]
   },
-  "versionId": "7cf4ea6a-37c4-400f-a131-dbd113e616ee",
+  "versionId": "eb5a0812-5871-4554-8de4-f8fa35021daa",
   "triggerCount": 1,
   "shared": [
     {
