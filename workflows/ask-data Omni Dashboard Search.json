@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T06:57:22.523Z",
+  "updatedAt": "2025-09-24T08:07:47.122Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -116,7 +116,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        592,
+        176,
         0
       ],
       "id": "af795adf-5242-4155-ba03-29e0ebe3feb9",
@@ -186,7 +186,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1392,
+        1600,
         400
       ],
       "id": "b4a77a1c-2d31-4929-bc49-8f86d3ad408f",
@@ -212,7 +212,7 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.2,
       "position": [
-        1584,
+        1792,
         352
       ],
       "id": "d7066b20-a3bd-488a-a693-2fa3b4955056",
@@ -236,7 +236,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        912,
+        496,
         0
       ],
       "id": "bf957f8a-c5a3-47cc-83d5-6cec5c9049c2",
@@ -255,7 +255,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        1296,
+        1504,
         0
       ],
       "id": "e1bb31d5-9392-42ca-8f5a-2ab313d56474",
@@ -275,7 +275,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        2128,
+        2336,
         -16
       ],
       "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
@@ -291,7 +291,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        1008,
+        1216,
         288
       ],
       "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
@@ -311,7 +311,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1184,
+        1392,
         352
       ],
       "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
@@ -331,7 +331,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        1744,
+        1952,
         288
       ],
       "id": "2d22b38a-3f89-47bf-b7b5-155dccfcaf42",
@@ -347,7 +347,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        2000,
+        2208,
         272
       ],
       "id": "735fdd14-681d-4841-897d-58b1c7cb9730",
@@ -367,7 +367,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        2176,
+        2384,
         336
       ],
       "id": "a0ef0bdb-c292-4cdf-a29d-4dfedcc63681",
@@ -387,7 +387,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        2368,
+        2576,
         272
       ],
       "id": "3d2c3dd2-8853-4d2a-af31-395b981b2cfa",
@@ -430,8 +430,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        528,
-        272
+        112,
+        336
       ],
       "typeVersion": 1,
       "id": "3fdeea68-f5ea-4200-9b9b-cc64332bb4ae",
@@ -458,7 +458,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2896,
+        3104,
         160
       ],
       "id": "c25b8c3c-0247-4ef2-9c97-e52ac452a04a",
@@ -486,7 +486,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2896,
+        3104,
         -32
       ],
       "id": "c0d3731e-f549-4aa2-8629-ef32ef9f8b2b",
@@ -540,7 +540,7 @@
     },
     {
       "parameters": {
-        "content": "## Features\n- filter by user who emoji'ed?\nalec U050E77CEQP\nnathan U06PVBEK9T6\npriya U02CBV3GSM9\nlaura U0544ACG6SV\nmatt U073M1QH10R\nrebecca U099VNZAC3D\njerome U07KD0478CQ\n\n\n\n- filter by person access\n",
+        "content": "## Features\n- filter by user who emoji'ed?\nalec U050E77CEQP\nnathan U06PVBEK9T6\npriya U02CBV3GSM9\nlaura U0544ACG6SV\nmatt U073M1QH10R\nrebecca U099VNZAC3D\njerome U07KD0478CQ\n\nhttps://www.productcompass.pm/p/n8n-mcp-servers-uv\n\n\n\n- filter by person access\n",
         "height": 240,
         "width": 304
       },
@@ -552,6 +552,140 @@
       "typeVersion": 1,
       "id": "ef745caf-f66e-49fc-9cff-e8a6a30bbd32",
       "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "34f62621-bbc6-440f-9649-b2674781316b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        640,
+        272
+      ],
+      "id": "dd25de47-5a5e-4794-9380-abfbe4e2744a",
+      "name": "Cortex Agent o4-mini1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Pick the most relevant topic given a prompt",
+        "operation": "executeTool",
+        "toolName": "pickTopic",
+        "toolParameters": "={\n  \"prompt\": {{ $('Global Vars').item.json.body.message.toJsonString() }}\n}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        976,
+        288
+      ],
+      "id": "0a10b129-cd0b-47cf-9c05-11bf318f9a45",
+      "name": "MCP Client",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "kMRMyV2LFwcMJYnq",
+          "name": "Omni MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "find a topic for this question: \nHi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1936,
+        -1584
+      ],
+      "id": "5bf52d99-fba6-409e-9e67-55b7a6768c97",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -1312
+      ],
+      "id": "cf1c2b39-14c1-4291-b648-129b63bd5f20",
+      "name": "Cortex Agent o4-mini2",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Pick the most relevant topic given a prompt",
+        "operation": "executeTool",
+        "toolName": "pickTopic",
+        "toolParameters": "={\n  \"prompt\": \"Hi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?\"\n}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        2304,
+        -1312
+      ],
+      "id": "62dc741f-4c45-49d0-9558-eb0088ce8454",
+      "name": "MCP Client1",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "kMRMyV2LFwcMJYnq",
+          "name": "Omni MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "list context7 tools"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        2096,
+        -1376
+      ],
+      "id": "0a8a0450-d898-40e0-a741-a9067360d8fd",
+      "name": "MCP Client2",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "M6ypncUh4MKAMkeD",
+          "name": "context7 MCP"
+        }
+      }
     }
   ],
   "connections": {
@@ -625,7 +759,7 @@
       "main": [
         [
           {
-            "node": "Cortex Agents",
+            "node": "AI Agent",
             "type": "main",
             "index": 0
           }
@@ -731,6 +865,72 @@
       "ai_outputParser": [
         []
       ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Cortex Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Agent o4-mini1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Agent o4-mini2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -741,40 +941,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Global Vars": [
-      {
-        "json": {
-          "body": {
-            "channel_id": "C0912AANW1L",
-            "channel_name": "data-eng-test-ai-channel",
-            "conversation_id": "C0912AANW1L",
-            "message": "customer breakdown",
-            "message_ts": "1758666589.914119",
-            "user_email": "nkwok@cribl.io",
-            "user_first_name": "Nathan",
-            "user_last_name": "Kwok",
-            "user_name": "nathan_kwok"
-          },
-          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
-          "omni_documents_search_service": {
-            "snowflake_database": "ANALYTICS_DEV",
-            "snowflake_schema": "DEV_OMNI",
-            "service_name": "omni_documents_search_service_dev"
-          },
-          "omni_documents_analyst_agent": {
-            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
-            "snowflake_schema": "AGENTS",
-            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
-          },
-          "zapier_slack_response_webhook": {
-            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
-          },
-          "slack": {
-            "error_message": "The Omni agent could not find relevant dashboards :cry:"
-          }
-        }
-      }
-    ],
     "Response Agent": [
       {
         "json": {
@@ -852,9 +1018,44 @@
           "executionMode": "test"
         }
       }
+    ],
+    "Global Vars": [
+      {
+        "json": {
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "emoji_user_id": "U06PVBEK9T6",
+            "message": "Hi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?",
+            "message_ts": "1758696971.562899",
+            "user_email": "nkwok@cribl.io",
+            "user_first_name": "Nathan",
+            "user_last_name": "Kwok",
+            "user_name": "nathan_kwok"
+          },
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS_DEV",
+            "snowflake_schema": "DEV_OMNI",
+            "service_name": "omni_documents_search_service_dev"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          }
+        }
+      }
     ]
   },
-  "versionId": "cd111044-c063-4e78-a574-ab9c1505f04d",
+  "versionId": "04045e0c-34ef-46ea-b381-13f9868e0ddf",
   "triggerCount": 1,
   "shared": [
     {
