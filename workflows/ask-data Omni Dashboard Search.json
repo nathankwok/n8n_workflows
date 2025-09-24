@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T02:35:21.322Z",
+  "updatedAt": "2025-09-24T06:57:22.523Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -492,6 +492,66 @@
       "id": "c0d3731e-f549-4aa2-8629-ef32ef9f8b2b",
       "name": "Send Slack Success Message",
       "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "# Top down\n- extract key words from message\n- use key words to search similarly named document names\n- using document_ids, find their associated document query names\n  - validate that the query names are similar to key words and to the message\n\n- using document_ids, find their associated document query filters\n  - validate that list of document query filters are similar to key words and to the message\n\n- do for every document \n",
+        "height": 368,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "666609a9-91d9-4c7f-9c39-73add36a3fb7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Bottoms Up\n- extract key words from message\n- use key words to search similarly named document query filters\n- get the list of document query filters and find the document queries associated with them\n  - validate that the query names are similar to key words and to the message\n\n- from the list of document query filters, get their associated documents\n  - validate that list of document names are similar to key words and to the message\n\n\n",
+        "height": 368,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1984,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "e4452b91-d830-48ce-b2e7-1959295db4ef",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# ask-data questions\nhttps://cribl.slack.com/archives/C02GRDZS7QF/p1758010156612549\n\nhttps://cribl.slack.com/archives/C02GRDZS7QF/p1758008040422269\n\nhttps://cribl.slack.com/archives/C02GRDZS7QF/p1757955122490669\n\nhttps://cribl.slack.com/archives/C02GRDZS7QF/p1758039148424459\n\nhttps://cribl.slack.com/archives/C02GRDZS7QF/p1758036683995729\n\n",
+        "height": 352,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        -912
+      ],
+      "typeVersion": 1,
+      "id": "e4e24b19-dc89-4195-84b7-53e477fc10b3",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Features\n- filter by user who emoji'ed?\nalec U050E77CEQP\nnathan U06PVBEK9T6\npriya U02CBV3GSM9\nlaura U0544ACG6SV\nmatt U073M1QH10R\nrebecca U099VNZAC3D\njerome U07KD0478CQ\n\n\n\n- filter by person access\n",
+        "height": 240,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2336,
+        -896
+      ],
+      "typeVersion": 1,
+      "id": "ef745caf-f66e-49fc-9cff-e8a6a30bbd32",
+      "name": "Sticky Note5"
     }
   ],
   "connections": {
@@ -681,42 +741,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "connection": "upgrade",
-            "host": "agenticflows.xyz",
-            "x-real-ip": "3.234.214.134",
-            "x-forwarded-for": "3.234.214.134",
-            "x-forwarded-proto": "https",
-            "x-forwarded-host": "agenticflows.xyz",
-            "x-forwarded-port": "443",
-            "content-length": "273",
-            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
-            "content-type": "application/json; charset=utf-8",
-            "user-agent": "Zapier",
-            "accept": "*/*",
-            "accept-encoding": "gzip,deflate"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "channel_id": "C0912AANW1L",
-            "channel_name": "data-eng-test-ai-channel",
-            "conversation_id": "C0912AANW1L",
-            "message": "customer breakdown",
-            "message_ts": "1758666589.914119",
-            "user_email": "nkwok@cribl.io",
-            "user_first_name": "Nathan",
-            "user_last_name": "Kwok",
-            "user_name": "nathan_kwok"
-          },
-          "webhookUrl": "https://agenticflows.xyz/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc",
-          "executionMode": "test"
-        }
-      }
-    ],
     "Global Vars": [
       {
         "json": {
@@ -791,9 +815,46 @@
           ]
         }
       }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "agenticflows.xyz",
+            "x-real-ip": "34.237.75.253",
+            "x-forwarded-for": "34.237.75.253",
+            "x-forwarded-proto": "https",
+            "x-forwarded-host": "agenticflows.xyz",
+            "x-forwarded-port": "443",
+            "content-length": "403",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "content-type": "application/json; charset=utf-8",
+            "user-agent": "Zapier",
+            "accept": "*/*",
+            "accept-encoding": "gzip,deflate"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "emoji_user_id": "U06PVBEK9T6",
+            "message": "Hi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?",
+            "message_ts": "1758696971.562899",
+            "user_email": "nkwok@cribl.io",
+            "user_first_name": "Nathan",
+            "user_last_name": "Kwok",
+            "user_name": "nathan_kwok"
+          },
+          "webhookUrl": "https://agenticflows.xyz/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc",
+          "executionMode": "test"
+        }
+      }
     ]
   },
-  "versionId": "e54e5ce6-9fe3-4a01-9c5e-af851552e64d",
+  "versionId": "cd111044-c063-4e78-a574-ab9c1505f04d",
   "triggerCount": 1,
   "shared": [
     {
