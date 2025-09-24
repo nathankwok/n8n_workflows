@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T08:07:47.122Z",
+  "updatedAt": "2025-09-24T12:01:28.126Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -647,36 +647,13 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Pick the most relevant topic given a prompt",
-        "operation": "executeTool",
-        "toolName": "pickTopic",
-        "toolParameters": "={\n  \"prompt\": \"Hi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?\"\n}"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        2304,
-        -1312
-      ],
-      "id": "62dc741f-4c45-49d0-9558-eb0088ce8454",
-      "name": "MCP Client1",
-      "credentials": {
-        "mcpClientApi": {
-          "id": "kMRMyV2LFwcMJYnq",
-          "name": "Omni MCP"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "descriptionType": "manual",
         "toolDescription": "list context7 tools"
       },
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2096,
-        -1376
+        2000,
+        -1312
       ],
       "id": "0a8a0450-d898-40e0-a741-a9067360d8fd",
       "name": "MCP Client2",
@@ -684,6 +661,82 @@
         "mcpClientApi": {
           "id": "M6ypncUh4MKAMkeD",
           "name": "context7 MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeTool",
+        "toolName": "resolve-library-id",
+        "toolParameters": "={\n  \"libraryName\": \"omni_co\"\n}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        -1152
+      ],
+      "id": "a431647f-5a88-4d56-970d-77c096f6199b",
+      "name": "MCP Client4",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "M6ypncUh4MKAMkeD",
+          "name": "context7 MCP"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        -1312
+      ],
+      "id": "5eed0550-096c-4893-b5e0-5fedf7d98f0c",
+      "name": "MCP Client Higher Timeout",
+      "credentials": {
+        "mcpClientApiHigherTimeoutApi": {
+          "id": "IvnAYTBjDjbAa86K",
+          "name": "Omni MCP Higher Timeout"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeTool",
+        "toolName": "pickTopic",
+        "toolParameters": "{\n  \"prompt\": \"customer breakdown\"\n}"
+      },
+      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        -1184
+      ],
+      "id": "edb1e4da-d3a6-43f2-8dd6-42b8b78aea2c",
+      "name": "MCP Client Higher Timeout1",
+      "credentials": {
+        "mcpClientApiHigherTimeoutApi": {
+          "id": "IvnAYTBjDjbAa86K",
+          "name": "Omni MCP Higher Timeout"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        -1296
+      ],
+      "id": "62e81a1a-ceee-4343-b359-002cb9808b4b",
+      "name": "MCP Client Higher Timeout2",
+      "credentials": {
+        "mcpClientApiHigherTimeoutApi": {
+          "id": "ihg80kI7OIJH3Ee4",
+          "name": "Clear Thought"
         }
       }
     }
@@ -910,7 +963,7 @@
         ]
       ]
     },
-    "MCP Client1": {
+    "MCP Client2": {
       "ai_tool": [
         [
           {
@@ -921,7 +974,40 @@
         ]
       ]
     },
-    "MCP Client2": {
+    "MCP Client4": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client Higher Timeout": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client Higher Timeout1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client Higher Timeout2": {
       "ai_tool": [
         [
           {
@@ -1055,7 +1141,7 @@
       }
     ]
   },
-  "versionId": "04045e0c-34ef-46ea-b381-13f9868e0ddf",
+  "versionId": "d2feb979-d959-4c7a-ac62-053d8664f4c7",
   "triggerCount": 1,
   "shared": [
     {
