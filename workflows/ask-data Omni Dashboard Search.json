@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-23T22:34:10.481Z",
+  "updatedAt": "2025-09-24T00:31:48.886Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -14,8 +14,8 @@
       "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
       "typeVersion": 2,
       "position": [
-        0,
-        0
+        640,
+        -864
       ],
       "id": "d6119acc-bdaa-48ea-a63c-44fa9bc8120e",
       "name": "MCP Server Trigger",
@@ -37,8 +37,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        -48,
-        464
+        592,
+        -400
       ],
       "id": "80dc83f2-bc74-4374-8bbb-90945747be0f",
       "name": "Azure OpenAI Chat Model",
@@ -59,8 +59,8 @@
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "typeVersion": 2.2,
       "position": [
-        64,
-        240
+        704,
+        -624
       ],
       "id": "185f8237-2808-43d3-b2ac-e47160384138",
       "name": "Omni Dashboard Discovery",
@@ -84,8 +84,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.2,
       "position": [
-        320,
-        464
+        960,
+        -400
       ],
       "id": "ca85f5ca-3561-4c18-96bd-cd39b57c7a87",
       "name": "HTTP Request",
@@ -102,13 +102,21 @@
         "httpMethod": "POST",
         "path": "8394a134-6af3-4ec0-b605-3270129037cc",
         "authentication": "basicAuth",
-        "responseMode": "responseNode",
-        "options": {}
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        704,
+        592,
         0
       ],
       "id": "af795adf-5242-4155-ba03-29e0ebe3feb9",
@@ -124,46 +132,6 @@
     },
     {
       "parameters": {
-        "model": "o4-mini",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-      "typeVersion": 1,
-      "position": [
-        1024,
-        288
-      ],
-      "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
-      "name": "Azure o4-mini",
-      "credentials": {
-        "azureOpenAiApi": {
-          "id": "owGiNLHIZQGtrPG1",
-          "name": "Azure Open AI o4-mini"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.5-pro",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1184,
-        368
-      ],
-      "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
-      "name": "Gemini 2.5 Pro",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "yw1nLb6Dxz18ENh2",
-          "name": "Gemini - Cribl"
-        }
-      }
-    },
-    {
-      "parameters": {
         "description": "Snowflake Cortex Analyst tool to find relevant documents, document queries, and document query filters using SQL",
         "workflowId": {
           "__rl": true,
@@ -174,8 +142,9 @@
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "message": "={{ $('Global Vars').item.json.message }}",
-            "snowflake_base_url": "={{ $('Global Vars').item.json.snowflake_base_url }}"
+            "message": "={{ $('Global Vars').item.json.body.message }}",
+            "snowflake_base_url": "={{ $('Global Vars').item.json.snowflake_base_url }}",
+            "omni_documents_analyst_agent": "={{ $('Global Vars').item.json.omni_documents_analyst_agent }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -197,6 +166,16 @@
               "display": true,
               "canBeUsedToMatch": true,
               "type": "string",
+              "removed": false
+            },
+            {
+              "id": "omni_documents_analyst_agent",
+              "displayName": "omni_documents_analyst_agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
               "removed": false
             }
           ],
@@ -226,7 +205,7 @@
         "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('Webhook').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequestTool",
@@ -247,16 +226,16 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS_DEV\",\n    \"snowflake_schema\": \"DEV_OMNI\",\n    \"service_name\": \"omni_documents_search_service_dev\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  }\n}",
+        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS_DEV\",\n    \"snowflake_schema\": \"DEV_OMNI\",\n    \"service_name\": \"omni_documents_search_service_dev\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  }\n}",
         "includeOtherFields": true,
         "include": "selected",
-        "includeFields": "message, body.message",
+        "includeFields": "body",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1024,
+        912,
         0
       ],
       "id": "bf957f8a-c5a3-47cc-83d5-6cec5c9049c2",
@@ -265,7 +244,27 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are given several documents (outputs) in a JSON here:\n```json\n {{ $json.output.toJsonString() }}\n```\nGo through each one of the documents to filter out ones that have has_dashboard=false . \n\nThen extract out the fields from each output.\n- Use the document_id to craft a dashboard_url https://cribl.omniapp.co/dashboards/{document_id} \n- Use the folder_path to craft a folder_url like https://cribl.omniapp.co/f/{folder_path}\n\nThen craft a well formatted slack_message in the tone of a helpful data analyst, using each output document. \n- The message should address the user `{{ $('Webhook').item.json.body.user_first_name }} {{ $('Webhook').item.json.body.user_last_name }}`. \n- The message should list out documents after addressing them\n- Each document in the slack message should include the {document_name} that is linked to the respective {dashboard_url} and that the document exists in the {folder_name}, which is also linked to the respective {folder_url}. \n\nFInally, output in a structured JSON output format with the following keys:\n- message\n- dashboard_urls\n- folder_urls\n\nThe resulting output JSON should be something like this:\n```json\n{\n  \"message\": \"formatted slack message\",\n  \"dashboard_url\": [\n    \"dashboard_url_1\",\n    \"dashboard_url_2\"\n  ],\n  \"folder_urls\": [\n    \"folder_url_1\",\n    \"folder_url_2\"\n  ]\n}",
+        "text": "=You must use both the Snowflake Cortex Search Service and the Snowflake Cortex Analyst tools to find the best document that would answer this request:\n{{ $json.body.message }}\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are an expert data analyst who has built many dashboards in the Omni Analytics tool, which is a business intelligence tool, that sits on top of Snowflake data through dbt. You triage natural language queries from Stakeholders within the company in order to find the best dashboard (otherwise known as document) to answer the question. Documents, also known as dashboards, are parents of document queries, which are individual queries that run against the data within the parent document. Metadata on the documents and document queries and document query filters are stored in Snowflake and can be accessed through the Cortex Search Service and the Cortex Analyst tools."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "e1bb31d5-9392-42ca-8f5a-2ab313d56474",
+      "name": "Cortex Agents",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are given several documents (outputs) in a JSON here:\n```json\n {{ $json.output.toJsonString() }}\n```\nGo through each one of the documents to filter out ones that have has_dashboard=false . \n\nThen extract out the fields from each output.\n- Use the document_id to craft a dashboard_url https://cribl.omniapp.co/dashboards/{document_id} \n- Use the folder_path to craft a folder_url like https://cribl.omniapp.co/f/{folder_path}\n\nThen craft a well formatted slack_message in the tone of a helpful data analyst, using each output document. The message should:\n- tag the user's username, which is `{{ $('Global Vars').item.json.body.user_name }}`. \n- address their original request, which was `{{ $('Global Vars').item.json.body.message }}`\n- should not write word-for-word their original request but instead should extract key words from their request to use to summarize what their original request might be related to \n- say that these dashboards might contain what they need.\n- should list out documents after addressing them.\n- Each document in the slack message should include the {document_name} that is linked to the respective {dashboard_url} and that the document exists in the {folder_name}, which is also linked to the respective {folder_url}.\n- should not include any notes about helping further.\n\nFinally, output in a structured JSON output format with the following keys:\n- message\n- dashboard_urls\n- folder_urls\n\nThe resulting output JSON should be something like this:\n```json\n{\n  \"message\": \"formatted slack message\",\n  \"dashboard_url\": [\n    \"dashboard_url_1\",\n    \"dashboard_url_2\"\n  ],\n  \"folder_urls\": [\n    \"folder_url_1\",\n    \"folder_url_2\"\n  ]\n}",
         "hasOutputParser": true,
         "needsFallback": true,
         "options": {
@@ -275,11 +274,53 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        2192,
-        0
+        2128,
+        -16
       ],
       "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
-      "name": "AI Agent1"
+      "name": "Response Agent",
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        352
+      ],
+      "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
+      "name": "Cortex Agent o4-mini",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        992,
+        288
+      ],
+      "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
+      "name": "Cortex Agent Gemini 2.5 Pro",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yw1nLb6Dxz18ENh2",
+          "name": "Gemini - Cribl"
+        }
+      }
     },
     {
       "parameters": {
@@ -293,41 +334,7 @@
         288
       ],
       "id": "2d22b38a-3f89-47bf-b7b5-155dccfcaf42",
-      "name": "Structured Output Parser"
-    },
-    {
-      "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n      \"message\": {\n        \"type\": \"string\"\n      },\n      \"dashboard_urls\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      },\n      \"folder_urls\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      }\n\t}\n}"
-      },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
-      "position": [
-        2480,
-        224
-      ],
-      "id": "3d2c3dd2-8853-4d2a-af31-395b981b2cfa",
-      "name": "Structured Output Parser1"
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.5-pro",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        2208,
-        336
-      ],
-      "id": "a0ef0bdb-c292-4cdf-a29d-4dfedcc63681",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "yw1nLb6Dxz18ENh2",
-          "name": "Gemini - Cribl"
-        }
-      }
+      "name": "Cortex Agent Structured Output Parser"
     },
     {
       "parameters": {
@@ -339,11 +346,11 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        2064,
+        2000,
         272
       ],
       "id": "735fdd14-681d-4841-897d-58b1c7cb9730",
-      "name": "Azure o4-mini1",
+      "name": "Response Agent o4-mini",
       "credentials": {
         "azureOpenAiApi": {
           "id": "owGiNLHIZQGtrPG1",
@@ -353,35 +360,137 @@
     },
     {
       "parameters": {
+        "modelName": "models/gemini-2.5-pro",
         "options": {}
       },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
       "position": [
-        2960,
-        0
+        2176,
+        336
       ],
-      "id": "cb88c27f-6e98-4eca-9852-63fe5ef1ba96",
-      "name": "Respond to Webhook"
+      "id": "a0ef0bdb-c292-4cdf-a29d-4dfedcc63681",
+      "name": "Response Agent Gemini 2.5 Pro",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yw1nLb6Dxz18ENh2",
+          "name": "Gemini - Cribl"
+        }
+      }
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "=You must use both the Snowflake Cortex Search Service and the Snowflake Cortex Analyst tools to find the best document that would answer this request:\n{{ $json.message }}\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
-        "hasOutputParser": true,
-        "needsFallback": true,
-        "options": {
-          "systemMessage": "You are an expert data analyst who has built many dashboards in the Omni Analytics tool, which is a business intelligence tool, that sits on top of Snowflake data through dbt. You triage natural language queries from Stakeholders within the company in order to find the best dashboard (otherwise known as document) to answer the question. Documents, also known as dashboards, are parents of document queries, which are individual queries that run against the data within the parent document. Metadata on the documents and document queries and document query filters are stored in Snowflake and can be accessed through the Cortex Search Service and the Cortex Analyst tools."
-        }
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n      \"message\": {\n        \"type\": \"string\"\n      },\n      \"dashboard_urls\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      },\n      \"folder_urls\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      }\n\t}\n}"
       },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
       "position": [
-        1248,
-        0
+        2368,
+        272
       ],
-      "id": "e1bb31d5-9392-42ca-8f5a-2ab313d56474",
-      "name": "Cortex Search"
+      "id": "3d2c3dd2-8853-4d2a-af31-395b981b2cfa",
+      "name": "Response Agent Structured Output Parser",
+      "notesInFlow": true,
+      "notes": "Success path"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"array\"\t\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        272
+      ],
+      "id": "5b6d9d94-2154-4c7e-9835-d07a2d369f73",
+      "name": "Response Agent Structured Output Parser1",
+      "notesInFlow": true,
+      "notes": "Error path"
+    },
+    {
+      "parameters": {
+        "content": "filter for if has error? \nrest of output might still be good? \nerror message send to slack at all? "
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2832,
+        352
+      ],
+      "typeVersion": 1,
+      "id": "ddd23fd4-b47f-4d7c-b576-cf8ea9a35611",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Need to search for who started the message, not just the user who emoji'ed. or dont tag user."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        528,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "3fdeea68-f5ea-4200-9b9b-cc64332bb4ae",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"output\": {{ $json.output.toJsonString() }},\n  \"body\": {{ $('Global Vars').item.json.body.toJsonString() }},\n  \"message\": {{ $('Global Vars').item.json.slack.error_message.toJsonString() }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2896,
+        160
+      ],
+      "id": "c25b8c3c-0247-4ef2-9c97-e52ac452a04a",
+      "name": "Send Slack Error Message",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"output\": {{ $json.output.toJsonString() }},\n  \"body\": {{ $('Global Vars').item.json.body.toJsonString() }},\n  \"message\": {{ $json.output.message.toJsonString() }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2896,
+        -32
+      ],
+      "id": "c0d3731e-f549-4aa2-8629-ef32ef9f8b2b",
+      "name": "Send Slack Success Message",
+      "alwaysOutputData": false
     }
   ],
   "connections": {
@@ -429,33 +538,11 @@
         ]
       ]
     },
-    "Azure o4-mini": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Cortex Search",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gemini 2.5 Pro": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Cortex Search",
-            "type": "ai_languageModel",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "Snowflake Cortex Analyst": {
       "ai_tool": [
         [
           {
-            "node": "Cortex Search",
+            "node": "Cortex Agents",
             "type": "ai_tool",
             "index": 0
           }
@@ -466,7 +553,7 @@
       "ai_tool": [
         [
           {
-            "node": "Cortex Search",
+            "node": "Cortex Agents",
             "type": "ai_tool",
             "index": 0
           }
@@ -477,77 +564,111 @@
       "main": [
         [
           {
-            "node": "Cortex Search",
+            "node": "Cortex Agents",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Structured Output Parser": {
-      "ai_outputParser": [
+    "Cortex Agents": {
+      "main": [
         [
           {
-            "node": "Cortex Search",
-            "type": "ai_outputParser",
+            "node": "Response Agent",
+            "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Structured Output Parser1": {
-      "ai_outputParser": [
+    "Response Agent": {
+      "main": [
         [
           {
-            "node": "AI Agent1",
-            "type": "ai_outputParser",
+            "node": "Send Slack Success Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Slack Error Message",
+            "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Gemini Chat Model": {
+    "Cortex Agent o4-mini": {
       "ai_languageModel": [
         [
           {
-            "node": "AI Agent1",
+            "node": "Cortex Agents",
             "type": "ai_languageModel",
             "index": 1
           }
         ]
       ]
     },
-    "Azure o4-mini1": {
+    "Cortex Agent Gemini 2.5 Pro": {
       "ai_languageModel": [
         [
           {
-            "node": "AI Agent1",
+            "node": "Cortex Agents",
             "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "AI Agent1": {
-      "main": [
+    "Cortex Agent Structured Output Parser": {
+      "ai_outputParser": [
         [
           {
-            "node": "Respond to Webhook",
-            "type": "main",
+            "node": "Cortex Agents",
+            "type": "ai_outputParser",
             "index": 0
           }
         ]
       ]
     },
-    "Cortex Search": {
-      "main": [
+    "Response Agent o4-mini": {
+      "ai_languageModel": [
         [
           {
-            "node": "AI Agent1",
-            "type": "main",
+            "node": "Response Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
+      ]
+    },
+    "Response Agent Gemini 2.5 Pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Response Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Response Agent Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Response Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Agent Structured Output Parser1": {
+      "ai_outputParser": [
+        []
       ]
     }
   },
@@ -565,12 +686,12 @@
           "headers": {
             "connection": "upgrade",
             "host": "agenticflows.xyz",
-            "x-real-ip": "18.232.51.165",
-            "x-forwarded-for": "18.232.51.165",
+            "x-real-ip": "3.234.214.134",
+            "x-forwarded-for": "3.234.214.134",
             "x-forwarded-proto": "https",
             "x-forwarded-host": "agenticflows.xyz",
             "x-forwarded-port": "443",
-            "content-length": "247",
+            "content-length": "273",
             "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
             "content-type": "application/json; charset=utf-8",
             "user-agent": "Zapier",
@@ -584,10 +705,11 @@
             "channel_name": "data-eng-test-ai-channel",
             "conversation_id": "C0912AANW1L",
             "message": "customer breakdown",
-            "message_ts": "1758612094.293819",
+            "message_ts": "1758666589.914119",
             "user_email": "nkwok@cribl.io",
             "user_first_name": "Nathan",
-            "user_last_name": "Kwok"
+            "user_last_name": "Kwok",
+            "user_name": "nathan_kwok"
           },
           "webhookUrl": "https://agenticflows.xyz/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc",
           "executionMode": "test"
@@ -597,7 +719,17 @@
     "Global Vars": [
       {
         "json": {
-          "message": "customer breakdown",
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "message": "customer breakdown",
+            "message_ts": "1758666589.914119",
+            "user_email": "nkwok@cribl.io",
+            "user_first_name": "Nathan",
+            "user_last_name": "Kwok",
+            "user_name": "nathan_kwok"
+          },
           "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
           "omni_documents_search_service": {
             "snowflake_database": "ANALYTICS_DEV",
@@ -608,11 +740,17 @@
             "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
             "snowflake_schema": "AGENTS",
             "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
           }
         }
       }
     ],
-    "Cortex Search": [
+    "Cortex Agents": [
       {
         "json": {
           "output": [
@@ -627,7 +765,7 @@
             },
             {
               "document_id": "3bd15a19",
-              "document_name": "Overview: Customer Account Engagement",
+              "document_name": "Overview: Customer Account Engagement ",
               "scope": "organization",
               "has_dashboard": true,
               "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
@@ -647,11 +785,11 @@
         }
       }
     ],
-    "AI Agent1": [
+    "Response Agent": [
       {
         "json": {
           "output": {
-            "message": "Hey Nathan Kwok,\n\nHere are the dashboards you requested:\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> in <https://cribl.omniapp.co/f/customer-experience|Customer Experience>\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> in <https://cribl.omniapp.co/f/marketing|Marketing>\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> in <https://cribl.omniapp.co/f/marketing|Marketing>\n\nLet me know if you need anything else!",
+            "message": "Hey <@nathan_kwok>,\n\nI found a few dashboards focusing on customer breakdown that might contain what you need:\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> is in the <https://cribl.omniapp.co/f/customer-experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> is in the <https://cribl.omniapp.co/f/marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> is in the <https://cribl.omniapp.co/f/marketing|Marketing> folder",
             "dashboard_urls": [
               "https://cribl.omniapp.co/dashboards/de229002",
               "https://cribl.omniapp.co/dashboards/3bd15a19",
@@ -659,7 +797,6 @@
             ],
             "folder_urls": [
               "https://cribl.omniapp.co/f/customer-experience",
-              "https://cribl.omniapp.co/f/marketing",
               "https://cribl.omniapp.co/f/marketing"
             ]
           }
@@ -667,7 +804,7 @@
       }
     ]
   },
-  "versionId": "6aecda92-2e60-4a45-bcf2-388f274ad2c7",
+  "versionId": "e5382752-efdd-497b-b376-9a6faadcc34f",
   "triggerCount": 1,
   "shared": [
     {
