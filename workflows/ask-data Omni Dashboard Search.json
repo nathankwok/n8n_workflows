@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T12:01:28.126Z",
+  "updatedAt": "2025-09-24T21:34:46.742Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -227,7 +227,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS_DEV\",\n    \"snowflake_schema\": \"DEV_OMNI\",\n    \"service_name\": \"omni_documents_search_service_dev\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  }\n}",
+        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS_DEV\",\n    \"snowflake_schema\": \"DEV_OMNI\",\n    \"service_name\": \"omni_documents_search_service_dev\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  }\n}",
         "includeOtherFields": true,
         "include": "selected",
         "includeFields": "body",
@@ -555,190 +555,171 @@
     },
     {
       "parameters": {
+        "content": "# Infra Cleanup\n\n/home/nathankwok/n8n_deployment contains the working dir of n8n\n\nget rid of /home/nathankwok/n8n_deployment/temp_deployment_copy . its just a copy of the working dir\n\n/home/nathankwok/n8n_deployment/temp_deploy.sh tries to deploy with references to the temp_deployment_copy dir\n\ncheck is deploy-n8n-supabase.sh also references temp dir\n\n\n",
+        "height": 432,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "363490c5-fc3a-4a8e-8035-eba6fda4649d",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.omni.omni_base_url }}/api/v1/ai/pick-topic",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"modelId\": \"{{ $json.omni.model_id }}\",\n  \"prompt\": \"{{ $json.body.message }}\"\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        832,
-        0
+        1280,
+        768
       ],
-      "id": "34f62621-bbc6-440f-9649-b2674781316b",
-      "name": "AI Agent"
+      "id": "767ef424-1859-4a37-a5f3-46e1679c05e5",
+      "name": "Omni PickTopic API Request 0",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "qgd1tz9uaILvjXIu",
+          "name": "Omni API"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "model": "o4-mini",
+        "method": "POST",
+        "url": "={{ $json.omni.omni_base_url }}/api/v1/ai/pick-topic",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"modelId\": \"{{ $json.omni.model_id }}\",\n  \"prompt\": \"{{ $json.body.message }}\"\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        640,
-        272
+        1280,
+        976
       ],
-      "id": "dd25de47-5a5e-4794-9380-abfbe4e2744a",
-      "name": "Cortex Agent o4-mini1",
+      "id": "57c63bf1-ade2-490e-91f2-8dcbd60a4766",
+      "name": "Omni PickTopic API Request 1",
+      "executeOnce": false,
+      "alwaysOutputData": true,
       "credentials": {
-        "azureOpenAiApi": {
-          "id": "owGiNLHIZQGtrPG1",
-          "name": "Azure Open AI o4-mini"
+        "httpBearerAuth": {
+          "id": "qgd1tz9uaILvjXIu",
+          "name": "Omni API"
         }
-      }
-    },
-    {
-      "parameters": {
-        "descriptionType": "manual",
-        "toolDescription": "Pick the most relevant topic given a prompt",
-        "operation": "executeTool",
-        "toolName": "pickTopic",
-        "toolParameters": "={\n  \"prompt\": {{ $('Global Vars').item.json.body.message.toJsonString() }}\n}"
       },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        976,
-        288
-      ],
-      "id": "0a10b129-cd0b-47cf-9c05-11bf318f9a45",
-      "name": "MCP Client",
-      "credentials": {
-        "mcpClientApi": {
-          "id": "kMRMyV2LFwcMJYnq",
-          "name": "Omni MCP"
-        }
-      }
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "find a topic for this question: \nHi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?",
+        "method": "POST",
+        "url": "={{ $json.omni.omni_base_url }}/api/v1/ai/pick-topic",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"modelId\": \"{{ $json.omni.model_id }}\",\n  \"prompt\": \"{{ $json.body.message }}\"\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        1936,
-        -1584
+        1280,
+        1200
       ],
-      "id": "5bf52d99-fba6-409e-9e67-55b7a6768c97",
-      "name": "AI Agent1"
+      "id": "212c7037-a962-4ec1-bd2b-a18078409ffc",
+      "name": "Omni PickTopic API Request 2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "qgd1tz9uaILvjXIu",
+          "name": "Omni API"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "model": "o4-mini",
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1696,
+        960
+      ],
+      "id": "fedc8e06-1d7f-481f-a54b-2d50bbf79e29",
+      "name": "Merge",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "topicName",
+              "renameField": true,
+              "outputFieldName": "topic_name"
+            }
+          ]
+        },
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1744,
-        -1312
+        1920,
+        976
       ],
-      "id": "cf1c2b39-14c1-4291-b648-129b63bd5f20",
-      "name": "Cortex Agent o4-mini2",
-      "credentials": {
-        "azureOpenAiApi": {
-          "id": "owGiNLHIZQGtrPG1",
-          "name": "Azure Open AI o4-mini"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "descriptionType": "manual",
-        "toolDescription": "list context7 tools"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        2000,
-        -1312
-      ],
-      "id": "0a8a0450-d898-40e0-a741-a9067360d8fd",
-      "name": "MCP Client2",
-      "credentials": {
-        "mcpClientApi": {
-          "id": "M6ypncUh4MKAMkeD",
-          "name": "context7 MCP"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeTool",
-        "toolName": "resolve-library-id",
-        "toolParameters": "={\n  \"libraryName\": \"omni_co\"\n}"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        2064,
-        -1152
-      ],
-      "id": "a431647f-5a88-4d56-970d-77c096f6199b",
-      "name": "MCP Client4",
-      "credentials": {
-        "mcpClientApi": {
-          "id": "M6ypncUh4MKAMkeD",
-          "name": "context7 MCP"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
-      "typeVersion": 1,
-      "position": [
-        2544,
-        -1312
-      ],
-      "id": "5eed0550-096c-4893-b5e0-5fedf7d98f0c",
-      "name": "MCP Client Higher Timeout",
-      "credentials": {
-        "mcpClientApiHigherTimeoutApi": {
-          "id": "IvnAYTBjDjbAa86K",
-          "name": "Omni MCP Higher Timeout"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeTool",
-        "toolName": "pickTopic",
-        "toolParameters": "{\n  \"prompt\": \"customer breakdown\"\n}"
-      },
-      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
-      "typeVersion": 1,
-      "position": [
-        2368,
-        -1184
-      ],
-      "id": "edb1e4da-d3a6-43f2-8dd6-42b8b78aea2c",
-      "name": "MCP Client Higher Timeout1",
-      "credentials": {
-        "mcpClientApiHigherTimeoutApi": {
-          "id": "IvnAYTBjDjbAa86K",
-          "name": "Omni MCP Higher Timeout"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-mcp-higher-timeout.mcpClientHigherTimeoutTool",
-      "typeVersion": 1,
-      "position": [
-        2176,
-        -1296
-      ],
-      "id": "62e81a1a-ceee-4343-b359-002cb9808b4b",
-      "name": "MCP Client Higher Timeout2",
-      "credentials": {
-        "mcpClientApiHigherTimeoutApi": {
-          "id": "ihg80kI7OIJH3Ee4",
-          "name": "Clear Thought"
-        }
-      }
+      "id": "578d6285-d496-45c3-87f9-4779d1c90c22",
+      "name": "Aggregate",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "onError": "continueRegularOutput",
+      "notes": "Combine into one list (not unique)"
     }
   ],
   "connections": {
@@ -812,7 +793,22 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Cortex Agents",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Omni PickTopic API Request 0",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Omni PickTopic API Request 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Omni PickTopic API Request 2",
             "type": "main",
             "index": 0
           }
@@ -919,100 +915,45 @@
         []
       ]
     },
-    "AI Agent": {
+    "Omni PickTopic API Request 2": {
       "main": [
         [
           {
-            "node": "Cortex Agents",
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Omni PickTopic API Request 0": {
+      "main": [
+        [
+          {
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Cortex Agent o4-mini1": {
-      "ai_languageModel": [
+    "Omni PickTopic API Request 1": {
+      "main": [
         [
           {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
+            "node": "Merge",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
     },
-    "MCP Client": {
-      "ai_tool": [
+    "Merge": {
+      "main": [
         [
           {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cortex Agent o4-mini2": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client2": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client4": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client Higher Timeout": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client Higher Timeout1": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client Higher Timeout2": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_tool",
+            "node": "Aggregate",
+            "type": "main",
             "index": 0
           }
         ]
@@ -1136,12 +1077,37 @@
           },
           "slack": {
             "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
           }
+        }
+      }
+    ],
+    "Omni PickTopic API Request 0": [
+      {
+        "json": {
+          "topicName": "software_gb_monthly"
+        }
+      }
+    ],
+    "Omni PickTopic API Request 1": [
+      {
+        "json": {
+          "topicName": "software_gb_monthly"
+        }
+      }
+    ],
+    "Omni PickTopic API Request 2": [
+      {
+        "json": {
+          "topicName": "software_telemetry_daily"
         }
       }
     ]
   },
-  "versionId": "d2feb979-d959-4c7a-ac62-053d8664f4c7",
+  "versionId": "802b96b5-6f8c-4a77-813f-d66c18849b56",
   "triggerCount": 1,
   "shared": [
     {
