@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T00:31:48.886Z",
+  "updatedAt": "2025-09-24T02:35:21.322Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -190,8 +190,7 @@
         400
       ],
       "id": "b4a77a1c-2d31-4929-bc49-8f86d3ad408f",
-      "name": "Snowflake Cortex Analyst",
-      "disabled": true
+      "name": "Snowflake Cortex Analyst"
     },
     {
       "parameters": {
@@ -206,7 +205,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
-        "options": {}
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "results"
       },
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.2,
@@ -290,8 +291,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        1168,
-        352
+        1008,
+        288
       ],
       "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
       "name": "Cortex Agent o4-mini",
@@ -310,8 +311,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        992,
-        288
+        1184,
+        352
       ],
       "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
       "name": "Cortex Agent Gemini 2.5 Pro",
@@ -403,7 +404,7 @@
       "typeVersion": 1.3,
       "position": [
         2544,
-        272
+        256
       ],
       "id": "5b6d9d94-2154-4c7e-9835-d07a2d369f73",
       "name": "Response Agent Structured Output Parser1",
@@ -606,7 +607,7 @@
           {
             "node": "Cortex Agents",
             "type": "ai_languageModel",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -617,7 +618,7 @@
           {
             "node": "Cortex Agents",
             "type": "ai_languageModel",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -750,6 +751,30 @@
         }
       }
     ],
+    "Response Agent": [
+      {
+        "json": {
+          "output": {
+            "message": "Hey <@user>, here are the dashboards related to customer experience, support, marketing, and product that might contain the insights you need:\n\n• <https://cribl.omniapp.co/dashboards/1fa9a419|Team: CX Customer Cohorts> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/da2cd10a|Support: Customer Review> in the <https://cribl.omniapp.co/f/Support|Support> folder\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> in the <https://cribl.omniapp.co/f/Marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/2d76300b|Customer: Use-Case Adoption> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> in the <https://cribl.omniapp.co/f/Marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in the <https://cribl.omniapp.co/f/Product|Product> folder\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder",
+            "dashboard_urls": [
+              "https://cribl.omniapp.co/dashboards/1fa9a419",
+              "https://cribl.omniapp.co/dashboards/da2cd10a",
+              "https://cribl.omniapp.co/dashboards/3bd15a19",
+              "https://cribl.omniapp.co/dashboards/2d76300b",
+              "https://cribl.omniapp.co/dashboards/c4d4e6ec",
+              "https://cribl.omniapp.co/dashboards/credit-consumption",
+              "https://cribl.omniapp.co/dashboards/de229002"
+            ],
+            "folder_urls": [
+              "https://cribl.omniapp.co/f/Customer Experience",
+              "https://cribl.omniapp.co/f/Support",
+              "https://cribl.omniapp.co/f/Marketing",
+              "https://cribl.omniapp.co/f/Product"
+            ]
+          }
+        }
+      }
+    ],
     "Cortex Agents": [
       {
         "json": {
@@ -762,49 +787,13 @@
               "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
               "folder_name": "Customer Experience",
               "folder_path": "customer-experience"
-            },
-            {
-              "document_id": "3bd15a19",
-              "document_name": "Overview: Customer Account Engagement ",
-              "scope": "organization",
-              "has_dashboard": true,
-              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
-              "folder_name": "Marketing",
-              "folder_path": "marketing"
-            },
-            {
-              "document_id": "c4d4e6ec",
-              "document_name": "Customer: Research Report",
-              "scope": "organization",
-              "has_dashboard": true,
-              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
-              "folder_name": "Marketing",
-              "folder_path": "marketing"
             }
           ]
         }
       }
-    ],
-    "Response Agent": [
-      {
-        "json": {
-          "output": {
-            "message": "Hey <@nathan_kwok>,\n\nI found a few dashboards focusing on customer breakdown that might contain what you need:\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> is in the <https://cribl.omniapp.co/f/customer-experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> is in the <https://cribl.omniapp.co/f/marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> is in the <https://cribl.omniapp.co/f/marketing|Marketing> folder",
-            "dashboard_urls": [
-              "https://cribl.omniapp.co/dashboards/de229002",
-              "https://cribl.omniapp.co/dashboards/3bd15a19",
-              "https://cribl.omniapp.co/dashboards/c4d4e6ec"
-            ],
-            "folder_urls": [
-              "https://cribl.omniapp.co/f/customer-experience",
-              "https://cribl.omniapp.co/f/marketing"
-            ]
-          }
-        }
-      }
     ]
   },
-  "versionId": "e5382752-efdd-497b-b376-9a6faadcc34f",
+  "versionId": "e54e5ce6-9fe3-4a01-9c5e-af851552e64d",
   "triggerCount": 1,
   "shared": [
     {
