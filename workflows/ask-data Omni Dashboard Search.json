@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T23:50:58.388Z",
+  "updatedAt": "2025-09-25T09:08:52.244Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -137,6 +137,7 @@
           "__rl": true,
           "value": "d0l6ZepnDYgKyq5P",
           "mode": "list",
+          "cachedResultUrl": "/workflow/d0l6ZepnDYgKyq5P",
           "cachedResultName": "Snowflake Cortex Analyst Subworkflow"
         },
         "workflowInputs": {
@@ -194,40 +195,8 @@
     },
     {
       "parameters": {
-        "toolDescription": "Semantic search for documents (dashboards) using the name",
-        "method": "POST",
-        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.omni_documents_search_service.service_name }}:query",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBearerAuth",
-        "sendHeaders": true,
-        "specifyHeaders": "json",
-        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
-        "options": {},
-        "optimizeResponse": true,
-        "dataField": "results"
-      },
-      "type": "n8n-nodes-base.httpRequestTool",
-      "typeVersion": 4.2,
-      "position": [
-        1792,
-        352
-      ],
-      "id": "d7066b20-a3bd-488a-a693-2fa3b4955056",
-      "name": "Snowflake Cortex Search Service",
-      "credentials": {
-        "httpBearerAuth": {
-          "id": "PnKZCKVe26AxmdDj",
-          "name": "Snowflake API"
-        }
-      }
-    },
-    {
-      "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS_DEV\",\n    \"snowflake_schema\": \"DEV_OMNI\",\n    \"service_name\": \"omni_documents_search_service_dev\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  }\n}",
+        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_document_queries_query_table_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_table_search_service\"\n  },\n  \"omni_document_queries_query_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_name_search_service\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  }\n}",
         "includeOtherFields": true,
         "include": "selected",
         "includeFields": "body",
@@ -245,7 +214,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You must use both the Snowflake Cortex Search Service and the Snowflake Cortex Analyst tools to find the best document that would answer this request:\n{{ $json.body.message }}\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
+        "text": "=You must use both the Snowflake Cortex Search Service Document Name and the Snowflake Cortex Analyst tools to find the best document that would answer this request:\n{{ $json.body.message }}\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
         "hasOutputParser": true,
         "needsFallback": true,
         "options": {
@@ -403,7 +372,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        2544,
+        2736,
         256
       ],
       "id": "5b6d9d94-2154-4c7e-9835-d07a2d369f73",
@@ -785,9 +754,9 @@
     },
     {
       "parameters": {
-        "toolDescription": "Semantic search for documents (dashboards) using the name",
+        "toolDescription": "Semantic search for documents queries with the query name similar to a given topic",
         "method": "POST",
-        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.omni_documents_search_service.service_name }}:query",
+        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_document_queries_query_name_search_service.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_document_queries_query_name_search_service.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.omni_document_queries_query_name_search_service.agent_name }}:query",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
         "sendHeaders": true,
@@ -795,7 +764,7 @@
         "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $json.topic_name[0] }}\",\n    \"columns\": [\n        \"QUERY_NAME\",\n        \"QUERY_ID\",\n        \"DOCUMENT_ID\",\n        \"DOCUMENT_SCOPE\",\n        \"QUERY_TABLE\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"document_scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
         "options": {},
         "optimizeResponse": true,
         "dataField": "results"
@@ -888,6 +857,38 @@
       "id": "4be8a680-bee8-4c8c-91a9-08e9300ada59",
       "name": "TODO prompt Cortex Search by Topic",
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Semantic search for documents (dashboards) using the document's name field",
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.omni_documents_search_service.service_name }}:query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "results"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1792,
+        352
+      ],
+      "id": "d7066b20-a3bd-488a-a693-2fa3b4955056",
+      "name": "Snowflake Cortex Search Service Document Name",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "PnKZCKVe26AxmdDj",
+          "name": "Snowflake API"
+        }
+      }
     }
   ],
   "connections": {
@@ -936,17 +937,6 @@
       ]
     },
     "Snowflake Cortex Analyst": {
-      "ai_tool": [
-        [
-          {
-            "node": "Cortex Agents",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Snowflake Cortex Search Service": {
       "ai_tool": [
         [
           {
@@ -1192,6 +1182,17 @@
           }
         ]
       ]
+    },
+    "Snowflake Cortex Search Service Document Name": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cortex Agents",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1279,48 +1280,9 @@
           "executionMode": "test"
         }
       }
-    ],
-    "Global Vars": [
-      {
-        "json": {
-          "body": {
-            "channel_id": "C0912AANW1L",
-            "channel_name": "data-eng-test-ai-channel",
-            "conversation_id": "C0912AANW1L",
-            "emoji_user_id": "U06PVBEK9T6",
-            "message": "Hi Team, do we have a dashboard that shows the customers daily ingest volume in GB/TB? I cant seem to find it in Omni?",
-            "message_ts": "1758696971.562899",
-            "user_email": "nkwok@cribl.io",
-            "user_first_name": "Nathan",
-            "user_last_name": "Kwok",
-            "user_name": "nathan_kwok"
-          },
-          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
-          "omni_documents_search_service": {
-            "snowflake_database": "ANALYTICS_DEV",
-            "snowflake_schema": "DEV_OMNI",
-            "service_name": "omni_documents_search_service_dev"
-          },
-          "omni_documents_analyst_agent": {
-            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
-            "snowflake_schema": "AGENTS",
-            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
-          },
-          "zapier_slack_response_webhook": {
-            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
-          },
-          "slack": {
-            "error_message": "The Omni agent could not find relevant dashboards :cry:"
-          },
-          "omni": {
-            "omni_base_url": "https://cribl.omniapp.co",
-            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
-          }
-        }
-      }
     ]
   },
-  "versionId": "b0f31bfa-0166-4c0a-83be-e4be4a78e87b",
+  "versionId": "cb8f6058-061e-4fc1-b0b7-436e61c62331",
   "triggerCount": 1,
   "shared": [
     {
