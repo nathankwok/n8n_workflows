@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-24T21:34:46.742Z",
+  "updatedAt": "2025-09-24T23:50:58.388Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -720,6 +720,174 @@
       "notesInFlow": true,
       "onError": "continueRegularOutput",
       "notes": "Combine into one list (not unique)"
+    },
+    {
+      "parameters": {
+        "description": "Snowflake Cortex Analyst tool to find relevant documents, document queries, and document query filters using SQL",
+        "workflowId": {
+          "__rl": true,
+          "value": "d0l6ZepnDYgKyq5P",
+          "mode": "list",
+          "cachedResultName": "Snowflake Cortex Analyst Subworkflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $('Global Vars').item.json.body.message }}",
+            "snowflake_base_url": "={{ $('Global Vars').item.json.snowflake_base_url }}",
+            "omni_documents_analyst_agent": "={{ $('Global Vars').item.json.omni_documents_analyst_agent }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "snowflake_base_url",
+              "displayName": "snowflake_base_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "omni_documents_analyst_agent",
+              "displayName": "omni_documents_analyst_agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        2464,
+        1376
+      ],
+      "id": "74c853a9-c3c2-464e-afc9-397871245e7e",
+      "name": "Snowflake Cortex Analyst1"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Semantic search for documents (dashboards) using the name",
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.snowflake_base_url }}/api/v2/databases/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_database }}/schemas/{{ $('Global Vars').item.json.omni_documents_search_service.snowflake_schema }}/cortex-search-services/{{ $('Global Vars').item.json.omni_documents_search_service.service_name }}:query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "results"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        2656,
+        1328
+      ],
+      "id": "54db177e-c3f5-4248-837f-95de7597190f",
+      "name": "Snowflake Cortex Search Service1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "PnKZCKVe26AxmdDj",
+          "name": "Snowflake API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1264
+      ],
+      "id": "0c937d51-bfcd-486f-b966-e52e5a173d1d",
+      "name": "Cortex Agent o4-mini1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        1328
+      ],
+      "id": "7f673c5a-0670-48fd-b235-5c1447dc4c1f",
+      "name": "Cortex Agent Gemini 2.5 Pro1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yw1nLb6Dxz18ENh2",
+          "name": "Gemini - Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n          \"type\": \"string\"\n      },\n      \"document_name\": {\n          \"type\": \"string\"\n      },\n      \"scope\": {\n          \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n          \"type\": \"boolean\"\n      },\n      \"folder_id\": {\n          \"type\": \"string\"\n      },\n      \"folder_name\": {\n          \"type\": \"string\"\n      },\n      \"folder_path\": {\n          \"type\": \"string\"\n      }\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2816,
+        1264
+      ],
+      "id": "c56872b8-b18c-43bc-80e3-a3906bf20374",
+      "name": "Cortex Agent Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You must use the Snowflake Cortex Search Service to find document query filters that are similar to the following topics.\n\nYour input is a list of Omni Analytic topic names, which are high level objects that describe the underlying Snowflake data schemas and tables. \n\n1. **CRITICAL**: Make sure to deduplicate the list so that you have a unique set of topic names\n2. For each topic in the unique set of topic names, find 5 document query filters that are similar to the topic. It should return a list of \n3. Then use the \n\n\n\n\nThe Snowflake Cortex Search Service will return a list of results, which represents several documents.\nReturn the output as a structured JSON output of the list of documents, with each document object that minimally contains the following fields:\n- document_id\n- document_name\n- scope\n- has_dashboard\n- folder_name\n- folder_id\n- folder_path",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are an expert data analyst who has built many dashboards in the Omni Analytics tool, which is a business intelligence tool, that sits on top of Snowflake data through dbt. You triage natural language queries from Stakeholders within the company in order to find the best dashboard (otherwise known as document) to answer the question. Documents, also known as dashboards, are parents of document queries, which are individual queries that run against the data within the parent document. Metadata on the documents and document queries and document query filters are stored in Snowflake and can be accessed through the Cortex Search Service and the Cortex Analyst tools."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2368,
+        976
+      ],
+      "id": "4be8a680-bee8-4c8c-91a9-08e9300ada59",
+      "name": "TODO prompt Cortex Search by Topic",
+      "onError": "continueErrorOutput"
     }
   ],
   "connections": {
@@ -958,6 +1126,72 @@
           }
         ]
       ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Snowflake Cortex Analyst1": {
+      "ai_tool": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Snowflake Cortex Search Service1": {
+      "ai_tool": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Agent o4-mini1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Agent Gemini 2.5 Pro1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Cortex Agent Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "TODO prompt Cortex Search by Topic",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1084,30 +1318,9 @@
           }
         }
       }
-    ],
-    "Omni PickTopic API Request 0": [
-      {
-        "json": {
-          "topicName": "software_gb_monthly"
-        }
-      }
-    ],
-    "Omni PickTopic API Request 1": [
-      {
-        "json": {
-          "topicName": "software_gb_monthly"
-        }
-      }
-    ],
-    "Omni PickTopic API Request 2": [
-      {
-        "json": {
-          "topicName": "software_telemetry_daily"
-        }
-      }
     ]
   },
-  "versionId": "802b96b5-6f8c-4a77-813f-d66c18849b56",
+  "versionId": "b0f31bfa-0166-4c0a-83be-e4be4a78e87b",
   "triggerCount": 1,
   "shared": [
     {
