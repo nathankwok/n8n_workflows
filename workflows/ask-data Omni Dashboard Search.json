@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-26T08:40:18.033Z",
+  "updatedAt": "2025-09-26T10:53:54.724Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
