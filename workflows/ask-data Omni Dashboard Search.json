@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-25T09:08:52.244Z",
+  "updatedAt": "2025-09-25T13:38:23.355Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -1227,23 +1227,6 @@
         }
       }
     ],
-    "Cortex Agents": [
-      {
-        "json": {
-          "output": [
-            {
-              "document_id": "de229002",
-              "document_name": "Customer: Customer Breakdown",
-              "scope": "organization",
-              "has_dashboard": true,
-              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
-              "folder_name": "Customer Experience",
-              "folder_path": "customer-experience"
-            }
-          ]
-        }
-      }
-    ],
     "Webhook": [
       {
         "json": {
@@ -1282,7 +1265,7 @@
       }
     ]
   },
-  "versionId": "cb8f6058-061e-4fc1-b0b7-436e61c62331",
+  "versionId": "044ce1ce-3b47-4839-8c60-62ac9f10b4e4",
   "triggerCount": 1,
   "shared": [
     {
