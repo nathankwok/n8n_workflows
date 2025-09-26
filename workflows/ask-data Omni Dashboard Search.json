@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-26T04:37:59.481Z",
+  "updatedAt": "2025-09-26T06:34:07.588Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -132,70 +132,6 @@
     },
     {
       "parameters": {
-        "description": "Snowflake Cortex Analyst tool to find relevant documents, document queries, and document query filters using SQL",
-        "workflowId": {
-          "__rl": true,
-          "value": "d0l6ZepnDYgKyq5P",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/d0l6ZepnDYgKyq5P",
-          "cachedResultName": "Snowflake Cortex Analyst Subworkflow"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "message": "={{ $('Global Vars').item.json.body.message }}",
-            "snowflake_base_url": "={{ $('Global Vars').item.json.snowflake_base_url }}",
-            "omni_documents_analyst_agent": "={{ $('Global Vars').item.json.omni_documents_analyst_agent }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "message",
-              "displayName": "message",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            },
-            {
-              "id": "snowflake_base_url",
-              "displayName": "snowflake_base_url",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            },
-            {
-              "id": "omni_documents_analyst_agent",
-              "displayName": "omni_documents_analyst_agent",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "object",
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1600,
-        400
-      ],
-      "id": "b4a77a1c-2d31-4929-bc49-8f86d3ad408f",
-      "name": "Snowflake Cortex Analyst",
-      "disabled": true
-    },
-    {
-      "parameters": {
         "mode": "raw",
         "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_document_queries_query_table_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_table_search_service\"\n  },\n  \"omni_document_queries_query_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_name_search_service\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  }\n}",
         "includeOtherFields": true,
@@ -230,7 +166,6 @@
       ],
       "id": "e1bb31d5-9392-42ca-8f5a-2ab313d56474",
       "name": "Cortex Agents",
-      "disabled": true,
       "onError": "continueErrorOutput"
     },
     {
@@ -246,12 +181,13 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        4800,
-        -16
+        5232,
+        976
       ],
       "id": "af278ce5-7e17-4448-9ae4-c769f33828f2",
       "name": "Response Agent",
       "alwaysOutputData": true,
+      "disabled": true,
       "onError": "continueErrorOutput"
     },
     {
@@ -262,8 +198,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        1216,
-        288
+        1360,
+        304
       ],
       "id": "7fa88629-f385-402a-9be3-82355d5a49f9",
       "name": "Cortex Agent o4-mini",
@@ -272,8 +208,7 @@
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -283,8 +218,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1392,
-        352
+        1520,
+        368
       ],
       "id": "cee0c3b5-f657-4ff5-bd0a-40c1e91fff2b",
       "name": "Cortex Agent Gemini 2.5 Pro",
@@ -293,23 +228,21 @@
           "id": "yw1nLb6Dxz18ENh2",
           "name": "Gemini - Cribl"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n          \"type\": \"string\"\n      },\n      \"document_name\": {\n          \"type\": \"string\"\n      },\n      \"scope\": {\n          \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n          \"type\": \"boolean\"\n      },\n      \"folder_id\": {\n          \"type\": \"string\"\n      },\n      \"folder_name\": {\n          \"type\": \"string\"\n      },\n      \"folder_path\": {\n          \"type\": \"string\"\n      }\n    }\n  }\n}"
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n        \"type\": \"string\"\n      },\n      \"document_name\": {\n        \"type\": \"string\"\n      },\n      \"document_scope\": {\n        \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n        \"type\": \"boolean\"\n      },\n      \"folder_path\": {\n        \"type\": \"string\"\n      },\n      \"folder_id\": {\n        \"type\": \"string\"\n      },\n      \"folder_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_id\": {\n        \"type\": \"string\" \n      }\n    }\n  }\n}\n"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        1952,
-        288
+        1840,
+        304
       ],
       "id": "2d22b38a-3f89-47bf-b7b5-155dccfcaf42",
-      "name": "Cortex Agent Structured Output Parser",
-      "disabled": true
+      "name": "Cortex Agent Structured Output Parser"
     },
     {
       "parameters": {
@@ -321,8 +254,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        4672,
-        272
+        5104,
+        1264
       ],
       "id": "735fdd14-681d-4841-897d-58b1c7cb9730",
       "name": "Response Agent o4-mini",
@@ -331,7 +264,8 @@
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -341,8 +275,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        4848,
-        336
+        5280,
+        1328
       ],
       "id": "a0ef0bdb-c292-4cdf-a29d-4dfedcc63681",
       "name": "Response Agent Gemini 2.5 Pro",
@@ -351,7 +285,8 @@
           "id": "yw1nLb6Dxz18ENh2",
           "name": "Gemini - Cribl"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -361,12 +296,13 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        5040,
-        272
+        5472,
+        1264
       ],
       "id": "3d2c3dd2-8853-4d2a-af31-395b981b2cfa",
       "name": "Response Agent Structured Output Parser",
       "notesInFlow": true,
+      "disabled": true,
       "notes": "Success path"
     },
     {
@@ -377,12 +313,13 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        5200,
-        256
+        5472,
+        1488
       ],
       "id": "5b6d9d94-2154-4c7e-9835-d07a2d369f73",
       "name": "Response Agent Structured Output Parser1",
       "notesInFlow": true,
+      "disabled": true,
       "notes": "Error path"
     },
     {
@@ -391,12 +328,13 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        5296,
-        352
+        5248,
+        784
       ],
       "typeVersion": 1,
       "id": "ddd23fd4-b47f-4d7c-b576-cf8ea9a35611",
-      "name": "Sticky Note"
+      "name": "Sticky Note",
+      "disabled": true
     },
     {
       "parameters": {
@@ -432,12 +370,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5568,
-        160
+        6000,
+        1152
       ],
       "id": "c25b8c3c-0247-4ef2-9c97-e52ac452a04a",
       "name": "Send Slack Error Message",
-      "alwaysOutputData": false
+      "alwaysOutputData": false,
+      "disabled": true
     },
     {
       "parameters": {
@@ -454,18 +393,19 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"output\": {{ $json.output.toJsonString() }},\n  \"body\": {{ $('Global Vars').item.json.body.toJsonString() }},\n  \"message\": {{ $json.output.message.toJsonString() }}\n}",
+        "jsonBody": "={\n  \"output\": {{ $('Response Agent').item.json.output.toJsonString() }},\n  \"body\": {{ $('Global Vars').item.json.body.toJsonString() }},\n  \"message\": {{ $('Response Agent').item.json.output.message.toJsonString() }}\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5568,
-        -32
+        6000,
+        960
       ],
       "id": "c0d3731e-f549-4aa2-8629-ef32ef9f8b2b",
       "name": "Send Slack Success Message",
-      "alwaysOutputData": false
+      "alwaysOutputData": false,
+      "disabled": true
     },
     {
       "parameters": {
@@ -577,6 +517,7 @@
           "name": "Omni API"
         }
       },
+      "disabled": true,
       "onError": "continueRegularOutput"
     },
     {
@@ -615,6 +556,7 @@
           "name": "Omni API"
         }
       },
+      "disabled": true,
       "onError": "continueRegularOutput"
     },
     {
@@ -652,6 +594,7 @@
           "name": "Omni API"
         }
       },
+      "disabled": true,
       "onError": "continueRegularOutput"
     },
     {
@@ -667,6 +610,7 @@
       "id": "fedc8e06-1d7f-481f-a54b-2d50bbf79e29",
       "name": "Merge",
       "alwaysOutputData": true,
+      "disabled": true,
       "onError": "continueRegularOutput"
     },
     {
@@ -692,6 +636,7 @@
       "name": "Aggregate",
       "alwaysOutputData": true,
       "notesInFlow": true,
+      "disabled": true,
       "onError": "continueRegularOutput",
       "notes": "Combine into one list (not unique)"
     },
@@ -713,21 +658,8 @@
           "id": "yw1nLb6Dxz18ENh2",
           "name": "Gemini - Cribl"
         }
-      }
-    },
-    {
-      "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"query_table\": {\n          \"type\": \"string\"\n      },\n      \"document_scope\": {\n          \"type\": \"string\"\n      },\n      \"query_name\": {\n          \"type\": \"string\"\n      },\n      \"document_id\": {\n          \"type\": \"string\"\n      },\n      \"query_id\": {\n          \"type\": \"string\"\n      }\n    }\n  }\n}\n"
       },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
-      "position": [
-        2896,
-        1216
-      ],
-      "id": "c56872b8-b18c-43bc-80e3-a3906bf20374",
-      "name": "Cortex Agent Structured Output Parser1"
+      "disabled": true
     },
     {
       "parameters": {
@@ -741,7 +673,7 @@
         "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": 3\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $('Global Vars').item.json.body.message }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"owner_id\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n      \"@and\": [\n        { \n          \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n          }\n        },\n        { \n          \"@eq\": {\n              \"has_dashboard\": \"true\"\n          }\n        }\n      ]\n    },\n    \"limit\": 3\n}",
         "options": {},
         "optimizeResponse": true,
         "dataField": "results"
@@ -749,8 +681,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.2,
       "position": [
-        1792,
-        352
+        1680,
+        368
       ],
       "id": "d7066b20-a3bd-488a-a693-2fa3b4955056",
       "name": "Snowflake Cortex Search Service Document Name",
@@ -759,8 +691,7 @@
           "id": "PnKZCKVe26AxmdDj",
           "name": "Snowflake API"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -792,7 +723,8 @@
           "id": "PnKZCKVe26AxmdDj",
           "name": "Snowflake API"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -824,7 +756,8 @@
           "id": "PnKZCKVe26AxmdDj",
           "name": "Snowflake API"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -844,21 +777,8 @@
           "id": "yw1nLb6Dxz18ENh2",
           "name": "Gemini - Cribl"
         }
-      }
-    },
-    {
-      "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n        \"type\": \"string\"\n      },\n      \"document_name\": {\n        \"type\": \"string\"\n      },\n      \"document_scope\": {\n        \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n        \"type\": \"boolean\"\n      },\n      \"folder_path\": {\n        \"type\": \"string\"\n      },\n      \"folder_id\": {\n        \"type\": \"string\"\n      },\n      \"folder_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_id\": {\n        \"type\": \"string\" \n      }\n    }\n  }\n}\n"
       },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
-      "position": [
-        2832,
-        2208
-      ],
-      "id": "29a1dd1a-4a06-4f4d-a9b8-972ea9e3997c",
-      "name": "Cortex Agent Structured Output Parser2"
+      "disabled": true
     },
     {
       "parameters": {
@@ -878,6 +798,7 @@
       ],
       "id": "4be8a680-bee8-4c8c-91a9-08e9300ada59",
       "name": "Cortex Search Query by Topic",
+      "disabled": true,
       "onError": "continueErrorOutput"
     },
     {
@@ -898,22 +819,8 @@
       ],
       "id": "28342eb4-42e8-41f8-adc1-3689566ac7bf",
       "name": "Cortex Search Document by Topic",
+      "disabled": true,
       "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=You are given lists of objects with objects representing:\n- documents\n- enriched document queries\n\n\n<task>\n1. Aggregate the list of documents and document_queries\n2. Extract out a map of document data, inferred from the document_structure\n3. Then aggregate the responses from each tool call into a single list of document query objects.\n</task>\n\n\n<enriched_document_query_structure>\n```json\n{\n  \"document_id\": \"45d06a29\",\n  \"query_table\": \"engineering__azure_cloud_cost\",\n  \"document_scope\": \"organization\",\n  \"query_name\": \"Monthly Costs by Usage\",\n  \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n  \"owner_name\": \"John McGuire\",\n  \"document_name\": \"Team: SDR Manager\",\n  \"folder_name\": \"Marketing\",\n  \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n  \"has_dashboard\": true,\n  \"folder_path\": \"marketing\"\n}\n```\n</enriched_document_query_structure>\n\n\n\n<document_structure>\n```json\n{\n  \"identifier\": \"959cb1c9\",\n  \"owner_name\": \"John McGuire\",\n  \"scope\": \"organization\",\n  \"name\": \"Team: SDR Manager\",\n  \"folder_name\": \"Marketing\",\n  \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n  \"has_dashboard\": true,\n  \"folder_path\": \"marketing\"\n}\n```\n</document_structure>",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
-      "position": [
-        4704,
-        1664
-      ],
-      "id": "0bb95b48-316d-4c9a-b312-e066ddd987a2",
-      "name": "AI Agent"
     },
     {
       "parameters": {
@@ -923,7 +830,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        3200,
+        3248,
         1232
       ],
       "id": "61e18eea-6bda-45e4-8804-5cb0eef94036",
@@ -933,7 +840,8 @@
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -992,16 +900,17 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        3392,
-        1232
+        3408,
+        1280
       ],
       "id": "f35aae48-3abb-4c53-baa3-2b51fbb5561b",
-      "name": "Snowflake Cortex Analyst1"
+      "name": "Snowflake Cortex Analyst1",
+      "disabled": true
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are given lists of objects with objects representing:\n- document queries\n\n\n<task>\n1. From the list of document_queries, extract out the list of document_id's. The output from this step should be a list of strings.\n2. Give the list of document ids as a parameter to the Snowflake Cortex Analyst tool to search for document objects. The return from this tool call step should be a list of documents with the document object structure described below.\n3. Then using the list of documents, enrich the original list of document queries, mapping the associated document query using the document_id field from both structures.\n4. Return the list of enriched document queries\n</task>\n\n<guidelines>\n**CRITICAL**:\n- If the tool call fails, do not add in or make up values. You must enrich only from the output of the tool call.\n- If the tool call fails, return an error message. \n- The error message should be the input that was given to the tool word for word.\n</guidelines>\n\n\n<input_document_query_structure>\n```json\n{\n\"query_table\": \"engineering__azure_cloud_cost\",\n\"document_scope\": \"organization\",\n\"query_name\": \"Monthly Costs by Usage\",\n\"document_id\": \"45d06a29\",\n\"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\"\n}\n```\n</input_document_query_structure>\n\n\n<tool_call_result_document_structure>\n```json\n{\n\"document_id\": \"45d06a29\",\n\"owner_name\": \"John McGuire\",\n\"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n\"document_scope\": \"organization\",\n\"document_name\": \"Team: SDR Manager\",\n\"folder_name\": \"Marketing\",\n\"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n\"has_dashboard\": true,\n\"folder_path\": \"marketing\"\n}\n```\n</tool_call_result_document_structure>\n\n\n\n<enriched_document_query_structure>\n```json\n{\n\"document_id\": \"45d06a29\",\n\"query_table\": \"engineering__azure_cloud_cost\",\n\"document_scope\": \"organization\",\n\"query_name\": \"Monthly Costs by Usage\",\n\"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n\"owner_name\": \"John McGuire\",\n\"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n\"document_name\": \"Team: SDR Manager\",\n\"folder_name\": \"Marketing\",\n\"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n\"has_dashboard\": true,\n\"folder_path\": \"marketing\"\n}\n```\n</enriched_document_query_structure>\n\n\n<input>\n{{ $json.output.toJsonString() }}\n</input>",
+        "text": "=You are given lists of objects with objects representing:\n- document queries\n\n<task>\n1. From the list of document_queries, extract out the list of document_id's. The output from this step should be a list of strings.\n2. Give the list of document ids as a parameter to the Snowflake Cortex Analyst tool to search for document objects. The return from this tool call step should be a list of documents with the document object structure described below.\n3. Then using the list of documents, enrich the original list of document queries, mapping the associated document query using the document_id field from both structures.\n4. Return the list of enriched document queries\n</task>\n\nExample of enriching the document queries with documents:\n1. List of document queries:\n```json\n[\n  {\n    \"query_table\": \"engineering__azure_cloud_cost\",\n    \"document_scope\": \"organization\",\n    \"query_name\": \"Monthly Costs by Usage\",\n    \"document_id\": \"45d06a29\",\n    \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\"\n  }\n]\n```\n\n2. List of documents:\n```json\n[\n  {\n    \"document_id\": \"45d06a29\",\n    \"owner_name\": \"John McGuire\",\n    \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n    \"document_scope\": \"organization\",\n    \"document_name\": \"Team: Infrastructure Costs\",\n    \"folder_name\": \"Engineering\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"engineering\"\n  }\n]\n```\n\n3. Resulting list of enriched document queries (merged with documents):\n```json\n[\n  {\n    \"document_id\": \"45d06a29\",\n    \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n    \"query_table\": \"engineering__azure_cloud_cost\",\n    \"document_scope\": \"organization\",\n    \"query_name\": \"Monthly Costs by Usage\",\n    \"owner_name\": \"John McGuire\",\n    \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n    \"document_name\": \"Team: Infrastructure Costs\",\n    \"folder_name\": \"Engineering\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"engineering\"\n  }\n]\n```\n\n\n<guidelines>\n**CRITICAL**:\n- If the tool call fails, do not add in or make up values. You must enrich only from the output of the tool call.\n- If the tool call fails, return an error message. \n- The error message should be the input that was given to the tool word for word.\n</guidelines>\n\n\n<input_document_query_structure>\n```json\n{\n  \"query_table\": \"engineering__azure_cloud_cost\",\n  \"document_scope\": \"organization\",\n  \"query_name\": \"Monthly Costs by Usage\",\n  \"document_id\": \"45d06a29\",\n  \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\"\n}\n```\n</input_document_query_structure>\n\n\n<tool_call_result_document_structure>\n```json\n{\n  \"document_id\": \"45d06a29\",\n  \"owner_name\": \"John McGuire\",\n  \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n  \"document_scope\": \"organization\",\n  \"document_name\": \"Team: Infrastructure Costs\",\n  \"folder_name\": \"Engineering\",\n  \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n  \"has_dashboard\": true,\n  \"folder_path\": \"engineering\"\n}\n```\n</tool_call_result_document_structure>\n\n\n\n<enriched_document_query_structure>\n```json\n{\n  \"document_id\": \"45d06a29\",\n  \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n  \"query_table\": \"engineering__azure_cloud_cost\",\n  \"document_scope\": \"organization\",\n  \"query_name\": \"Monthly Costs by Usage\",\n  \"owner_name\": \"John McGuire\",\n  \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n  \"document_name\": \"Team: Infrastructure Costs\",\n  \"folder_name\": \"Engineering\",\n  \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n  \"has_dashboard\": true,\n  \"folder_path\": \"engineering\"\n}\n```\n</enriched_document_query_structure>\n\n\n<input>\n{{ $json.output.toJsonString() }}\n</input>",
         "hasOutputParser": true,
         "options": {}
       },
@@ -1014,21 +923,23 @@
       "id": "54085b1e-3f4d-411f-8880-a56d0a2be50b",
       "name": "Enrich Document Queries",
       "notesInFlow": true,
+      "disabled": true,
       "onError": "continueRegularOutput",
       "notes": "Enriches the document queries with their associated documents"
     },
     {
       "parameters": {
-        "jsonSchemaExample": "[\n  {\n    \"document_id\": \"45d06a29\",\n    \"query_table\": \"engineering__azure_cloud_cost\",\n    \"document_scope\": \"organization\",\n    \"query_name\": \"Monthly Costs by Usage\",\n    \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n    \"owner_name\": \"John McGuire\",\n    \"document_name\": \"Team: SDR Manager\",\n    \"folder_name\": \"Marketing\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"marketing\"\n  }\n]"
+        "jsonSchemaExample": "[\n  {\n    \"document_id\": \"45d06a29\",\n    \"query_table\": \"engineering__azure_cloud_cost\",\n    \"document_scope\": \"organization\",\n    \"query_name\": \"Monthly Costs by Usage\",\n    \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n    \"owner_name\": \"John McGuire\",\n    \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n    \"document_name\": \"Team: SDR Manager\",\n    \"folder_name\": \"Marketing\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"marketing\"\n  }\n]"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
         3568,
-        1232
+        1216
       ],
       "id": "abb03648-d1bb-42f4-8460-33a79e0b7cfa",
-      "name": "Structured Output Parser"
+      "name": "Structured Output Parser",
+      "disabled": true
     },
     {
       "parameters": {
@@ -1048,7 +959,8 @@
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -1068,20 +980,8 @@
           "id": "owGiNLHIZQGtrPG1",
           "name": "Azure Open AI o4-mini"
         }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## TODO \n- fix not getting the folder fields preperly"
       },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        3328,
-        1344
-      ],
-      "typeVersion": 1,
-      "id": "e6c5ee47-5136-43ef-8970-092ddb31a50c",
-      "name": "Sticky Note7"
+      "disabled": true
     },
     {
       "parameters": {
@@ -1095,7 +995,7 @@
         "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "=\n\n{\n    \"query\": \"{{ $fromAI('topic', 'topic name', 'string') }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n      \"@and\": [\n        { \n          \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n          }\n        },\n        { \n          \"@eq\": {\n              \"has_dashboard\": \"true\"\n          }\n        }\n      ]\n    },\n    \"limit\": 3\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $fromAI('topic', 'topic name', 'string') }}\",\n    \"columns\": [\n        \"name\",\n        \"identifier\",\n        \"scope\",\n        \"has_dashboard\",\n        \"owner_name\",\n        \"owner_id\",\n        \"folder_name\",\n        \"folder_id\",\n        \"folder_path\"\n    ],\n    \"filter\": {\n      \"@and\": [\n        { \n          \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n          }\n        },\n        { \n          \"@eq\": {\n              \"has_dashboard\": \"true\"\n          }\n        }\n      ]\n    },\n    \"limit\": 3\n}",
         "options": {},
         "optimizeResponse": true,
         "dataField": "results"
@@ -1113,7 +1013,143 @@
           "id": "PnKZCKVe26AxmdDj",
           "name": "Snowflake API"
         }
-      }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        4496,
+        1200
+      ],
+      "id": "aa414d4e-f7fe-418c-9699-0139698e929c",
+      "name": "Cortex Agent o4-mini4",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "owGiNLHIZQGtrPG1",
+          "name": "Azure Open AI o4-mini"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are given lists of objects with objects representing:\n- documents\n- enriched document queries\n\n\n<task>\n1. Aggregate the list of documents and document_queries\n2. Extract out only the document data into a list, with all keys only from the document_structure schema. There will potentially be duplicate document objects in this list.\n3. Map-reduce the resulting documents by deduplicating the same documents (by document_id) but keeping count of documents with the same id before deduplicating. The count should be an additional key in each document object with each document being unique by the document_id\n3. Output the list of document objects with counts with each object in the schema like map_reduce_count_document_structure .\n</task>\n\n\n<enriched_document_query_structure>\n```json\n{\n  \"document_id\": \"45d06a29\",\n  \"query_id\": \"b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964\",\n  \"query_table\": \"engineering__azure_cloud_cost\",\n  \"document_scope\": \"organization\",\n  \"query_name\": \"Monthly Costs by Usage\",\n  \"owner_name\": \"John McGuire\",\n  \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n  \"document_name\": \"Team: Infrastructure Costs\",\n  \"folder_name\": \"Engineering\",\n  \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n  \"has_dashboard\": true,\n  \"folder_path\": \"engineering\"\n}\n```\n</enriched_document_query_structure>\n\n\n<document_structure>\n```json\n{\n\"document_id\": \"959cb1c9\",\n\"owner_name\": \"John McGuire\",\n\"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n\"document_scope\": \"organization\",\n\"document_name\": \"Team: SDR Manager\",\n\"folder_name\": \"Marketing\",\n\"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n\"has_dashboard\": true,\n\"folder_path\": \"marketing\"\n}\n```\n</document_structure>\n\n\n<map_reduce_count_document_structure>\n```json\n{\n\"document_id\": \"959cb1c9\",\n\"owner_name\": \"John McGuire\",\n\"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n\"document_scope\": \"organization\",\n\"document_name\": \"Team: SDR Manager\",\n\"folder_name\": \"Marketing\",\n\"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n\"has_dashboard\": true,\n\"folder_path\": \"marketing\",\n\"count\": 3\n}\n```\n</map_reduce_count_document_structure>\n\n\n<input_enriched_document_queries>\n{{ $('Enrich Document Queries').item.json.output.toJsonString() }}\n</input_enriched_document_queries>\n\n\n<input_documents>\n{{ $('Cortex Search Document by Topic').item.json.output.toJsonString() }}\n</input_documents>\n\n\n<output_format>\nThe output must be a list of map_reduce_count_document_structure.\nExample:\n```json\n[\n  {\n    \"document_id\": \"959cb1c9\",\n    \"owner_name\": \"John McGuire\",\n    \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n    \"document_scope\": \"organization\",\n    \"document_name\": \"Team: SDR Manager\",\n    \"folder_name\": \"Marketing\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"marketing\",\n    \"count\": 3\n  }\n]\n```\n</output_format>",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        4544,
+        976
+      ],
+      "id": "0bb95b48-316d-4c9a-b312-e066ddd987a2",
+      "name": "Map Reduce Document Count",
+      "alwaysOutputData": true,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "Documents with more counts are weighted higher"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4528,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "ad514b17-c0bb-4af3-b3f3-28ba9065c21e",
+      "name": "Sticky Note8",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3952,
+        976
+      ],
+      "id": "665f4a35-39b8-4050-856c-acddab34eb11",
+      "name": "Merge1",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"document_id\": {\n        \"type\": \"string\"\n      },\n      \"document_name\": {\n        \"type\": \"string\"\n      },\n      \"document_scope\": {\n        \"type\": \"string\"\n      },\n      \"has_dashboard\": {\n        \"type\": \"boolean\"\n      },\n      \"folder_path\": {\n        \"type\": \"string\"\n      },\n      \"folder_id\": {\n        \"type\": \"string\"\n      },\n      \"folder_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_name\": {\n        \"type\": \"string\"\n      },\n      \"owner_id\": {\n        \"type\": \"string\" \n      }\n    }\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2832,
+        2208
+      ],
+      "id": "29a1dd1a-4a06-4f4d-a9b8-972ea9e3997c",
+      "name": "Cortex Search Document by Topic Structured Output",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"query_table\": {\n          \"type\": \"string\"\n      },\n      \"document_scope\": {\n          \"type\": \"string\"\n      },\n      \"query_name\": {\n          \"type\": \"string\"\n      },\n      \"document_id\": {\n          \"type\": \"string\"\n      },\n      \"query_id\": {\n          \"type\": \"string\"\n      }\n    }\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2896,
+        1216
+      ],
+      "id": "c56872b8-b18c-43bc-80e3-a3906bf20374",
+      "name": "Cortex Search Query by Topic Structured Output",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "output"
+            }
+          ]
+        },
+        "options": {
+          "mergeLists": true
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        976
+      ],
+      "id": "8b957529-46bf-48c8-9a59-daedb8b66d6c",
+      "name": "Aggregate1",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"document_id\": \"959cb1c9\",\n    \"owner_name\": \"John McGuire\",\n    \"owner_id\": \"86a545a6-5958-43e5-8f16-68eb9f148744\",\n    \"document_scope\": \"organization\",\n    \"document_name\": \"Team: SDR Manager\",\n    \"folder_name\": \"Marketing\",\n    \"folder_id\": \"3089bcee-baea-45af-8613-63077f0e9417\",\n    \"has_dashboard\": true,\n    \"folder_path\": \"marketing\",\n    \"count\": 3\n  }\n]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        4752,
+        1184
+      ],
+      "id": "db18114a-f1cf-43ff-94b2-a0c3293283cd",
+      "name": "Structured Output Parser1",
+      "disabled": true
     }
   ],
   "connections": {
@@ -1161,17 +1197,6 @@
         ]
       ]
     },
-    "Snowflake Cortex Analyst": {
-      "ai_tool": [
-        [
-          {
-            "node": "Cortex Agents",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Global Vars": {
       "main": [
         [
@@ -1200,13 +1225,7 @@
     },
     "Cortex Agents": {
       "main": [
-        [
-          {
-            "node": "Response Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Response Agent": {
@@ -1369,17 +1388,6 @@
         ]
       ]
     },
-    "Cortex Agent Structured Output Parser1": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "Cortex Search Query by Topic",
-            "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Snowflake Cortex Search Service Document Name": {
       "ai_tool": [
         [
@@ -1424,17 +1432,6 @@
         ]
       ]
     },
-    "Cortex Agent Structured Output Parser2": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "Cortex Search Document by Topic",
-            "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Cortex Search Query by Topic": {
       "main": [
         [
@@ -1450,9 +1447,9 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Merge1",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -1522,6 +1519,94 @@
           }
         ]
       ]
+    },
+    "Enrich Document Queries": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Agent o4-mini4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Map Reduce Document Count",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Reduce Document Count": {
+      "main": [
+        [
+          {
+            "node": "Response Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Search Document by Topic Structured Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Cortex Search Document by Topic",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Search Query by Topic Structured Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Cortex Search Query by Topic",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Map Reduce Document Count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Map Reduce Document Count",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1532,30 +1617,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Response Agent": [
-      {
-        "json": {
-          "output": {
-            "message": "Hey <@user>, here are the dashboards related to customer experience, support, marketing, and product that might contain the insights you need:\n\n• <https://cribl.omniapp.co/dashboards/1fa9a419|Team: CX Customer Cohorts> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/da2cd10a|Support: Customer Review> in the <https://cribl.omniapp.co/f/Support|Support> folder\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> in the <https://cribl.omniapp.co/f/Marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/2d76300b|Customer: Use-Case Adoption> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> in the <https://cribl.omniapp.co/f/Marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in the <https://cribl.omniapp.co/f/Product|Product> folder\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> in the <https://cribl.omniapp.co/f/Customer Experience|Customer Experience> folder",
-            "dashboard_urls": [
-              "https://cribl.omniapp.co/dashboards/1fa9a419",
-              "https://cribl.omniapp.co/dashboards/da2cd10a",
-              "https://cribl.omniapp.co/dashboards/3bd15a19",
-              "https://cribl.omniapp.co/dashboards/2d76300b",
-              "https://cribl.omniapp.co/dashboards/c4d4e6ec",
-              "https://cribl.omniapp.co/dashboards/credit-consumption",
-              "https://cribl.omniapp.co/dashboards/de229002"
-            ],
-            "folder_urls": [
-              "https://cribl.omniapp.co/f/Customer Experience",
-              "https://cribl.omniapp.co/f/Support",
-              "https://cribl.omniapp.co/f/Marketing",
-              "https://cribl.omniapp.co/f/Product"
-            ]
-          }
-        }
-      }
-    ],
     "Webhook": [
       {
         "json": {
@@ -1642,10 +1703,44 @@
         }
       }
     ],
-    "Omni PickTopic API Request 0": [
+    "Cortex Search Document by Topic": [
       {
         "json": {
-          "topicName": "product__onprem_telemetry_daily"
+          "output": [
+            {
+              "document_id": "621d0118",
+              "document_name": "Overview: GTM Partner Metrics",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "revenue",
+              "folder_id": "d20366ff-ebb8-42b0-b2ab-9665f0dc4390",
+              "folder_name": "Revenue",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf"
+            },
+            {
+              "document_id": "959cb1c9",
+              "document_name": "Team: SDR Manager",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "marketing",
+              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
+              "folder_name": "Marketing",
+              "owner_name": "John McGuire",
+              "owner_id": "cf1a03e2-a8fe-493e-9aed-0768d989518a"
+            },
+            {
+              "document_id": "1decf0ae",
+              "document_name": "Overview: Release Metrics",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "folder_name": "Engineering",
+              "owner_name": "Adam Armagost",
+              "owner_id": "433b1608-177f-4449-b7bd-470e9283efcd"
+            }
+          ]
         }
       }
     ],
@@ -1653,62 +1748,6 @@
       {
         "json": {
           "output": [
-            {
-              "query_table": "support__cases",
-              "document_scope": "organization",
-              "query_name": "Product",
-              "document_id": "921afe2c",
-              "query_id": "56683590-94b8-42cf-9440-ac5fe8d2c9b5"
-            },
-            {
-              "query_table": "sales__opportunity_snapshot",
-              "document_scope": "organization",
-              "query_name": "First Date Storage & Analysis Product Added to Opp",
-              "document_id": "0ac12ad1",
-              "query_id": "9ea4293e-a1d6-4794-a094-2a5eddfdfc86"
-            },
-            {
-              "query_table": "product__adoption",
-              "document_scope": "organization",
-              "query_name": "Product Adoption Overtime",
-              "document_id": "de2b8107",
-              "query_id": "4fedaf0a-16d2-459a-ad11-f345dbbcff1c"
-            },
-            {
-              "query_table": "product__adoption",
-              "document_scope": "organization",
-              "query_name": "Product Adoption Overtime",
-              "document_id": "3bd15a19",
-              "query_id": "0f5c47ae-2a5e-41db-a642-4b77cc5fb357"
-            },
-            {
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Edge Destinations",
-              "document_id": "e445af06",
-              "query_id": "0eccf7c3-b17a-4025-b556-1df4c7a21d9e"
-            },
-            {
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Customer Usage",
-              "document_id": "e445af06",
-              "query_id": "f42fb9bf-e482-4f23-96da-d35227e9adc1"
-            },
-            {
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Edge Node Version Distribution",
-              "document_id": "e445af06",
-              "query_id": "69ab6576-1c45-43e2-bf42-5741efd6e533"
-            },
-            {
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Software Activity over Time",
-              "document_id": "de229002",
-              "query_id": "e052d3a0-a0c4-48f4-9227-00e680f754e1"
-            },
             {
               "query_table": "engineering__azure_cloud_cost",
               "document_scope": "organization",
@@ -1774,121 +1813,18 @@
         "json": {
           "output": [
             {
-              "document_id": "921afe2c",
-              "query_table": "support__cases",
-              "document_scope": "organization",
-              "query_name": "Product",
-              "query_id": "56683590-94b8-42cf-9440-ac5fe8d2c9b5",
-              "owner_name": "",
-              "document_name": "Support: Backlog Analysis",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "0ac12ad1",
-              "query_table": "sales__opportunity_snapshot",
-              "document_scope": "organization",
-              "query_name": "First Date Storage & Analysis Product Added to Opp",
-              "query_id": "9ea4293e-a1d6-4794-a094-2a5eddfdfc86",
-              "owner_name": "",
-              "document_name": "Initiative: Storage and Analysis",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "de2b8107",
-              "query_table": "product__adoption",
-              "document_scope": "organization",
-              "query_name": "Product Adoption Overtime",
-              "query_id": "4fedaf0a-16d2-459a-ad11-f345dbbcff1c",
-              "owner_name": "",
-              "document_name": "Overview: Multi-Product Adoption",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "3bd15a19",
-              "query_table": "product__adoption",
-              "document_scope": "organization",
-              "query_name": "Product Adoption Overtime",
-              "query_id": "0f5c47ae-2a5e-41db-a642-4b77cc5fb357",
-              "owner_name": "",
-              "document_name": "Overview: Customer Account Engagement",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "e445af06",
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Edge Destinations",
-              "query_id": "0eccf7c3-b17a-4025-b556-1df4c7a21d9e",
-              "owner_name": "",
-              "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "e445af06",
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Customer Usage",
-              "query_id": "f42fb9bf-e482-4f23-96da-d35227e9adc1",
-              "owner_name": "",
-              "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "e445af06",
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Edge Node Version Distribution",
-              "query_id": "69ab6576-1c45-43e2-bf42-5741efd6e533",
-              "owner_name": "",
-              "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
-              "document_id": "de229002",
-              "query_table": "product__onprem_telemetry_daily",
-              "document_scope": "organization",
-              "query_name": "Software Activity over Time",
-              "query_id": "e052d3a0-a0c4-48f4-9227-00e680f754e1",
-              "owner_name": "",
-              "document_name": "Customer: Customer Breakdown",
-              "folder_name": "",
-              "folder_id": "",
-              "has_dashboard": true,
-              "folder_path": ""
-            },
-            {
               "document_id": "45d06a29",
               "query_table": "engineering__azure_cloud_cost",
               "document_scope": "organization",
               "query_name": "Monthly Costs by Usage",
               "query_id": "b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964",
-              "owner_name": "",
+              "owner_name": "Matthew Lim",
+              "owner_id": "86a545a6-5958-43e5-8f16-68eb9f148744",
               "document_name": "Overview: Azure Cost Metrics",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "engineering"
             },
             {
               "document_id": "f36024ab",
@@ -1896,12 +1832,13 @@
               "document_scope": "organization",
               "query_name": "Software Unit Price by Volume Groups (in TB)",
               "query_id": "e73859e0-482a-4a06-9ef4-a360a52a55a9",
-              "owner_name": "",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
               "document_name": "Overview: Deal Pricing Summary",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "GTM Leads",
+              "folder_id": "a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "gtm_leads"
             },
             {
               "document_id": "de229002",
@@ -1909,12 +1846,13 @@
               "document_scope": "organization",
               "query_name": "Software - Destinations",
               "query_id": "b6e5460d-4b4b-4b25-9758-49c5f676f13d",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Customer: Customer Breakdown",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Customer Experience",
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "customer_experience"
             },
             {
               "document_id": "de229002",
@@ -1922,12 +1860,13 @@
               "document_scope": "organization",
               "query_name": "Software Activity over Time",
               "query_id": "e052d3a0-a0c4-48f4-9227-00e680f754e1",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Customer: Customer Breakdown",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Customer Experience",
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "customer_experience"
             },
             {
               "document_id": "e445af06",
@@ -1935,12 +1874,13 @@
               "document_scope": "organization",
               "query_name": "In/Out Tb (Monthly Estimate)",
               "query_id": "7c0f56fe-c131-4753-a13b-bd71a2d33537",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "product"
             },
             {
               "document_id": "e445af06",
@@ -1948,12 +1888,13 @@
               "document_scope": "organization",
               "query_name": "Edge Software KPIs",
               "query_id": "e4a10e11-b2cc-49a6-8f4b-3bfb9110ff53",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "product"
             },
             {
               "document_id": "e445af06",
@@ -1961,12 +1902,13 @@
               "document_scope": "organization",
               "query_name": "Licenses Using Stream and Data Volume",
               "query_id": "d1b6eea7-c803-4570-b542-784b635aef1f",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "product"
             },
             {
               "document_id": "e445af06",
@@ -1974,19 +1916,297 @@
               "document_scope": "organization",
               "query_name": "Edge Data Volume over Time",
               "query_id": "d6bc128e-3e93-40a1-b089-1f202fd7f949",
-              "owner_name": "",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
               "document_name": "Product: Cribl Suite - Software",
-              "folder_name": "",
-              "folder_id": "",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
               "has_dashboard": true,
-              "folder_path": ""
+              "folder_path": "product"
             }
           ]
         }
       }
+    ],
+    "Merge1": [
+      {
+        "json": {
+          "output": [
+            {
+              "document_id": "45d06a29",
+              "query_table": "engineering__azure_cloud_cost",
+              "document_scope": "organization",
+              "query_name": "Monthly Costs by Usage",
+              "query_id": "b3fe0946-15c0-4ea5-a6ff-fd8f23ac5964",
+              "owner_name": "Matthew Lim",
+              "owner_id": "86a545a6-5958-43e5-8f16-68eb9f148744",
+              "document_name": "Overview: Azure Cost Metrics",
+              "folder_name": "Engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "has_dashboard": true,
+              "folder_path": "engineering"
+            },
+            {
+              "document_id": "f36024ab",
+              "query_table": "sales__opp_primary_quote_lines",
+              "document_scope": "organization",
+              "query_name": "Software Unit Price by Volume Groups (in TB)",
+              "query_id": "e73859e0-482a-4a06-9ef4-a360a52a55a9",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
+              "document_name": "Overview: Deal Pricing Summary",
+              "folder_name": "GTM Leads",
+              "folder_id": "a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21",
+              "has_dashboard": true,
+              "folder_path": "gtm_leads"
+            },
+            {
+              "document_id": "de229002",
+              "query_table": "product__onprem_telemetry_daily",
+              "document_scope": "organization",
+              "query_name": "Software - Destinations",
+              "query_id": "b6e5460d-4b4b-4b25-9758-49c5f676f13d",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Customer: Customer Breakdown",
+              "folder_name": "Customer Experience",
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
+              "has_dashboard": true,
+              "folder_path": "customer_experience"
+            },
+            {
+              "document_id": "de229002",
+              "query_table": "product__onprem_telemetry_daily",
+              "document_scope": "organization",
+              "query_name": "Software Activity over Time",
+              "query_id": "e052d3a0-a0c4-48f4-9227-00e680f754e1",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Customer: Customer Breakdown",
+              "folder_name": "Customer Experience",
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
+              "has_dashboard": true,
+              "folder_path": "customer_experience"
+            },
+            {
+              "document_id": "e445af06",
+              "query_table": "software_gb_monthly",
+              "document_scope": "organization",
+              "query_name": "In/Out Tb (Monthly Estimate)",
+              "query_id": "7c0f56fe-c131-4753-a13b-bd71a2d33537",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Product: Cribl Suite - Software",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "has_dashboard": true,
+              "folder_path": "product"
+            },
+            {
+              "document_id": "e445af06",
+              "query_table": "software_gb_monthly",
+              "document_scope": "organization",
+              "query_name": "Edge Software KPIs",
+              "query_id": "e4a10e11-b2cc-49a6-8f4b-3bfb9110ff53",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Product: Cribl Suite - Software",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "has_dashboard": true,
+              "folder_path": "product"
+            },
+            {
+              "document_id": "e445af06",
+              "query_table": "software_gb_monthly",
+              "document_scope": "organization",
+              "query_name": "Licenses Using Stream and Data Volume",
+              "query_id": "d1b6eea7-c803-4570-b542-784b635aef1f",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Product: Cribl Suite - Software",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "has_dashboard": true,
+              "folder_path": "product"
+            },
+            {
+              "document_id": "e445af06",
+              "query_table": "software_gb_monthly",
+              "document_scope": "organization",
+              "query_name": "Edge Data Volume over Time",
+              "query_id": "d6bc128e-3e93-40a1-b089-1f202fd7f949",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_name": "Product: Cribl Suite - Software",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "has_dashboard": true,
+              "folder_path": "product"
+            }
+          ]
+        }
+      },
+      {
+        "json": {
+          "output": [
+            {
+              "document_id": "621d0118",
+              "document_name": "Overview: GTM Partner Metrics",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "revenue",
+              "folder_id": "d20366ff-ebb8-42b0-b2ab-9665f0dc4390",
+              "folder_name": "Revenue",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf"
+            },
+            {
+              "document_id": "959cb1c9",
+              "document_name": "Team: SDR Manager",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "marketing",
+              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
+              "folder_name": "Marketing",
+              "owner_name": "John McGuire",
+              "owner_id": "cf1a03e2-a8fe-493e-9aed-0768d989518a"
+            },
+            {
+              "document_id": "1decf0ae",
+              "document_name": "Overview: Release Metrics",
+              "document_scope": "organization",
+              "has_dashboard": true,
+              "folder_path": "engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "folder_name": "Engineering",
+              "owner_name": "Adam Armagost",
+              "owner_id": "433b1608-177f-4449-b7bd-470e9283efcd"
+            }
+          ]
+        }
+      }
+    ],
+    "Map Reduce Document Count": [
+      {
+        "json": {
+          "output": [
+            {
+              "document_id": "45d06a29",
+              "owner_name": "Matthew Lim",
+              "owner_id": "86a545a6-5958-43e5-8f16-68eb9f148744",
+              "document_scope": "organization",
+              "document_name": "Overview: Azure Cost Metrics",
+              "folder_name": "Engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "has_dashboard": true,
+              "folder_path": "engineering",
+              "count": 1
+            },
+            {
+              "document_id": "f36024ab",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
+              "document_scope": "organization",
+              "document_name": "Overview: Deal Pricing Summary",
+              "folder_name": "GTM Leads",
+              "folder_id": "a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21",
+              "has_dashboard": true,
+              "folder_path": "gtm_leads",
+              "count": 1
+            },
+            {
+              "document_id": "de229002",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_scope": "organization",
+              "document_name": "Customer: Customer Breakdown",
+              "folder_name": "Customer Experience",
+              "folder_id": "3d5676c9-be8d-47fd-b268-8beae0430608",
+              "has_dashboard": true,
+              "folder_path": "customer_experience",
+              "count": 2
+            },
+            {
+              "document_id": "e445af06",
+              "owner_name": "Chuck Morris",
+              "owner_id": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "document_scope": "organization",
+              "document_name": "Product: Cribl Suite - Software",
+              "folder_name": "Product",
+              "folder_id": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "has_dashboard": true,
+              "folder_path": "product",
+              "count": 4
+            },
+            {
+              "document_id": "621d0118",
+              "owner_name": "Laura Knipe",
+              "owner_id": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
+              "document_scope": "organization",
+              "document_name": "Overview: GTM Partner Metrics",
+              "folder_name": "Revenue",
+              "folder_id": "d20366ff-ebb8-42b0-b2ab-9665f0dc4390",
+              "has_dashboard": true,
+              "folder_path": "revenue",
+              "count": 1
+            },
+            {
+              "document_id": "959cb1c9",
+              "owner_name": "John McGuire",
+              "owner_id": "cf1a03e2-a8fe-493e-9aed-0768d989518a",
+              "document_scope": "organization",
+              "document_name": "Team: SDR Manager",
+              "folder_name": "Marketing",
+              "folder_id": "3089bcee-baea-45af-8613-63077f0e9417",
+              "has_dashboard": true,
+              "folder_path": "marketing",
+              "count": 1
+            },
+            {
+              "document_id": "1decf0ae",
+              "owner_name": "Adam Armagost",
+              "owner_id": "433b1608-177f-4449-b7bd-470e9283efcd",
+              "document_scope": "organization",
+              "document_name": "Overview: Release Metrics",
+              "folder_name": "Engineering",
+              "folder_id": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "has_dashboard": true,
+              "folder_path": "engineering",
+              "count": 1
+            }
+          ]
+        }
+      }
+    ],
+    "Response Agent": [
+      {
+        "json": {
+          "output": {
+            "message": "Hey <@nathan_kwok>, it looks like you’re searching for insights around daily customer ingest volume. These dashboards might contain the metrics you need:\n\n• <https://cribl.omniapp.co/dashboards/45d06a29|Overview: Azure Cost Metrics> in the <https://cribl.omniapp.co/f/engineering|Engineering> folder\n• <https://cribl.omniapp.co/dashboards/f36024ab|Overview: Deal Pricing Summary> in the <https://cribl.omniapp.co/f/gtm_leads|GTM Leads> folder\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> in the <https://cribl.omniapp.co/f/customer_experience|Customer Experience> folder\n• <https://cribl.omniapp.co/dashboards/e445af06|Product: Cribl Suite - Software> in the <https://cribl.omniapp.co/f/product|Product> folder\n• <https://cribl.omniapp.co/dashboards/621d0118|Overview: GTM Partner Metrics> in the <https://cribl.omniapp.co/f/revenue|Revenue> folder\n• <https://cribl.omniapp.co/dashboards/959cb1c9|Team: SDR Manager> in the <https://cribl.omniapp.co/f/marketing|Marketing> folder\n• <https://cribl.omniapp.co/dashboards/1decf0ae|Overview: Release Metrics> in the <https://cribl.omniapp.co/f/engineering|Engineering> folder",
+            "dashboard_urls": [
+              "https://cribl.omniapp.co/dashboards/45d06a29",
+              "https://cribl.omniapp.co/dashboards/f36024ab",
+              "https://cribl.omniapp.co/dashboards/de229002",
+              "https://cribl.omniapp.co/dashboards/e445af06",
+              "https://cribl.omniapp.co/dashboards/621d0118",
+              "https://cribl.omniapp.co/dashboards/959cb1c9",
+              "https://cribl.omniapp.co/dashboards/1decf0ae"
+            ],
+            "folder_urls": [
+              "https://cribl.omniapp.co/f/engineering",
+              "https://cribl.omniapp.co/f/gtm_leads",
+              "https://cribl.omniapp.co/f/customer_experience",
+              "https://cribl.omniapp.co/f/product",
+              "https://cribl.omniapp.co/f/revenue",
+              "https://cribl.omniapp.co/f/marketing"
+            ]
+          }
+        }
+      }
     ]
   },
-  "versionId": "e504c9e5-2f05-4e57-b031-d2afc5d0aba7",
+  "versionId": "72691760-546b-4e95-afc3-e360017e7c38",
   "triggerCount": 1,
   "shared": [
     {
