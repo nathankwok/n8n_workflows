@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T07:33:17.693Z",
-  "updatedAt": "2025-09-26T05:12:02.625Z",
+  "updatedAt": "2025-09-26T08:47:52.397Z",
   "id": "d0l6ZepnDYgKyq5P",
   "name": "Snowflake Cortex Analyst Subworkflow",
   "active": false,
@@ -297,7 +297,7 @@
       }
     ]
   },
-  "versionId": "f1c80c51-443c-48d8-9c2f-81fd3e2dccd4",
+  "versionId": "fa9f83ce-867b-4873-8e77-412a7190aa8e",
   "triggerCount": 0,
   "shared": [
     {
@@ -308,5 +308,12 @@
       "projectId": "w7JTueqTYNrmBYZn"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-09-23T07:33:31.958Z",
+      "updatedAt": "2025-09-23T07:33:31.958Z",
+      "id": "iQwJzKyyyBwW6Yxk",
+      "name": "subworkflow"
+    }
+  ]
 }
