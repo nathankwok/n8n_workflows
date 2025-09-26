@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-03T08:29:23.372Z",
-  "updatedAt": "2025-09-26T08:34:03.512Z",
+  "updatedAt": "2025-09-26T08:40:18.033Z",
   "id": "onEJNvmxhmWCE8mY",
   "name": "ask-data Omni Dashboard Search",
   "active": true,
@@ -1040,7 +1040,7 @@
       "typeVersion": 1.3,
       "position": [
         4752,
-        1216
+        1232
       ],
       "id": "db18114a-f1cf-43ff-94b2-a0c3293283cd",
       "name": "Structured Output Parser1"
@@ -1085,8 +1085,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        2224,
-        2976
+        2304,
+        2672
       ],
       "id": "8e509638-3b94-4431-af3c-3b64457fc4ae",
       "name": "Cortex Agent o4-mini1",
@@ -1105,8 +1105,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        2384,
-        3040
+        2464,
+        2736
       ],
       "id": "b9448a5d-d6da-4a3b-aa43-e839842c1339",
       "name": "Cortex Agent Gemini 2.5 Pro3",
@@ -1125,8 +1125,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        2704,
-        2976
+        2784,
+        2672
       ],
       "id": "1e7a7a40-cb9a-4d24-846f-4c8266d9256f",
       "name": "Cortex Agent Structured Output Parser1"
@@ -1183,8 +1183,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        2368,
-        2672
+        2448,
+        2368
       ],
       "id": "3508424b-fe14-4b17-a22f-4da1f868fabc",
       "name": "Cortex Search Document by Keyword",
@@ -1216,8 +1216,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2368,
-        2464
+        2448,
+        2160
       ],
       "typeVersion": 1,
       "id": "2f50b6ff-abf6-4ff4-a8e6-36f0a55a15ee",
@@ -1243,8 +1243,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.2,
       "position": [
-        2544,
-        3040
+        2624,
+        2736
       ],
       "id": "257789a9-985c-41da-a079-b73fa3c78717",
       "name": "Cortex Search Document Name1",
@@ -2306,7 +2306,7 @@
       }
     ]
   },
-  "versionId": "50912fc9-4faa-4333-9294-fde588bb4055",
+  "versionId": "c25b26b7-cbc6-47a4-a94a-7fb255f28c21",
   "triggerCount": 1,
   "shared": [
     {
