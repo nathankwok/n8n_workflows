@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-26T07:45:26.364Z",
-  "updatedAt": "2025-09-26T10:37:51.771Z",
+  "updatedAt": "2025-09-26T10:40:54.872Z",
   "id": "NtleQBA0zDooWi7o",
   "name": "Get Documents from Snowflake",
   "active": false,
@@ -60,7 +60,7 @@
     {
       "parameters": {
         "aggregate": "aggregateAllItemData",
-        "destinationFieldName": "output",
+        "destinationFieldName": "asdf",
         "options": {}
       },
       "type": "n8n-nodes-base.aggregate",
@@ -70,7 +70,8 @@
         0
       ],
       "id": "68c4b2b6-b312-44ad-9fbf-af257f3155a6",
-      "name": "Aggregate"
+      "name": "Aggregate",
+      "disabled": true
     },
     {
       "parameters": {
@@ -368,7 +369,7 @@
       }
     ]
   },
-  "versionId": "0b2444f4-be2c-48f8-b51f-0705341bec58",
+  "versionId": "3a6ae8ef-f873-4396-836b-0b3f3f9ab365",
   "triggerCount": 0,
   "shared": [
     {
