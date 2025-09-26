@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-26T08:40:31.056Z",
-  "updatedAt": "2025-09-26T11:18:22.146Z",
+  "updatedAt": "2025-09-26T19:57:56.925Z",
   "id": "4bqYeLDmprfUiEna",
   "name": "ask-data Omni Dashboard Search HTTP",
   "active": true,
@@ -854,14 +854,14 @@
     {
       "parameters": {
         "content": "## Semantic Search by Message",
-        "height": 880,
+        "height": 688,
         "width": 1376,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         1888,
-        -416
+        -224
       ],
       "typeVersion": 1,
       "id": "3e322012-6e37-43b9-acba-8a8aa95d3574",
@@ -1874,6 +1874,40 @@
       "typeVersion": 1,
       "id": "e1937fac-b35d-4e22-8c83-9aa861f9b469",
       "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db37641f-bd94-4380-9a63-3cb9c519e3fd",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        2272
+      ],
+      "id": "b352069a-cd77-47fa-98e0-87fa12529ffd",
+      "name": "Filter"
     }
   ],
   "connections": {
@@ -1915,6 +1949,11 @@
         [
           {
             "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter",
             "type": "main",
             "index": 0
           }
@@ -2631,12 +2670,12 @@
           "headers": {
             "connection": "upgrade",
             "host": "agenticflows.xyz",
-            "x-real-ip": "44.202.18.109",
-            "x-forwarded-for": "44.202.18.109",
+            "x-real-ip": "54.234.201.125",
+            "x-forwarded-for": "54.234.201.125",
             "x-forwarded-proto": "https",
             "x-forwarded-host": "agenticflows.xyz",
             "x-forwarded-port": "443",
-            "content-length": "745",
+            "content-length": "774",
             "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
             "content-type": "application/json; charset=utf-8",
             "user-agent": "Zapier",
@@ -2651,6 +2690,7 @@
             "conversation_id": "C0912AANW1L",
             "emoji_user_id": "U06PVBEK9T6",
             "emoji_user_name": "nkwok",
+            "is_message_user_bot": "True",
             "message": "Hey @nathan_kwok, I found a few dashboards around customer data ingestion and related metrics that might contain what you need:\n• https://cribl.omniapp.co/dashboards/e445af06Product: Cribl Suite - Software> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/de229002Customer: Customer Breakdown> in https://cribl.omniapp.co/f/customer experienceCustomer Experience>\n• https://cribl.omniapp.co/dashboards/13c98724Team: SRE Engineering SLO> in https://cribl.omniapp.co/f/sreSRE>",
             "message_ts": "1758884220.687049",
             "user_name": "Omni Bot"
@@ -2661,7 +2701,7 @@
       }
     ]
   },
-  "versionId": "0f66a232-c8ec-472a-8445-a4e3929fb598",
+  "versionId": "b1002895-3e60-4975-9f60-783c3d22ba6c",
   "triggerCount": 1,
   "shared": [
     {
