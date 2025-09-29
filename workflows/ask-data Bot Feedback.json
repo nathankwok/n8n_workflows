@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-27T00:39:36.906Z",
-  "updatedAt": "2025-09-29T01:31:51.486Z",
+  "updatedAt": "2025-09-29T04:38:53.253Z",
   "id": "SoS69nrX4dLvYIUj",
   "name": "ask-data Bot Feedback",
   "active": true,
@@ -37,7 +37,8 @@
           "id": "qYqaYFYnJhcQuBMI",
           "name": "Zapier Inbound Basic Auth Webhook"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -67,7 +68,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        608,
+        1024,
         -112
       ],
       "id": "fefc0f37-2d11-4d96-a3bd-43899899aac7",
@@ -95,7 +96,7 @@
       "type": "n8n-nodes-base.snowflake",
       "typeVersion": 1,
       "position": [
-        816,
+        1232,
         -112
       ],
       "id": "45fbe1d5-ffa0-4ad6-94e7-871cb0b57aa5",
@@ -110,7 +111,7 @@
     },
     {
       "parameters": {
-        "content": "### Test data for emoji only on omni bot message\n\n{\n  \"user_email\": \"nkwok@cribl.io\",\n  \"message_ts\": \"1758911298.124399\",\n  \"message_message_timestamp\": \"2025-09-26T18:28:18.124Z\",\n  \"message_raw_text\": \"<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>\",\n  \"user_id\": \"U06PVBEK9T6\",\n  \"message_user_name\": \"Omni Bot\",\n  \"message_channel_name\": \"data-eng-test-ai-channel\",\n  \"message_channel_id\": \"C0912AANW1L\",\n  \"event_timestamp\": \"2025-09-28T05:39:57.000Z\",\n  \"conversation_id\": \"C0912AANW1L\",\n  \"reaction\": \"+1\",\n  \"event_ts\": \"1759037997.000668\",\n  \"message_user_is_bot\": \"True\",\n  \"message_team_domain\": \"cribl\",\n  \"message_team_id\": \"T3XQYAF26\",\n  \"message_team_name\": \"Cribl\",\n  \"reaction_count\": \"1\",\n  \"message_text\": \"@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>\",\n  \"message_thread_ts\": \"1758911151.912309\",\n  \"message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\",\n  \"feedback_medium\": \"emoji\"\n}",
+        "content": "### Test data for emoji only on omni bot message\n\n```\n{\n      \"user_email\": \"nkwok@cribl.io\",\n      \"message_ts\": \"1758911298.124399\",\n      \"message_message_timestamp\": \"2025-09-26T18:28:18.124Z\",\n      \"message_raw_text\": \"<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>\",\n      \"user_id\": \"U06PVBEK9T6\",\n      \"message_user_name\": \"Omni Bot\",\n      \"message_channel_name\": \"data-eng-test-ai-channel\",\n      \"message_channel_id\": \"C0912AANW1L\",\n      \"event_timestamp\": \"2025-09-28T05:39:57.000Z\",\n      \"conversation_id\": \"C0912AANW1L\",\n      \"reaction\": \"+1\",\n      \"event_ts\": \"1759037997.000668\",\n      \"message_user_is_bot\": \"True\",\n      \"message_team_domain\": \"cribl\",\n      \"message_team_id\": \"T3XQYAF26\",\n      \"message_team_name\": \"Cribl\",\n      \"message_text\": \"@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>\",\n      \"message_thread_ts\": \"1758911151.912309\",\n      \"message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\",\n      \"feedback_medium\": \"emoji\",\n      \"original_message_ts\": \"1758911151.912309\",\n      \"original_message_text\": \"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?\",\n      \"original_message_user_id\": \"U06PVBEK9T6\",\n      \"original_message_thread_ts\": \"1758911151.912309\",\n      \"message_permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1758911298124399?thread_ts=1758911151.912309&cid=C0912AANW1L\"\n    }\n```",
         "height": 656,
         "width": 560
       },
@@ -209,7 +210,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        144,
+        352,
         480
       ],
       "id": "5296ec78-76c6-465a-ad8c-5f8c30cd4183",
@@ -251,7 +252,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -96,
+        112,
         480
       ],
       "id": "3f6d84fe-7acf-4d96-8d1f-1ce161c70c36",
@@ -305,12 +306,11 @@
           "id": "qYqaYFYnJhcQuBMI",
           "name": "Zapier Inbound Basic Auth Webhook"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
-        "content": "### Test data for feedback text\n\n{\n  \"ts\": \"1759106330.788269\",\n  \"user_name\": \"nathan_kwok\",\n  \"user_real_name\": \"Nathan Kwok\",\n  \"channel_id\": \"C0912AANW1L\",\n  \"permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1759106330788269?thread_ts=1758911151.912309&cid=C0912AANW1L\",\n  \"user_profile_first_name\": \"Nathan\",\n  \"ts_time\": \"2025-09-29T00:38:50.000Z\",\n  \"user_profile_last_name\": \"Kwok\",\n  \"raw_text\": \"<@U08DHKDMR8C> this is the 8th tagged message\",\n  \"thread_ts\": \"1758911151.912309\",\n  \"user_id\": \"U06PVBEK9T6\",\n  \"user_profile_email\": \"nkwok@cribl.io\",\n  \"team_name\": \"Cribl\",\n  \"user_is_bot\": \"False\",\n  \"team_domain\": \"cribl\",\n  \"team_id\": \"T3XQYAF26\",\n  \"text\": \"@omni this is the 8th tagged message\",\n  \"channel_name\": \"data-eng-test-ai-channel\",\n  \"user_email\": \"nkwok@cribl.io\",\n  \"feedback_medium\": \"text\",\n  \"original_message_text\": \"Hi Nathan Kwok,\\n\\nHere are the dashboards I found:\\n\\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> exists in <https://cribl.omniapp.co/f/customer-experience|Customer Experience>\\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\\n\\nLet me know if you need anything else!\",\n  \"original_message_subtype\": \"bot_message\",\n  \"original_message_bot_id\": \"B01304K3N6S\",\n  \"original_message_bot_username\": \"Omni Bot\",\n  \"original_message_ts\": \"1758911298.124399\"\n}",
+        "content": "### Test data for feedback text\n\n```\n{\n      \"ts\": \"1759120221.028239\",\n      \"user_name\": \"nathan_kwok\",\n      \"user_real_name\": \"Nathan Kwok\",\n      \"channel_id\": \"C0912AANW1L\",\n      \"permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1759120221028239?thread_ts=1758911151.912309&cid=C0912AANW1L\",\n      \"user_profile_first_name\": \"Nathan\",\n      \"ts_time\": \"2025-09-29T04:30:21.000Z\",\n      \"user_profile_last_name\": \"Kwok\",\n      \"raw_text\": \"<@U08DHKDMR8C> this is the 9th tagged message\",\n      \"thread_ts\": \"1758911151.912309\",\n      \"user_id\": \"U06PVBEK9T6\",\n      \"user_profile_email\": \"nkwok@cribl.io\",\n      \"team_name\": \"Cribl\",\n      \"user_is_bot\": \"False\",\n      \"team_domain\": \"cribl\",\n      \"team_id\": \"T3XQYAF26\",\n      \"text\": \"@omni this is the 9th tagged message\",\n      \"channel_name\": \"data-eng-test-ai-channel\",\n      \"user_email\": \"nkwok@cribl.io\",\n      \"feedback_medium\": \"text\",\n      \"omni_message_text\": \"Thank you! How can I assist you today?\",\n      \"omni_message_subtype\": \"bot_message\",\n      \"omni_message_bot_id\": \"B01304K3N6S\",\n      \"omni_message_bot_username\": \"Omni Bot\",\n      \"omni_message_ts\": \"1759104317.219099\",\n      \"original_message_ts\": \"1758911151.912309\",\n      \"original_message_text\": \"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?\",\n      \"original_message_user_id\": \"U06PVBEK9T6\",\n      \"original_message_thread_ts\": \"1758911151.912309\",\n      \"original_message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\"\n    }\n```",
         "height": 640,
         "width": 672
       },
@@ -322,6 +322,37 @@
       "typeVersion": 1,
       "id": "cc4643aa-c30b-443e-b951-1a6a77203501",
       "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"emoji_feedback_mapping\": {\n    \"feedback_id\": \"event_ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"event_timestamp\",\n    \"feedback_user_email\": \"user_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"message_channel_id\",\n    \"channel_name\": \"message_channel_name\",\n    \"team_id\": \"message_team_id\",\n    \"team_domain\": \"message_team_domain\",\n    \"omni_message_id\": \"message_ts\",\n    \"omni_message_text\": \"message_raw_text\",\n    \"omni_message_timestamp\": \"message_message_timestamp\",\n    \"omni_message_user_name\": \"message_user_name\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"message_thread_ts_time\",\n    \"feedback_content\": \"reaction\",\n    \"permalink\": \"message_permalink\"\n  },\n  \"text_feedback_mapping\": {\n    \"feedback_id\": \"ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"ts_time\",\n    \"feedback_user_email\": \"user_profile_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"channel_id\",\n    \"channel_name\": \"channel_name\",\n    \"team_id\": \"team_id\",\n    \"team_domain\": \"team_domain\",\n    \"omni_message_id\": \"omni_message_ts\",\n    \"omni_message_text\": \"omni_message_text\",\n    \"omni_message_timestamp\": null,\n    \"omni_message_user_name\": \"omni_message_bot_username\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"original_message_thread_ts_time\",\n    \"feedback_content\": \"text\",\n    \"permalink\": \"permalink\"\n  }\n}\n",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -112
+      ],
+      "id": "b2f8784a-4c95-47fc-b2b2-44b569cc7666",
+      "name": "Edit Fields",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timezone\nts = _input.first().json.body.omni_message_ts\nprint(ts)\ndt = datetime.fromtimestamp(float(ts), tz=timezone.utc)\nprint(dt)\niso = dt.isoformat(timespec=\"milliseconds\").replace(\"+00:00\", \"Z\")\nprint(iso)\n\nreturn iso\n# \"2025-09-29T00:38:50.788Z\"\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        288
+      ],
+      "id": "479abe6e-a778-498f-99c2-c7f797ec3d6d",
+      "name": "Code in Python (Beta)"
     }
   ],
   "connections": {
@@ -360,13 +391,7 @@
     },
     "Global Vars Emoji": {
       "main": [
-        [
-          {
-            "node": "Filter",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Switch1": {
@@ -387,8 +412,29 @@
             "node": "Switch1",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
           }
         ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        []
       ]
     }
   },
@@ -525,12 +571,12 @@
           "headers": {
             "connection": "upgrade",
             "host": "agenticflows.xyz",
-            "x-real-ip": "44.197.205.47",
-            "x-forwarded-for": "44.197.205.47",
+            "x-real-ip": "35.172.134.134",
+            "x-forwarded-for": "35.172.134.134",
             "x-forwarded-proto": "https",
             "x-forwarded-host": "agenticflows.xyz",
             "x-forwarded-port": "443",
-            "content-length": "1409",
+            "content-length": "1410",
             "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
             "content-type": "application/json; charset=utf-8",
             "user-agent": "Zapier",
@@ -540,15 +586,15 @@
           "params": {},
           "query": {},
           "body": {
-            "ts": "1759106330.788269",
+            "ts": "1759120221.028239",
             "user_name": "nathan_kwok",
             "user_real_name": "Nathan Kwok",
             "channel_id": "C0912AANW1L",
-            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759106330788269?thread_ts=1758911151.912309&cid=C0912AANW1L",
+            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759120221028239?thread_ts=1758911151.912309&cid=C0912AANW1L",
             "user_profile_first_name": "Nathan",
-            "ts_time": "2025-09-29T00:38:50.000Z",
+            "ts_time": "2025-09-29T04:30:21.000Z",
             "user_profile_last_name": "Kwok",
-            "raw_text": "<@U08DHKDMR8C> this is the 8th tagged message",
+            "raw_text": "<@U08DHKDMR8C> this is the 9th tagged message",
             "thread_ts": "1758911151.912309",
             "user_id": "U06PVBEK9T6",
             "user_profile_email": "nkwok@cribl.io",
@@ -556,14 +602,20 @@
             "user_is_bot": "False",
             "team_domain": "cribl",
             "team_id": "T3XQYAF26",
-            "text": "@omni this is the 8th tagged message",
+            "text": "@omni this is the 9th tagged message",
             "channel_name": "data-eng-test-ai-channel",
             "user_email": "nkwok@cribl.io",
             "feedback_medium": "text",
-            "original_message_text": "Hi Nathan Kwok,\n\nHere are the dashboards I found:\n\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> exists in <https://cribl.omniapp.co/f/customer-experience|Customer Experience>\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\n\nLet me know if you need anything else!",
-            "original_message_subtype": "bot_message",
-            "original_message_bot_id": "B01304K3N6S",
-            "original_message_bot_username": "Omni Bot"
+            "omni_message_text": "Thank you! How can I assist you today?",
+            "omni_message_subtype": "bot_message",
+            "omni_message_bot_id": "B01304K3N6S",
+            "omni_message_bot_username": "Omni Bot",
+            "omni_message_ts": "1759104317.219099",
+            "original_message_ts": "1758911151.912309",
+            "original_message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?",
+            "original_message_user_id": "U06PVBEK9T6",
+            "original_message_thread_ts": "1758911151.912309",
+            "original_message_thread_ts_time": "2025-09-26T18:25:51.000Z"
           },
           "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
           "executionMode": "test"
@@ -576,12 +628,12 @@
           "headers": {
             "connection": "upgrade",
             "host": "agenticflows.xyz",
-            "x-real-ip": "44.211.36.15",
-            "x-forwarded-for": "44.211.36.15",
+            "x-real-ip": "3.92.92.73",
+            "x-forwarded-for": "3.92.92.73",
             "x-forwarded-proto": "https",
             "x-forwarded-host": "agenticflows.xyz",
             "x-forwarded-port": "443",
-            "content-length": "1902",
+            "content-length": "2366",
             "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
             "content-type": "application/json; charset=utf-8",
             "user-agent": "Zapier",
@@ -607,11 +659,15 @@
             "message_team_domain": "cribl",
             "message_team_id": "T3XQYAF26",
             "message_team_name": "Cribl",
-            "reaction_count": "1",
             "message_text": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
             "message_thread_ts": "1758911151.912309",
             "message_thread_ts_time": "2025-09-26T18:25:51.000Z",
-            "feedback_medium": "emoji"
+            "feedback_medium": "emoji",
+            "original_message_ts": "1758911151.912309",
+            "original_message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?",
+            "original_message_user_id": "U06PVBEK9T6",
+            "original_message_thread_ts": "1758911151.912309",
+            "message_permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1758911298124399?thread_ts=1758911151.912309&cid=C0912AANW1L"
           },
           "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
           "executionMode": "test"
@@ -619,7 +675,7 @@
       }
     ]
   },
-  "versionId": "71ffbaee-e3cd-4f63-8179-13f64067372d",
+  "versionId": "830cb592-6cd0-41b2-b996-948d5071257a",
   "triggerCount": 1,
   "shared": [
     {
