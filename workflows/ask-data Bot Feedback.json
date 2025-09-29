@@ -1,114 +1,11 @@
 {
   "createdAt": "2025-09-27T00:39:36.906Z",
-  "updatedAt": "2025-09-29T04:38:53.253Z",
+  "updatedAt": "2025-09-29T09:08:13.982Z",
   "id": "SoS69nrX4dLvYIUj",
   "name": "ask-data Bot Feedback",
   "active": true,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
-        "authentication": "basicAuth",
-        "options": {
-          "responseHeaders": {
-            "entries": [
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          }
-        }
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -336,
-        -112
-      ],
-      "id": "f610e487-4112-41ba-92fd-69c9e6a2fbab",
-      "name": "Webhook",
-      "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
-      "alwaysOutputData": true,
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "qYqaYFYnJhcQuBMI",
-          "name": "Zapier Inbound Basic Auth Webhook"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "db37641f-bd94-4380-9a63-3cb9c519e3fd",
-              "leftValue": "={{ $json.body.is_message_user_bot }}",
-              "rightValue": "True",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "looseTypeValidation": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        1024,
-        -112
-      ],
-      "id": "fefc0f37-2d11-4d96-a3bd-43899899aac7",
-      "name": "Filter",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "content": "### When someone emoji's on the bot message",
-        "height": 400,
-        "width": 1056
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        112,
-        -192
-      ],
-      "typeVersion": 1,
-      "id": "c93651b6-c23e-466a-88b8-880ecedd6a3f",
-      "name": "Sticky Note19",
-      "disabled": true
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.snowflake",
-      "typeVersion": 1,
-      "position": [
-        1232,
-        -112
-      ],
-      "id": "45fbe1d5-ffa0-4ad6-94e7-871cb0b57aa5",
-      "name": "Snowflake",
-      "credentials": {
-        "snowflake": {
-          "id": "RmOaMDo0Ilqq9Xvl",
-          "name": "Snowflake account"
-        }
-      },
-      "disabled": true
-    },
     {
       "parameters": {
         "content": "### Test data for emoji only on omni bot message\n\n```\n{\n      \"user_email\": \"nkwok@cribl.io\",\n      \"message_ts\": \"1758911298.124399\",\n      \"message_message_timestamp\": \"2025-09-26T18:28:18.124Z\",\n      \"message_raw_text\": \"<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>\",\n      \"user_id\": \"U06PVBEK9T6\",\n      \"message_user_name\": \"Omni Bot\",\n      \"message_channel_name\": \"data-eng-test-ai-channel\",\n      \"message_channel_id\": \"C0912AANW1L\",\n      \"event_timestamp\": \"2025-09-28T05:39:57.000Z\",\n      \"conversation_id\": \"C0912AANW1L\",\n      \"reaction\": \"+1\",\n      \"event_ts\": \"1759037997.000668\",\n      \"message_user_is_bot\": \"True\",\n      \"message_team_domain\": \"cribl\",\n      \"message_team_id\": \"T3XQYAF26\",\n      \"message_team_name\": \"Cribl\",\n      \"message_text\": \"@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>\",\n      \"message_thread_ts\": \"1758911151.912309\",\n      \"message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\",\n      \"feedback_medium\": \"emoji\",\n      \"original_message_ts\": \"1758911151.912309\",\n      \"original_message_text\": \"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?\",\n      \"original_message_user_id\": \"U06PVBEK9T6\",\n      \"original_message_thread_ts\": \"1758911151.912309\",\n      \"message_permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1758911298124399?thread_ts=1758911151.912309&cid=C0912AANW1L\"\n    }\n```",
@@ -123,190 +20,6 @@
       "typeVersion": 1,
       "id": "af33c1b8-28c9-4fda-a51e-530b1e5a644d",
       "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.body.feedback_medium }}",
-                    "rightValue": "emoji",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "c2a34b63-358c-414f-bb10-c9df2559fc09"
-                  }
-                ],
-                "combinator": "and"
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        -128,
-        -112
-      ],
-      "id": "f4b75ddf-ea1f-4904-b55c-b424de09fe85",
-      "name": "Switch",
-      "alwaysOutputData": true,
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "n0RS6lMwHNeLTrk9",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/n0RS6lMwHNeLTrk9",
-          "cachedResultName": "Global Vars"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        160,
-        -112
-      ],
-      "id": "c89d20bb-5e13-4fa8-8b70-869fb344ea5e",
-      "name": "Global Vars Emoji",
-      "alwaysOutputData": true,
-      "disabled": true,
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "n0RS6lMwHNeLTrk9",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/n0RS6lMwHNeLTrk9",
-          "cachedResultName": "Global Vars"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        352,
-        480
-      ],
-      "id": "5296ec78-76c6-465a-ad8c-5f8c30cd4183",
-      "name": "Global Vars Text",
-      "alwaysOutputData": true,
-      "disabled": true,
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.body.feedback_medium }}",
-                    "rightValue": "text",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "c2a34b63-358c-414f-bb10-c9df2559fc09"
-                  }
-                ],
-                "combinator": "and"
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        112,
-        480
-      ],
-      "id": "3f6d84fe-7acf-4d96-8d1f-1ce161c70c36",
-      "name": "Switch1",
-      "alwaysOutputData": true,
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "content": "### When someone tags @Omni with a message. Needs to have found the original message",
-        "height": 400,
-        "width": 1056
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        112,
-        416
-      ],
-      "typeVersion": 1,
-      "id": "a4139563-1e60-4e0d-85d9-6934e1049df9",
-      "name": "Sticky Note20"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
-        "authentication": "basicAuth",
-        "options": {
-          "responseHeaders": {
-            "entries": [
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          }
-        }
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -304,
-        480
-      ],
-      "id": "c7a95d07-3b10-4d90-a666-fc3e3909e8a1",
-      "name": "Webhook2",
-      "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
-      "alwaysOutputData": true,
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "qYqaYFYnJhcQuBMI",
-          "name": "Zapier Inbound Basic Auth Webhook"
-        }
-      }
     },
     {
       "parameters": {
@@ -325,116 +38,515 @@
     },
     {
       "parameters": {
+        "content": "### When someone emoji's on the bot message",
+        "height": 288,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        768,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "b329f27e-31c4-47d9-a6bb-7b5479ad9b3f",
+      "name": "Sticky Note21",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// const items = $input.all();\nconst omni_message_timestamp_obj = $input.last().json;\nconst global_vars_output_obj = $input.first().json;\nconst body = global_vars_output_obj['body'];\n\nbody['omni_message_timestamp'] = omni_message_timestamp_obj['omni_message_timestamp'];\n\nglobal_vars_output_obj['body'] = body;\n\nreturn global_vars_output_obj;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        640
+      ],
+      "id": "4d4eaf07-38f6-448f-b218-2d63c009f112",
+      "name": "Insert Message Timestamp into Body"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1280,
+        640
+      ],
+      "id": "02c56d0b-dbf9-4166-9671-e3c478196271",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime, timezone\nts = _input.first().json.body.omni_message_ts\nprint(ts)\ndt = datetime.fromtimestamp(float(ts), tz=timezone.utc)\nprint(dt)\niso = dt.isoformat(timespec=\"milliseconds\").replace(\"+00:00\", \"Z\")\nprint(iso)\n\nreturn [ {\"omni_message_timestamp\": iso } ]\n# \"2025-09-29T00:38:50.788Z\"\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        752
+      ],
+      "id": "31ce3bd2-9365-4e59-ae18-99c2b899558e",
+      "name": "Extract Message Timestamp"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.feedback_medium }}",
+                    "rightValue": "emoji",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c2a34b63-358c-414f-bb10-c9df2559fc09"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "45226139-ff8a-4b14-bb81-66d4318cde04",
+                    "leftValue": "={{ $json.body.feedback_medium }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        576,
+        288
+      ],
+      "id": "a1dc169c-e590-4cc4-ac0d-8f7b8346692a",
+      "name": "Route Emoji or Text",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OFpD7aepKHcHCvqz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OFpD7aepKHcHCvqz",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        288
+      ],
+      "id": "739d82b4-2167-4ea7-8aca-e9a0c95e2ee2",
+      "name": "Global Vars",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"emoji_feedback_mapping\": {\n    \"feedback_id\": \"event_ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"event_timestamp\",\n    \"feedback_user_email\": \"user_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"message_channel_id\",\n    \"channel_name\": \"message_channel_name\",\n    \"team_id\": \"message_team_id\",\n    \"team_domain\": \"message_team_domain\",\n    \"omni_message_id\": \"message_ts\",\n    \"omni_message_text\": \"message_raw_text\",\n    \"omni_message_timestamp\": \"message_message_timestamp\",\n    \"omni_message_user_name\": \"message_user_name\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"message_thread_ts_time\",\n    \"feedback_content\": \"reaction\",\n    \"permalink\": \"message_permalink\"\n  },\n  \"text_feedback_mapping\": {\n    \"feedback_id\": \"ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"ts_time\",\n    \"feedback_user_email\": \"user_profile_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"channel_id\",\n    \"channel_name\": \"channel_name\",\n    \"team_id\": \"team_id\",\n    \"team_domain\": \"team_domain\",\n    \"omni_message_id\": \"omni_message_ts\",\n    \"omni_message_text\": \"omni_message_text\",\n    \"omni_message_timestamp\": null,\n    \"omni_message_user_name\": \"omni_message_bot_username\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"original_message_thread_ts_time\",\n    \"feedback_content\": \"text\",\n    \"permalink\": \"permalink\"\n  }\n}\n",
+        "jsonOutput": "{\n  \"table_schema_mapping\": {\n    \"feedback_id\": \"event_ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"event_timestamp\",\n    \"feedback_user_email\": \"user_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"message_channel_id\",\n    \"channel_name\": \"message_channel_name\",\n    \"team_id\": \"message_team_id\",\n    \"team_domain\": \"message_team_domain\",\n    \"omni_message_id\": \"message_ts\",\n    \"omni_message_text\": \"message_raw_text\",\n    \"omni_message_timestamp\": \"message_message_timestamp\",\n    \"omni_message_user_name\": \"message_user_name\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"message_thread_ts_time\",\n    \"feedback_content\": \"reaction\",\n    \"permalink\": \"message_permalink\"\n  }\n}\n",
         "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        736,
-        -112
+        1040,
+        272
       ],
-      "id": "b2f8784a-4c95-47fc-b2b2-44b569cc7666",
-      "name": "Edit Fields",
-      "disabled": true
+      "id": "fa31c55d-753a-43fb-a13a-b585d2553434",
+      "name": "Insert Emoji Schema Mapping"
     },
     {
       "parameters": {
-        "language": "python",
-        "pythonCode": "from datetime import datetime, timezone\nts = _input.first().json.body.omni_message_ts\nprint(ts)\ndt = datetime.fromtimestamp(float(ts), tz=timezone.utc)\nprint(dt)\niso = dt.isoformat(timespec=\"milliseconds\").replace(\"+00:00\", \"Z\")\nprint(iso)\n\nreturn iso\n# \"2025-09-29T00:38:50.788Z\"\n"
+        "mode": "raw",
+        "jsonOutput": "{\n\"table_schema_mapping\": {\n    \"feedback_id\": \"ts\",\n    \"feedback_medium\": \"feedback_medium\",\n    \"feedback_timestamp\": \"ts_time\",\n    \"feedback_user_email\": \"user_profile_email\",\n    \"feedback_user_id\": \"user_id\",\n    \"channel_id\": \"channel_id\",\n    \"channel_name\": \"channel_name\",\n    \"team_id\": \"team_id\",\n    \"team_domain\": \"team_domain\",\n    \"omni_message_id\": \"omni_message_ts\",\n    \"omni_message_text\": \"omni_message_text\",\n    \"omni_message_timestamp\": \"omni_message_timestamp\",\n    \"omni_message_user_name\": \"omni_message_bot_username\",\n    \"original_message_id\": \"original_message_ts\",\n    \"original_message_text\": \"original_message_text\",\n    \"original_message_user_id\": \"original_message_user_id\",\n    \"original_message_thread_ts\": \"original_message_thread_ts\",\n    \"thread_timestamp\": \"original_message_thread_ts_time\",\n    \"feedback_content\": \"text\",\n    \"permalink\": \"permalink\"\n  }\n}\n",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1696,
+        640
+      ],
+      "id": "101b4473-45a4-4d52-88cb-1af1f9df2ffc",
+      "name": "Insert Text Schema Mapping"
+    },
+    {
+      "parameters": {
+        "jsCode": "const mapping = $input.first().json.table_schema_mapping;\nconst body = $input.first().json.body;\nconst result = {};\n\nfor (const key in mapping) {\n  result[key] = body[mapping[key]];\n};\n\nreturn result;\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        592,
+        2096,
+        352
+      ],
+      "id": "67d03351-d4a2-4b5c-845e-b4b6169abb4a",
+      "name": "Map Feedback to Snowflake Schema"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "beb73ca1-5eb6-40e3-a72a-559f5d4bf9cb",
+              "name": "omni_feedback_table",
+              "value": "={\n  \"database\": \"ANALYTICS\",\n  \"schema\": \"OMNI\",\n  \"table\": \"OMNI_FEEDBACK\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
         288
       ],
-      "id": "479abe6e-a778-498f-99c2-c7f797ec3d6d",
-      "name": "Code in Python (Beta)"
+      "id": "a2aefb34-2d7a-4e19-b34b-5e81f1aa6c9b",
+      "name": "Omni Feedback Table Metadata"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT count(*) as \"count\" FROM \"ANALYTICS\".\"OMNI\".\"OMNI_FEEDBACK\" WHERE feedback_id = '{{ $json.feedback_id }}'"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        352
+      ],
+      "id": "50de1881-3ffe-439c-a265-f934d8477d7b",
+      "name": "Find Count for Event ID",
+      "credentials": {
+        "snowflake": {
+          "id": "RmOaMDo0Ilqq9Xvl",
+          "name": "Snowflake account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c806ba43-d60d-4a2e-8d62-281726ec7bf6",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2656,
+        352
+      ],
+      "id": "a16e06de-bc5c-49e7-93aa-a9d78bde933f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "table": "OMNI_FEEDBACK",
+        "columns": "={{ $('Retrieve Mapped Object').item.json.keys().join(\",\") }}"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        336
+      ],
+      "id": "af954eb7-5036-420d-a12b-441ecbfdc75e",
+      "name": "Insert Feedback into Snowflake",
+      "credentials": {
+        "snowflake": {
+          "id": "RmOaMDo0Ilqq9Xvl",
+          "name": "Snowflake account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $('Map Feedback to Snowflake Schema').item.json }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2992,
+        336
+      ],
+      "id": "5efd65a1-520b-43ba-800b-4382193ece67",
+      "name": "Retrieve Mapped Object"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+        "authentication": "basicAuth",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        288
+      ],
+      "id": "b5c1b21e-5921-41c9-bcdb-d4dff0c7da50",
+      "name": "Trigger",
+      "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "qYqaYFYnJhcQuBMI",
+          "name": "Zapier Inbound Basic Auth Webhook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### When someone tags @Omni with a message. Needs to have found the original message",
+        "height": 400,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        768,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "4320bd0e-f604-4162-940c-24d67778a996",
+      "name": "Sticky Note1"
     }
   ],
   "connections": {
-    "Webhook": {
+    "Insert Message Timestamp into Body": {
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Insert Text Schema Mapping",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filter": {
+    "Merge": {
       "main": [
         [
           {
-            "node": "Snowflake",
+            "node": "Insert Message Timestamp into Body",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Switch": {
+    "Extract Message Timestamp": {
       "main": [
         [
           {
-            "node": "Global Vars Emoji",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
     },
-    "Global Vars Emoji": {
-      "main": [
-        []
-      ]
-    },
-    "Switch1": {
+    "Route Emoji or Text": {
       "main": [
         [
           {
-            "node": "Global Vars Text",
+            "node": "Insert Emoji Schema Mapping",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Webhook2": {
-      "main": [
+        ],
         [
           {
-            "node": "Switch1",
+            "node": "Extract Message Timestamp",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Code in Python (Beta)",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "Global Vars": {
       "main": [
         [
           {
-            "node": "Filter",
+            "node": "Omni Feedback Table Metadata",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code in Python (Beta)": {
+    "Insert Emoji Schema Mapping": {
       "main": [
-        []
+        [
+          {
+            "node": "Map Feedback to Snowflake Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Text Schema Mapping": {
+      "main": [
+        [
+          {
+            "node": "Map Feedback to Snowflake Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Feedback to Snowflake Schema": {
+      "main": [
+        [
+          {
+            "node": "Find Count for Event ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Omni Feedback Table Metadata": {
+      "main": [
+        [
+          {
+            "node": "Route Emoji or Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Count for Event ID": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Retrieve Mapped Object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Mapped Object": {
+      "main": [
+        [
+          {
+            "node": "Insert Feedback into Snowflake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -446,90 +558,40 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Global Vars Emoji": [
+    "Global Vars": [
       {
         "json": {
           "body": {
-            "user_email": "nkwok@cribl.io",
-            "message_ts": "1758911298.124399",
-            "message_message_timestamp": "2025-09-26T18:28:18.124Z",
-            "message_raw_text": "<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>",
-            "user_id": "U06PVBEK9T6",
-            "message_user_name": "Omni Bot",
-            "message_channel_name": "data-eng-test-ai-channel",
-            "message_channel_id": "C0912AANW1L",
-            "event_timestamp": "2025-09-28T05:39:57.000Z",
-            "conversation_id": "C0912AANW1L",
-            "reaction": "+1",
-            "event_ts": "1759037997.000668",
-            "message_user_is_bot": "True",
-            "message_reactions": "count: 1\nname: +1\nusers: ['U06PVBEK9T6']",
-            "message_team_domain": "cribl",
-            "message_team_id": "T3XQYAF26",
-            "message_team_name": "Cribl",
-            "reaction_count": "1",
-            "message_text": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
-            "message_thread_ts": "1758911151.912309",
-            "message_thread_ts_time": "2025-09-26T18:25:51.000Z",
-            "feedback_medium": "emoji"
-          },
-          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
-          "omni_documents_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "service_name": "omni_documents_search_service"
-          },
-          "omni_document_queries_query_table_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "agent_name": "omni_document_queries_query_table_search_service"
-          },
-          "omni_document_queries_query_name_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "agent_name": "omni_document_queries_query_name_search_service"
-          },
-          "omni_documents_analyst_agent": {
-            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
-            "snowflake_schema": "AGENTS",
-            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
-          },
-          "zapier_slack_response_webhook": {
-            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
-          },
-          "slack": {
-            "error_message": "The Omni agent could not find relevant dashboards :cry:"
-          },
-          "omni": {
-            "omni_base_url": "https://cribl.omniapp.co",
-            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
-          }
-        }
-      }
-    ],
-    "Global Vars Text": [
-      {
-        "json": {
-          "body": {
-            "ts": "1759034503.281999",
+            "ts": "1759120221.028239",
             "user_name": "nathan_kwok",
             "user_real_name": "Nathan Kwok",
             "channel_id": "C0912AANW1L",
-            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759034503281999?thread_ts=1758911151.912309",
+            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759120221028239?thread_ts=1758911151.912309&cid=C0912AANW1L",
             "user_profile_first_name": "Nathan",
-            "ts_time": "2025-09-28T04:41:43.000Z",
+            "ts_time": "2025-09-29T04:30:21.000Z",
             "user_profile_last_name": "Kwok",
-            "raw_text": "<@U08DHKDMR8C> this is tagged with omni",
+            "raw_text": "<@U08DHKDMR8C> this is the 9th tagged message",
+            "thread_ts": "1758911151.912309",
             "user_id": "U06PVBEK9T6",
             "user_profile_email": "nkwok@cribl.io",
             "team_name": "Cribl",
             "user_is_bot": "False",
             "team_domain": "cribl",
             "team_id": "T3XQYAF26",
-            "text": "@omni this is tagged with omni",
+            "text": "@omni this is the 9th tagged message",
             "channel_name": "data-eng-test-ai-channel",
             "user_email": "nkwok@cribl.io",
-            "feedback_medium": "text"
+            "feedback_medium": "text",
+            "omni_message_text": "Thank you! How can I assist you today?",
+            "omni_message_subtype": "bot_message",
+            "omni_message_bot_id": "B01304K3N6S",
+            "omni_message_bot_username": "Omni Bot",
+            "omni_message_ts": "1759104317.219099",
+            "original_message_ts": "1758911151.912309",
+            "original_message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?",
+            "original_message_user_id": "U06PVBEK9T6",
+            "original_message_thread_ts": "1758911151.912309",
+            "original_message_thread_ts_time": "2025-09-26T18:25:51.000Z"
           },
           "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
           "omni_documents_search_service": {
@@ -565,23 +627,31 @@
         }
       }
     ],
-    "Webhook2": [
+    "Trigger": [
       {
         "json": {
           "headers": {
-            "connection": "upgrade",
-            "host": "agenticflows.xyz",
-            "x-real-ip": "35.172.134.134",
-            "x-forwarded-for": "35.172.134.134",
-            "x-forwarded-proto": "https",
-            "x-forwarded-host": "agenticflows.xyz",
-            "x-forwarded-port": "443",
-            "content-length": "1410",
-            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
-            "content-type": "application/json; charset=utf-8",
-            "user-agent": "Zapier",
+            "host": "n8n-relayer-1.app.n8n.cloud",
+            "user-agent": "PostmanRuntime/7.47.1",
+            "content-length": "1591",
             "accept": "*/*",
-            "accept-encoding": "gzip,deflate"
+            "accept-encoding": "gzip, br",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "172.56.46.76",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "9869aa2eb55ddc0d-SJC",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.56.46.76, 172.69.135.108",
+            "x-forwarded-host": "n8n-relayer-1.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-kgpvq",
+            "x-is-trusted": "yes",
+            "x-real-ip": "172.56.46.76"
           },
           "params": {},
           "query": {},
@@ -617,65 +687,13 @@
             "original_message_thread_ts": "1758911151.912309",
             "original_message_thread_ts_time": "2025-09-26T18:25:51.000Z"
           },
-          "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
-          "executionMode": "test"
-        }
-      }
-    ],
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "connection": "upgrade",
-            "host": "agenticflows.xyz",
-            "x-real-ip": "3.92.92.73",
-            "x-forwarded-for": "3.92.92.73",
-            "x-forwarded-proto": "https",
-            "x-forwarded-host": "agenticflows.xyz",
-            "x-forwarded-port": "443",
-            "content-length": "2366",
-            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
-            "content-type": "application/json; charset=utf-8",
-            "user-agent": "Zapier",
-            "accept": "*/*",
-            "accept-encoding": "gzip,deflate"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "user_email": "nkwok@cribl.io",
-            "message_ts": "1758911298.124399",
-            "message_message_timestamp": "2025-09-26T18:28:18.124Z",
-            "message_raw_text": "<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>",
-            "user_id": "U06PVBEK9T6",
-            "message_user_name": "Omni Bot",
-            "message_channel_name": "data-eng-test-ai-channel",
-            "message_channel_id": "C0912AANW1L",
-            "event_timestamp": "2025-09-28T05:39:57.000Z",
-            "conversation_id": "C0912AANW1L",
-            "reaction": "+1",
-            "event_ts": "1759037997.000668",
-            "message_user_is_bot": "True",
-            "message_team_domain": "cribl",
-            "message_team_id": "T3XQYAF26",
-            "message_team_name": "Cribl",
-            "message_text": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
-            "message_thread_ts": "1758911151.912309",
-            "message_thread_ts_time": "2025-09-26T18:25:51.000Z",
-            "feedback_medium": "emoji",
-            "original_message_ts": "1758911151.912309",
-            "original_message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?",
-            "original_message_user_id": "U06PVBEK9T6",
-            "original_message_thread_ts": "1758911151.912309",
-            "message_permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1758911298124399?thread_ts=1758911151.912309&cid=C0912AANW1L"
-          },
-          "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
           "executionMode": "test"
         }
       }
     ]
   },
-  "versionId": "830cb592-6cd0-41b2-b996-948d5071257a",
+  "versionId": "d28fa468-358f-4502-8dc2-3ac9102eee77",
   "triggerCount": 1,
   "shared": [
     {
