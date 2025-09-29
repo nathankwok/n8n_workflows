@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-27T00:39:36.906Z",
-  "updatedAt": "2025-09-27T07:23:40.884Z",
+  "updatedAt": "2025-09-29T01:31:51.486Z",
   "id": "SoS69nrX4dLvYIUj",
   "name": "ask-data Bot Feedback",
   "active": true,
@@ -41,24 +41,6 @@
     },
     {
       "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_document_queries_query_table_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_table_search_service\"\n  },\n  \"omni_document_queries_query_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"agent_name\": \"omni_document_queries_query_name_search_service\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\"\n  },\n  \"slack\": {\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  }\n}",
-        "includeOtherFields": true,
-        "include": "selected",
-        "includeFields": "body",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -16,
-        -112
-      ],
-      "id": "1c33eaae-a67c-421d-a4c6-ef74d762e656",
-      "name": "Global Vars"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -85,26 +67,261 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        400,
+        608,
         -112
       ],
       "id": "fefc0f37-2d11-4d96-a3bd-43899899aac7",
-      "name": "Filter"
+      "name": "Filter",
+      "disabled": true
     },
     {
       "parameters": {
         "content": "### When someone emoji's on the bot message",
-        "height": 464,
-        "width": 704
+        "height": 400,
+        "width": 1056
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        256,
+        112,
         -192
       ],
       "typeVersion": 1,
       "id": "c93651b6-c23e-466a-88b8-880ecedd6a3f",
-      "name": "Sticky Note19"
+      "name": "Sticky Note19",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        816,
+        -112
+      ],
+      "id": "45fbe1d5-ffa0-4ad6-94e7-871cb0b57aa5",
+      "name": "Snowflake",
+      "credentials": {
+        "snowflake": {
+          "id": "RmOaMDo0Ilqq9Xvl",
+          "name": "Snowflake account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "### Test data for emoji only on omni bot message\n\n{\n  \"user_email\": \"nkwok@cribl.io\",\n  \"message_ts\": \"1758911298.124399\",\n  \"message_message_timestamp\": \"2025-09-26T18:28:18.124Z\",\n  \"message_raw_text\": \"<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>\",\n  \"user_id\": \"U06PVBEK9T6\",\n  \"message_user_name\": \"Omni Bot\",\n  \"message_channel_name\": \"data-eng-test-ai-channel\",\n  \"message_channel_id\": \"C0912AANW1L\",\n  \"event_timestamp\": \"2025-09-28T05:39:57.000Z\",\n  \"conversation_id\": \"C0912AANW1L\",\n  \"reaction\": \"+1\",\n  \"event_ts\": \"1759037997.000668\",\n  \"message_user_is_bot\": \"True\",\n  \"message_team_domain\": \"cribl\",\n  \"message_team_id\": \"T3XQYAF26\",\n  \"message_team_name\": \"Cribl\",\n  \"reaction_count\": \"1\",\n  \"message_text\": \"@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>\",\n  \"message_thread_ts\": \"1758911151.912309\",\n  \"message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\",\n  \"feedback_medium\": \"emoji\"\n}",
+        "height": 656,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1856,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "af33c1b8-28c9-4fda-a51e-530b1e5a644d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.feedback_medium }}",
+                    "rightValue": "emoji",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c2a34b63-358c-414f-bb10-c9df2559fc09"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -128,
+        -112
+      ],
+      "id": "f4b75ddf-ea1f-4904-b55c-b424de09fe85",
+      "name": "Switch",
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "n0RS6lMwHNeLTrk9",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/n0RS6lMwHNeLTrk9",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        -112
+      ],
+      "id": "c89d20bb-5e13-4fa8-8b70-869fb344ea5e",
+      "name": "Global Vars Emoji",
+      "alwaysOutputData": true,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "n0RS6lMwHNeLTrk9",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/n0RS6lMwHNeLTrk9",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        480
+      ],
+      "id": "5296ec78-76c6-465a-ad8c-5f8c30cd4183",
+      "name": "Global Vars Text",
+      "alwaysOutputData": true,
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.feedback_medium }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c2a34b63-358c-414f-bb10-c9df2559fc09"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -96,
+        480
+      ],
+      "id": "3f6d84fe-7acf-4d96-8d1f-1ce161c70c36",
+      "name": "Switch1",
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "### When someone tags @Omni with a message. Needs to have found the original message",
+        "height": 400,
+        "width": 1056
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "a4139563-1e60-4e0d-85d9-6934e1049df9",
+      "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+        "authentication": "basicAuth",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -304,
+        480
+      ],
+      "id": "c7a95d07-3b10-4d90-a666-fc3e3909e8a1",
+      "name": "Webhook2",
+      "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "qYqaYFYnJhcQuBMI",
+          "name": "Zapier Inbound Basic Auth Webhook"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "### Test data for feedback text\n\n{\n  \"ts\": \"1759106330.788269\",\n  \"user_name\": \"nathan_kwok\",\n  \"user_real_name\": \"Nathan Kwok\",\n  \"channel_id\": \"C0912AANW1L\",\n  \"permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1759106330788269?thread_ts=1758911151.912309&cid=C0912AANW1L\",\n  \"user_profile_first_name\": \"Nathan\",\n  \"ts_time\": \"2025-09-29T00:38:50.000Z\",\n  \"user_profile_last_name\": \"Kwok\",\n  \"raw_text\": \"<@U08DHKDMR8C> this is the 8th tagged message\",\n  \"thread_ts\": \"1758911151.912309\",\n  \"user_id\": \"U06PVBEK9T6\",\n  \"user_profile_email\": \"nkwok@cribl.io\",\n  \"team_name\": \"Cribl\",\n  \"user_is_bot\": \"False\",\n  \"team_domain\": \"cribl\",\n  \"team_id\": \"T3XQYAF26\",\n  \"text\": \"@omni this is the 8th tagged message\",\n  \"channel_name\": \"data-eng-test-ai-channel\",\n  \"user_email\": \"nkwok@cribl.io\",\n  \"feedback_medium\": \"text\",\n  \"original_message_text\": \"Hi Nathan Kwok,\\n\\nHere are the dashboards I found:\\n\\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> exists in <https://cribl.omniapp.co/f/customer-experience|Customer Experience>\\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\\n\\nLet me know if you need anything else!\",\n  \"original_message_subtype\": \"bot_message\",\n  \"original_message_bot_id\": \"B01304K3N6S\",\n  \"original_message_bot_username\": \"Omni Bot\",\n  \"original_message_ts\": \"1758911298.124399\"\n}",
+        "height": 640,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1184,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "cc4643aa-c30b-443e-b951-1a6a77203501",
+      "name": "Sticky Note4"
     }
   ],
   "connections": {
@@ -112,18 +329,62 @@
       "main": [
         [
           {
-            "node": "Global Vars",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Global Vars": {
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Snowflake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Global Vars Emoji",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars Emoji": {
       "main": [
         [
           {
             "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Global Vars Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
             "type": "main",
             "index": 0
           }
@@ -135,59 +396,36 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "connection": "upgrade",
-            "host": "agenticflows.xyz",
-            "x-real-ip": "3.238.133.220",
-            "x-forwarded-for": "3.238.133.220",
-            "x-forwarded-proto": "https",
-            "x-forwarded-host": "agenticflows.xyz",
-            "x-forwarded-port": "443",
-            "content-length": "841",
-            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
-            "content-type": "application/json; charset=utf-8",
-            "user-agent": "Zapier",
-            "accept": "*/*",
-            "accept-encoding": "gzip,deflate"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "channel_id": "C0912AANW1L",
-            "channel_name": "data-eng-test-ai-channel",
-            "conversation_id": "C0912AANW1L",
-            "emoji": "+1",
-            "emoji_user_id": "U06PVBEK9T6",
-            "emoji_user_name": "nkwok",
-            "is_message_user_bot": "True",
-            "message": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
-            "message_ts": "1758911298.124399",
-            "user_name": "Omni Bot"
-          },
-          "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
-          "executionMode": "test"
-        }
-      }
-    ],
-    "Global Vars": [
+    "Global Vars Emoji": [
       {
         "json": {
           "body": {
-            "channel_id": "C0912AANW1L",
-            "channel_name": "data-eng-test-ai-channel",
-            "conversation_id": "C0912AANW1L",
-            "emoji": "+1",
-            "emoji_user_id": "U06PVBEK9T6",
-            "emoji_user_name": "nkwok",
-            "is_message_user_bot": "True",
-            "message": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
+            "user_email": "nkwok@cribl.io",
             "message_ts": "1758911298.124399",
-            "user_name": "Omni Bot"
+            "message_message_timestamp": "2025-09-26T18:28:18.124Z",
+            "message_raw_text": "<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>",
+            "user_id": "U06PVBEK9T6",
+            "message_user_name": "Omni Bot",
+            "message_channel_name": "data-eng-test-ai-channel",
+            "message_channel_id": "C0912AANW1L",
+            "event_timestamp": "2025-09-28T05:39:57.000Z",
+            "conversation_id": "C0912AANW1L",
+            "reaction": "+1",
+            "event_ts": "1759037997.000668",
+            "message_user_is_bot": "True",
+            "message_reactions": "count: 1\nname: +1\nusers: ['U06PVBEK9T6']",
+            "message_team_domain": "cribl",
+            "message_team_id": "T3XQYAF26",
+            "message_team_name": "Cribl",
+            "reaction_count": "1",
+            "message_text": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
+            "message_thread_ts": "1758911151.912309",
+            "message_thread_ts_time": "2025-09-26T18:25:51.000Z",
+            "feedback_medium": "emoji"
           },
           "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
           "omni_documents_search_service": {
@@ -222,9 +460,166 @@
           }
         }
       }
+    ],
+    "Global Vars Text": [
+      {
+        "json": {
+          "body": {
+            "ts": "1759034503.281999",
+            "user_name": "nathan_kwok",
+            "user_real_name": "Nathan Kwok",
+            "channel_id": "C0912AANW1L",
+            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759034503281999?thread_ts=1758911151.912309",
+            "user_profile_first_name": "Nathan",
+            "ts_time": "2025-09-28T04:41:43.000Z",
+            "user_profile_last_name": "Kwok",
+            "raw_text": "<@U08DHKDMR8C> this is tagged with omni",
+            "user_id": "U06PVBEK9T6",
+            "user_profile_email": "nkwok@cribl.io",
+            "team_name": "Cribl",
+            "user_is_bot": "False",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26",
+            "text": "@omni this is tagged with omni",
+            "channel_name": "data-eng-test-ai-channel",
+            "user_email": "nkwok@cribl.io",
+            "feedback_medium": "text"
+          },
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_documents_search_service"
+          },
+          "omni_document_queries_query_table_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_table_search_service"
+          },
+          "omni_document_queries_query_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_name_search_service"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
+          }
+        }
+      }
+    ],
+    "Webhook2": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "agenticflows.xyz",
+            "x-real-ip": "44.197.205.47",
+            "x-forwarded-for": "44.197.205.47",
+            "x-forwarded-proto": "https",
+            "x-forwarded-host": "agenticflows.xyz",
+            "x-forwarded-port": "443",
+            "content-length": "1409",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "content-type": "application/json; charset=utf-8",
+            "user-agent": "Zapier",
+            "accept": "*/*",
+            "accept-encoding": "gzip,deflate"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "ts": "1759106330.788269",
+            "user_name": "nathan_kwok",
+            "user_real_name": "Nathan Kwok",
+            "channel_id": "C0912AANW1L",
+            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759106330788269?thread_ts=1758911151.912309&cid=C0912AANW1L",
+            "user_profile_first_name": "Nathan",
+            "ts_time": "2025-09-29T00:38:50.000Z",
+            "user_profile_last_name": "Kwok",
+            "raw_text": "<@U08DHKDMR8C> this is the 8th tagged message",
+            "thread_ts": "1758911151.912309",
+            "user_id": "U06PVBEK9T6",
+            "user_profile_email": "nkwok@cribl.io",
+            "team_name": "Cribl",
+            "user_is_bot": "False",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26",
+            "text": "@omni this is the 8th tagged message",
+            "channel_name": "data-eng-test-ai-channel",
+            "user_email": "nkwok@cribl.io",
+            "feedback_medium": "text",
+            "original_message_text": "Hi Nathan Kwok,\n\nHere are the dashboards I found:\n\n• <https://cribl.omniapp.co/dashboards/de229002|Customer: Customer Breakdown> exists in <https://cribl.omniapp.co/f/customer-experience|Customer Experience>\n• <https://cribl.omniapp.co/dashboards/3bd15a19|Overview: Customer Account Engagement> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\n• <https://cribl.omniapp.co/dashboards/c4d4e6ec|Customer: Research Report> exists in <https://cribl.omniapp.co/f/marketing|Marketing>\n\nLet me know if you need anything else!",
+            "original_message_subtype": "bot_message",
+            "original_message_bot_id": "B01304K3N6S",
+            "original_message_bot_username": "Omni Bot"
+          },
+          "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "agenticflows.xyz",
+            "x-real-ip": "44.211.36.15",
+            "x-forwarded-for": "44.211.36.15",
+            "x-forwarded-proto": "https",
+            "x-forwarded-host": "agenticflows.xyz",
+            "x-forwarded-port": "443",
+            "content-length": "1902",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "content-type": "application/json; charset=utf-8",
+            "user-agent": "Zapier",
+            "accept": "*/*",
+            "accept-encoding": "gzip,deflate"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "user_email": "nkwok@cribl.io",
+            "message_ts": "1758911298.124399",
+            "message_message_timestamp": "2025-09-26T18:28:18.124Z",
+            "message_raw_text": "<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>",
+            "user_id": "U06PVBEK9T6",
+            "message_user_name": "Omni Bot",
+            "message_channel_name": "data-eng-test-ai-channel",
+            "message_channel_id": "C0912AANW1L",
+            "event_timestamp": "2025-09-28T05:39:57.000Z",
+            "conversation_id": "C0912AANW1L",
+            "reaction": "+1",
+            "event_ts": "1759037997.000668",
+            "message_user_is_bot": "True",
+            "message_team_domain": "cribl",
+            "message_team_id": "T3XQYAF26",
+            "message_team_name": "Cribl",
+            "reaction_count": "1",
+            "message_text": "@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>",
+            "message_thread_ts": "1758911151.912309",
+            "message_thread_ts_time": "2025-09-26T18:25:51.000Z",
+            "feedback_medium": "emoji"
+          },
+          "webhookUrl": "https://agenticflows.xyz/webhook-test/f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+          "executionMode": "test"
+        }
+      }
     ]
   },
-  "versionId": "c775ecac-9b3f-4e92-9c01-72423290c05e",
+  "versionId": "71ffbaee-e3cd-4f63-8179-13f64067372d",
   "triggerCount": 1,
   "shared": [
     {
