@@ -1,11 +1,27 @@
 {
   "createdAt": "2025-09-27T00:39:36.906Z",
-  "updatedAt": "2025-09-29T09:08:13.982Z",
+  "updatedAt": "2025-10-01T01:20:20.398Z",
   "id": "SoS69nrX4dLvYIUj",
   "name": "ask-data Bot Feedback",
   "active": true,
   "isArchived": false,
   "nodes": [
+    {
+      "parameters": {
+        "content": "### When someone emoji's on the bot message",
+        "height": 288,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2192,
+        464
+      ],
+      "typeVersion": 1,
+      "id": "5b5af78a-cd0a-4281-bfb0-45b1508db387",
+      "name": "Sticky Note21",
+      "disabled": true
+    },
     {
       "parameters": {
         "content": "### Test data for emoji only on omni bot message\n\n```\n{\n      \"user_email\": \"nkwok@cribl.io\",\n      \"message_ts\": \"1758911298.124399\",\n      \"message_message_timestamp\": \"2025-09-26T18:28:18.124Z\",\n      \"message_raw_text\": \"<@U06PVBEK9T6> I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• <https://cribl.omniapp.co/dashboards/47d94e3c|Overview: OEM Metrics> in <https://cribl.omniapp.co/f/revenue|Revenue>\\n• <https://cribl.omniapp.co/dashboards/credit-consumption|Customer: Cloud Credit Consumption> in <https://cribl.omniapp.co/f/product|Product>\\n• <https://cribl.omniapp.co/dashboards/2fb66a67|Product: Copilot Trend Metrics> in <https://cribl.omniapp.co/f/product|Product>\",\n      \"user_id\": \"U06PVBEK9T6\",\n      \"message_user_name\": \"Omni Bot\",\n      \"message_channel_name\": \"data-eng-test-ai-channel\",\n      \"message_channel_id\": \"C0912AANW1L\",\n      \"event_timestamp\": \"2025-09-28T05:39:57.000Z\",\n      \"conversation_id\": \"C0912AANW1L\",\n      \"reaction\": \"+1\",\n      \"event_ts\": \"1759037997.000668\",\n      \"message_user_is_bot\": \"True\",\n      \"message_team_domain\": \"cribl\",\n      \"message_team_id\": \"T3XQYAF26\",\n      \"message_team_name\": \"Cribl\",\n      \"message_text\": \"@nathan_kwok I found a few Omni dashboards related to free Cribl Cloud user metrics and associated email addresses within your accounts. These dashboards might contain the data you need:\\n• https://cribl.omniapp.co/dashboards/47d94e3cOverview: OEM Metrics> in https://cribl.omniapp.co/f/revenueRevenue>\\n• https://cribl.omniapp.co/dashboards/credit-consumptionCustomer: Cloud Credit Consumption> in https://cribl.omniapp.co/f/productProduct>\\n• https://cribl.omniapp.co/dashboards/2fb66a67Product: Copilot Trend Metrics> in https://cribl.omniapp.co/f/productProduct>\",\n      \"message_thread_ts\": \"1758911151.912309\",\n      \"message_thread_ts_time\": \"2025-09-26T18:25:51.000Z\",\n      \"feedback_medium\": \"emoji\",\n      \"original_message_ts\": \"1758911151.912309\",\n      \"original_message_text\": \"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?\",\n      \"original_message_user_id\": \"U06PVBEK9T6\",\n      \"original_message_thread_ts\": \"1758911151.912309\",\n      \"message_permalink\": \"https://cribl.slack.com/archives/C0912AANW1L/p1758911298124399?thread_ts=1758911151.912309&cid=C0912AANW1L\"\n    }\n```",
@@ -14,12 +30,12 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1856,
-        -368
+        -160,
+        -256
       ],
       "typeVersion": 1,
-      "id": "af33c1b8-28c9-4fda-a51e-530b1e5a644d",
-      "name": "Sticky Note"
+      "id": "acad28ac-1929-4c34-83d0-6e5815597460",
+      "name": "Sticky Note1"
     },
     {
       "parameters": {
@@ -29,28 +45,27 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1184,
-        -400
+        512,
+        -288
       ],
       "typeVersion": 1,
-      "id": "cc4643aa-c30b-443e-b951-1a6a77203501",
-      "name": "Sticky Note4"
+      "id": "3fbd09c1-3d11-45b0-8807-d7b4f1e50b0a",
+      "name": "Sticky Note5"
     },
     {
       "parameters": {
-        "content": "### When someone emoji's on the bot message",
-        "height": 288,
-        "width": 608
+        "content": "### When someone tags @Omni with a message. Needs to have found the original message",
+        "height": 400,
+        "width": 1072
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        768,
-        224
+        2192,
+        800
       ],
       "typeVersion": 1,
-      "id": "b329f27e-31c4-47d9-a6bb-7b5479ad9b3f",
-      "name": "Sticky Note21",
-      "disabled": true
+      "id": "a011600d-61f4-4ef8-98e2-f32809bb65dd",
+      "name": "Sticky Note"
     },
     {
       "parameters": {
@@ -59,10 +74,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1472,
-        640
+        2896,
+        880
       ],
-      "id": "4d4eaf07-38f6-448f-b218-2d63c009f112",
+      "id": "e8104c3e-d834-4aa2-8599-2aa868acc32c",
       "name": "Insert Message Timestamp into Body"
     },
     {
@@ -70,10 +85,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1280,
-        640
+        2704,
+        880
       ],
-      "id": "02c56d0b-dbf9-4166-9671-e3c478196271",
+      "id": "b099565e-a1e4-4967-87d9-2ef09187e341",
       "name": "Merge"
     },
     {
@@ -84,10 +99,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1056,
-        752
+        2480,
+        992
       ],
-      "id": "31ce3bd2-9365-4e59-ae18-99c2b899558e",
+      "id": "c871630a-37db-4380-a4d1-7f135993d4af",
       "name": "Extract Message Timestamp"
     },
     {
@@ -148,10 +163,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        576,
-        288
+        2000,
+        528
       ],
-      "id": "a1dc169c-e590-4cc4-ac0d-8f7b8346692a",
+      "id": "1377d4b2-c0e7-40e6-9992-1e25ce299edd",
       "name": "Route Emoji or Text",
       "alwaysOutputData": false
     },
@@ -159,9 +174,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "OFpD7aepKHcHCvqz",
+          "value": "n0RS6lMwHNeLTrk9",
           "mode": "list",
-          "cachedResultUrl": "/workflow/OFpD7aepKHcHCvqz",
+          "cachedResultUrl": "/workflow/n0RS6lMwHNeLTrk9",
           "cachedResultName": "Global Vars"
         },
         "workflowInputs": {
@@ -177,10 +192,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        -16,
-        288
+        1408,
+        528
       ],
-      "id": "739d82b4-2167-4ea7-8aca-e9a0c95e2ee2",
+      "id": "fda99c40-eff5-46bc-b317-b643c2f105aa",
       "name": "Global Vars",
       "alwaysOutputData": true,
       "onError": "continueRegularOutput"
@@ -195,10 +210,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1040,
-        272
+        2464,
+        512
       ],
-      "id": "fa31c55d-753a-43fb-a13a-b585d2553434",
+      "id": "7150c256-2960-482b-89b2-e43bffa99565",
       "name": "Insert Emoji Schema Mapping"
     },
     {
@@ -211,10 +226,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1696,
-        640
+        3120,
+        880
       ],
-      "id": "101b4473-45a4-4d52-88cb-1af1f9df2ffc",
+      "id": "9bb74224-fa19-4465-acd5-e426e555fd45",
       "name": "Insert Text Schema Mapping"
     },
     {
@@ -224,10 +239,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2096,
-        352
+        3520,
+        592
       ],
-      "id": "67d03351-d4a2-4b5c-845e-b4b6169abb4a",
+      "id": "2b19ed21-9bc7-4047-818a-1a981b84352a",
       "name": "Map Feedback to Snowflake Schema"
     },
     {
@@ -237,7 +252,7 @@
             {
               "id": "beb73ca1-5eb6-40e3-a72a-559f5d4bf9cb",
               "name": "omni_feedback_table",
-              "value": "={\n  \"database\": \"ANALYTICS\",\n  \"schema\": \"OMNI\",\n  \"table\": \"OMNI_FEEDBACK\"\n}",
+              "value": "={\n  \"database\": \"ANALYTICS\",\n  \"schema\": \"OMNI\",\n  \"table\": \"OMNI_RECOMMENDATIONS_FEEDBACK\"\n}",
               "type": "object"
             }
           ]
@@ -250,29 +265,29 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        272,
-        288
+        1696,
+        528
       ],
-      "id": "a2aefb34-2d7a-4e19-b34b-5e81f1aa6c9b",
+      "id": "69178715-b9a0-4034-b0ca-3a6c775820c9",
       "name": "Omni Feedback Table Metadata"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT count(*) as \"count\" FROM \"ANALYTICS\".\"OMNI\".\"OMNI_FEEDBACK\" WHERE feedback_id = '{{ $json.feedback_id }}'"
+        "query": "SELECT count(*) as \"count\" FROM \"{{ $('Global Vars').first().json.snowflake_tables.dashboard_recommendations_feedback.snowflake_database }}\".\"{{ $('Global Vars').first().json.snowflake_tables.dashboard_recommendations_feedback.snowflake_schema }}\".\"{{ $('Global Vars').first().json.snowflake_tables.dashboard_recommendations_feedback.table_name }}\" WHERE feedback_id = '{{ $json.feedback_id }}'"
       },
       "type": "n8n-nodes-base.snowflake",
       "typeVersion": 1,
       "position": [
-        2384,
-        352
+        3808,
+        592
       ],
-      "id": "50de1881-3ffe-439c-a265-f934d8477d7b",
+      "id": "913ae417-d120-4258-bee6-0b9e41445d72",
       "name": "Find Count for Event ID",
       "credentials": {
         "snowflake": {
-          "id": "RmOaMDo0Ilqq9Xvl",
-          "name": "Snowflake account"
+          "id": "1FUOwfIRh5nYaVH9",
+          "name": "Snowflake LOADER"
         }
       }
     },
@@ -303,29 +318,29 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2656,
-        352
+        4080,
+        592
       ],
-      "id": "a16e06de-bc5c-49e7-93aa-a9d78bde933f",
+      "id": "dc2e66e6-df0d-4095-a628-88b8c7cd2043",
       "name": "If"
     },
     {
       "parameters": {
-        "table": "OMNI_FEEDBACK",
+        "table": "={{ $('Global Vars').first().json.snowflake_tables.dashboard_recommendations_feedback.table_name }}",
         "columns": "={{ $('Retrieve Mapped Object').item.json.keys().join(\",\") }}"
       },
       "type": "n8n-nodes-base.snowflake",
       "typeVersion": 1,
       "position": [
-        3280,
-        336
+        4672,
+        576
       ],
-      "id": "af954eb7-5036-420d-a12b-441ecbfdc75e",
+      "id": "a0d883d2-8b5f-4809-9a85-bbce874ff63e",
       "name": "Insert Feedback into Snowflake",
       "credentials": {
         "snowflake": {
-          "id": "RmOaMDo0Ilqq9Xvl",
-          "name": "Snowflake account"
+          "id": "1FUOwfIRh5nYaVH9",
+          "name": "Snowflake LOADER"
         }
       }
     },
@@ -338,10 +353,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2992,
-        336
+        4384,
+        576
       ],
-      "id": "5efd65a1-520b-43ba-800b-4382193ece67",
+      "id": "2150a997-60f8-49f7-a6db-d286790aa49e",
       "name": "Retrieve Mapped Object"
     },
     {
@@ -363,10 +378,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -240,
-        288
+        1184,
+        528
       ],
-      "id": "b5c1b21e-5921-41c9-bcdb-d4dff0c7da50",
+      "id": "8c7a3207-8884-44d6-81b7-251247e9235a",
       "name": "Trigger",
       "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
       "alwaysOutputData": true,
@@ -379,18 +394,18 @@
     },
     {
       "parameters": {
-        "content": "### When someone tags @Omni with a message. Needs to have found the original message",
-        "height": 400,
-        "width": 912
+        "content": "```\nCREATE TABLE IF NOT EXISTS dashboard_recommendations_feedback (\n    -- Primary identifiers\n    feedback_id VARCHAR(17) PRIMARY KEY ,                                          -- emoji: event_ts \"1759037997.000668\", text: ts \"1759106330.788269\"\n    feedback_medium VARCHAR(20) NOT NULL, -- \"emoji\" or \"text\"\n    feedback_timestamp TIMESTAMP_TZ NOT NULL,                                      -- emoji: event_timestamp \"2025-09-28T05:39:57.000Z\", text: ts_time \"2025-09-29T00:38:50.000Z\"\n\n    -- Feedback provider information\n    feedback_user_email VARCHAR(255) NOT NULL,                                     -- emoji: user_email, text: user_profile_email \"nkwok@cribl.io\"\n    feedback_user_id VARCHAR(11) NOT NULL,                                         -- \"U06PVBEK9T6\"\n\n    -- Channel and team context\n    channel_id VARCHAR(50) NOT NULL,                                               -- \"C0912AANW1L\"\n    channel_name VARCHAR(255),                                                     -- \"data-eng-test-ai-channel\"\n    team_id VARCHAR(11) NOT NULL,                                                  -- \"T3XQYAF26\"\n    team_domain VARCHAR(255),                                                      -- \"cribl\"\n\n    -- Omni message being reacted to/commented on (bot's response)\n    omni_message_id VARCHAR(17) NOT NULL,                                          -- emoji: message_ts \"1758911298.124399\", text: omni_message_ts \"1758911298.124399\"\n    omni_message_text TEXT,                                                        -- emoji: \"I found a few Omni dashboards...\", text: omni_message_text \"Hi Nathan Kwok,\\n\\nHere are the dashboards...\"\n    omni_message_timestamp TIMESTAMP_TZ,                                           -- emoji: \"2025-09-26T18:28:18.124Z\"\n    omni_message_user_name VARCHAR(75),                                           -- emoji: \"Omni Bot\", text: omni_message_bot_username \"Omni Bot\"\n\n    -- Original message (user's original query that started the conversation)\n    original_message_id VARCHAR(17) NOT NULL,                                      -- original_message_ts \"1758911151.912309\"\n    original_message_text TEXT,                                                    -- original_message_text \"Hi team - Is there a dashboard in Omni to see free cribl cloud users...\"\n    original_message_user_id VARCHAR(11),                                          -- original_message_user_id \"U06PVBEK9T6\"\n    original_message_thread_ts VARCHAR(17),                                        -- original_message_thread_ts \"1758911151.912309\"\n\n    -- Thread context (if feedback is in a thread)\n    thread_timestamp TIMESTAMP_TZ,                                                 -- emoji: \"2025-09-26T18:25:51.000Z\", text: original_message_thread_ts_time \"2025-09-26T18:25:51.000Z\"\n\n    -- Feedback content (emoji or text)\n    feedback_content TEXT NOT NULL,                                                         -- emoji: \"+1\", text: \"@omni this is the 8th tagged message\"\n\n    -- Additional metadata\n    permalink VARCHAR(750),                                                        -- text: \"https://cribl.slack.com/archives/C0912AANW1L/p1759106330788269?thread_ts=1758911151.912309&cid=C0912AANW1L\"\n    created_at TIMESTAMP_TZ DEFAULT CURRENT_TIMESTAMP(),\n    updated_at TIMESTAMP_TZ DEFAULT CURRENT_TIMESTAMP()\n);\n```",
+        "height": 240,
+        "width": 672
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        768,
-        560
+        4240,
+        304
       ],
       "typeVersion": 1,
-      "id": "4320bd0e-f604-4162-940c-24d67778a996",
-      "name": "Sticky Note1"
+      "id": "70cace15-d89d-4ad2-9056-867b8741ec8f",
+      "name": "Sticky Note2"
     }
   ],
   "connections": {
@@ -558,75 +573,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Global Vars": [
-      {
-        "json": {
-          "body": {
-            "ts": "1759120221.028239",
-            "user_name": "nathan_kwok",
-            "user_real_name": "Nathan Kwok",
-            "channel_id": "C0912AANW1L",
-            "permalink": "https://cribl.slack.com/archives/C0912AANW1L/p1759120221028239?thread_ts=1758911151.912309&cid=C0912AANW1L",
-            "user_profile_first_name": "Nathan",
-            "ts_time": "2025-09-29T04:30:21.000Z",
-            "user_profile_last_name": "Kwok",
-            "raw_text": "<@U08DHKDMR8C> this is the 9th tagged message",
-            "thread_ts": "1758911151.912309",
-            "user_id": "U06PVBEK9T6",
-            "user_profile_email": "nkwok@cribl.io",
-            "team_name": "Cribl",
-            "user_is_bot": "False",
-            "team_domain": "cribl",
-            "team_id": "T3XQYAF26",
-            "text": "@omni this is the 9th tagged message",
-            "channel_name": "data-eng-test-ai-channel",
-            "user_email": "nkwok@cribl.io",
-            "feedback_medium": "text",
-            "omni_message_text": "Thank you! How can I assist you today?",
-            "omni_message_subtype": "bot_message",
-            "omni_message_bot_id": "B01304K3N6S",
-            "omni_message_bot_username": "Omni Bot",
-            "omni_message_ts": "1759104317.219099",
-            "original_message_ts": "1758911151.912309",
-            "original_message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to <https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=fil|this one> I used in looker?",
-            "original_message_user_id": "U06PVBEK9T6",
-            "original_message_thread_ts": "1758911151.912309",
-            "original_message_thread_ts_time": "2025-09-26T18:25:51.000Z"
-          },
-          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
-          "omni_documents_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "service_name": "omni_documents_search_service"
-          },
-          "omni_document_queries_query_table_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "agent_name": "omni_document_queries_query_table_search_service"
-          },
-          "omni_document_queries_query_name_search_service": {
-            "snowflake_database": "ANALYTICS",
-            "snowflake_schema": "OMNI",
-            "agent_name": "omni_document_queries_query_name_search_service"
-          },
-          "omni_documents_analyst_agent": {
-            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
-            "snowflake_schema": "AGENTS",
-            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
-          },
-          "zapier_slack_response_webhook": {
-            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
-          },
-          "slack": {
-            "error_message": "The Omni agent could not find relevant dashboards :cry:"
-          },
-          "omni": {
-            "omni_base_url": "https://cribl.omniapp.co",
-            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
-          }
-        }
-      }
-    ],
     "Trigger": [
       {
         "json": {
@@ -693,7 +639,7 @@
       }
     ]
   },
-  "versionId": "d28fa468-358f-4502-8dc2-3ac9102eee77",
+  "versionId": "957eed57-2687-4ef1-bb49-698ba452e320",
   "triggerCount": 1,
   "shared": [
     {
