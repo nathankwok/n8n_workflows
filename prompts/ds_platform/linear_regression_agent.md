@@ -11,43 +11,68 @@ Input payload (the placeholder is replaced with actual JSON at runtime):
 
 ## Data Structure
 
-The input contains temporal cross-validation folds with the following structure:
+The input is the output from the temporal cross-validation splitting process (see `data/ds_platform/temporal_cross_validation.json` for a complete example). It contains multiple folds, each representing a different temporal split of the target customer's data.
+
+**Example input structure:**
 
 ```json
 {
   "folds": [
     {
       "fold_id": "fold_1",
-      "random_data_seed": 1983476512,
+      "random_data_seed": 7307560697,
       "description": "Train on target months 0-18, validate on month 19",
       "fold_type": "validation",
       "similar_customers": [
         {
           "customer_id": "0b68bc56-3401-476b-8630-bb9a198838d4",
-          "customer_name": "Aecom",
+          "customer_name": "08cfb58e",
           "usage_type": "Cloud Stream Ingest",
           "records": [
             {
               "billing_month": "2022-02",
               "month_index": 0,
               "total_credit_usage": 4682.0838966
+            },
+            {
+              "billing_month": "2022-03",
+              "month_index": 1,
+              "total_credit_usage": 15624.47168379484
             }
             // ... all historical records for this customer
           ]
+        },
+        {
+          "customer_id": "2c40fe60-408f-4454-b564-3480c1e9590c",
+          "customer_name": "27663bd6",
+          "usage_type": "Cloud Stream Ingest",
+          "records": [
+            {
+              "billing_month": "2022-05",
+              "month_index": 0,
+              "total_credit_usage": 583.3180808
+            }
+            // ... records
+          ]
         }
-        // ... all other similar customers (11 total)
+        // ... all other similar customers (typically 10-12 total)
       ],
       "target_customer": {
         "customer_id": "64313ef5-ef44-4306-b2e7-1673d405b444",
-        "customer_name": "BlackRock",
+        "customer_name": "84c66e71",
         "usage_type": "Cloud Stream Ingest",
         "training_records": [
           {
             "billing_month": "2023-10",
             "month_index": 0,
             "total_credit_usage": 0.0424992
+          },
+          {
+            "billing_month": "2023-11",
+            "month_index": 1,
+            "total_credit_usage": 94.7844832
           }
-          // ... months 0-18 for fold 1
+          // ... months 0-18 for fold 1 (19 total training records)
         ],
         "validation_record": {
           "billing_month": "2025-05",
@@ -57,24 +82,30 @@ The input contains temporal cross-validation folds with the following structure:
         "test_month": "2025-06"
       }
     }
-    // ... folds 2-5
+    // ... additional folds (fold_2, fold_3, etc.)
   ]
 }
 ```
 
-## Key Differences from Previous Approach
+## Temporal Cross-Validation Approach
 
-**OLD (INCORRECT)**: Used random customer splits - some customers for training, others for validation
-**NEW (CORRECT)**: Uses temporal splits on the TARGET customer - train on early months, validate on later months
+This agent uses **temporal cross-validation** on the target customer's time series:
+- Train on the target customer's early months (e.g., months 0-18)
+- Validate on the target customer's later months (e.g., month 19)
+- Use similar customers' complete histories to inform the trend
 
 This is proper time-series cross-validation that tests forward-in-time forecasting ability.
 
+**Note**: Customer names in the data are obfuscated hash values (e.g., "08cfb58e", "84c66e71").
+
 ## Objectives
 
-1) Learn a representative linear trend from similar customers' complete histories
-2) Combine that trend with the target customer's **training_records** (NOT validation_record!)
-3) Predict the **validation_record** month to measure forecast accuracy
-4) For production fold, predict the unknown **test_month**
+For each fold in the input:
+
+1. Learn a representative linear trend from similar customers' complete histories
+2. Combine that trend with the target customer's **training_records** (NOT validation_record!)
+3. Predict the **validation_record** month to measure forecast accuracy
+4. For production folds (`fold_type: "production"`), predict the unknown **test_month**
 
 ## Procedure
 
@@ -172,17 +203,17 @@ Respond with a single JSON object:
         "weight_similar": 42,
         "notable_outliers": [
           {
-            "customer_id": "...",
-            "customer_name": "Prudential Financial",
-            "issue": "usage spike Apr 2025 (34K from 256)",
+            "customer_id": "2c40fe60-408f-4454-b564-3480c1e9590c",
+            "customer_name": "27663bd6",
+            "issue": "usage spike May 2025 (159K from 67K)",
             "action": "down-weighted by 50%"
           }
         ]
       },
 
       "target_customer_analysis": {
-        "customer_id": "...",
-        "customer_name": "BlackRock",
+        "customer_id": "64313ef5-ef44-4306-b2e7-1673d405b444",
+        "customer_name": "84c66e71",
         "training_months": 19,
         "training_period": "2023-10 to 2025-04",
         "slope_target": 3456.78,
@@ -219,7 +250,7 @@ Respond with a single JSON object:
       "reasoning_notes": [
         "Target customer has sufficient history (19 months) for reliable trend estimation",
         "Similar customers show consistent growth patterns (low slope variance)",
-        "Prudential Financial down-weighted due to April 2025 usage spike"
+        "Customer 27663bd6 down-weighted due to May 2025 usage spike (159K)"
       ]
     }
   ]
