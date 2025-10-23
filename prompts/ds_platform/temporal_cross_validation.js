@@ -1,9 +1,85 @@
 /**
- * Transform dataset splits into temporal cross-validation folds for time-series forecasting.
+ * Generate complete temporal cross-validation fold datasets for time-series forecasting.
+ * Input: group_by_customers.json (training_dataset + target_dataset)
+ * Output: 5 complete folds with actual customer records
+ *
  * - All similar customers are used as training data in every fold
  * - Target customer (BlackRock) data is split temporally for walk-forward validation
  * - Each fold trains on progressively more target customer history
+ * - Folds 1-4: Validation folds with known validation data
+ * - Fold 5: Production fold forecasting unknown future
  */
+
+/**
+ * Generate truly random 10-digit integer for fold seed
+ */
+function generateRandomSeed() {
+    return Math.floor(Math.random() * 9000000000) + 1000000000;
+}
+
+/**
+ * Define temporal fold configurations
+ * These specify how to split the target customer's 24 months of data
+ */
+function generateFoldConfigs() {
+    return [
+        {
+            fold_id: 'fold_1',
+            random_data_seed: generateRandomSeed(),
+            description: 'Train on target months 0-18, validate on month 19',
+            fold_type: 'validation',
+            target_customer_config: {
+                training_end_month_index: 18,
+                validation_month_index: 19,
+                test_month_index: 20
+            }
+        },
+        {
+            fold_id: 'fold_2',
+            random_data_seed: generateRandomSeed(),
+            description: 'Train on target months 0-19, validate on month 20',
+            fold_type: 'validation',
+            target_customer_config: {
+                training_end_month_index: 19,
+                validation_month_index: 20,
+                test_month_index: 21
+            }
+        },
+        {
+            fold_id: 'fold_3',
+            random_data_seed: generateRandomSeed(),
+            description: 'Train on target months 0-20, validate on month 21',
+            fold_type: 'validation',
+            target_customer_config: {
+                training_end_month_index: 20,
+                validation_month_index: 21,
+                test_month_index: 22
+            }
+        },
+        {
+            fold_id: 'fold_4',
+            random_data_seed: generateRandomSeed(),
+            description: 'Train on target months 0-21, validate on month 22',
+            fold_type: 'validation',
+            target_customer_config: {
+                training_end_month_index: 21,
+                validation_month_index: 22,
+                test_month_index: 23
+            }
+        },
+        {
+            fold_id: 'fold_5_production',
+            random_data_seed: generateRandomSeed(),
+            description: 'Train on all available target history (0-23), forecast next unknown month (24)',
+            fold_type: 'production',
+            target_customer_config: {
+                training_end_month_index: null,
+                validation_month_index: null,
+                test_month_index: null
+            }
+        }
+    ];
+}
 
 function parseBillingMonth(raw) {
     if (!raw || typeof raw !== 'string') {
@@ -146,17 +222,16 @@ function splitTargetCustomerRecords(allRecords, foldConfig) {
             usage_type,
             training_records: formatted,
             validation_record: null,
-            test_month: nextMonth,
-            fold_type: 'production'
+            test_month: nextMonth
         };
     }
 
-    // Split data temporally
+    // Split data temporally for validation folds
     const trainingRecords = formatted.slice(0, training_end_month_index + 1);
     const validationRecord = formatted[validation_month_index] || null;
     const testRecord = formatted[test_month_index] || null;
 
-    // Calculate next month for test forecast
+    // Calculate test month
     let testMonth = null;
     if (testRecord) {
         testMonth = testRecord.billing_month;
@@ -171,17 +246,16 @@ function splitTargetCustomerRecords(allRecords, foldConfig) {
         usage_type,
         training_records: trainingRecords,
         validation_record: validationRecord,
-        test_month: testMonth,
-        fold_type: 'validation'
+        test_month: testMonth
     };
 }
 
-// Main processing
-const groupNode = $('Group by Customers').first();
-const splitsNode = $('splits').first();
+// ===========================
+// Main Processing
+// ===========================
 
+const groupNode = $('Group by Customers').first();
 const groupJson = groupNode?.json || {};
-const splitsInput = splitsNode?.json?.output || [];
 
 const trainingLookup = groupJson.training_dataset || {};
 const targetLookup = groupJson.target_dataset || {};
@@ -200,17 +274,25 @@ const similarCustomerSeries = Object.entries(trainingLookup)
     .map(([customerId, records]) => buildSimilarCustomerSeries(records))
     .filter(Boolean);
 
+// Generate fold configurations
+const foldConfigs = generateFoldConfigs();
+
 // Process each temporal fold
-const enrichedFolds = (Array.isArray(splitsInput) ? splitsInput : []).map((foldConfig) => {
-    const targetSplit = splitTargetCustomerRecords(targetCustomerRecords, foldConfig.target_customer_config);
+const folds = foldConfigs.map((foldConfig) => {
+    const targetSplit = splitTargetCustomerRecords(
+        targetCustomerRecords,
+        foldConfig.target_customer_config
+    );
 
     return {
         fold_id: foldConfig.fold_id,
         random_data_seed: foldConfig.random_data_seed,
         description: foldConfig.description,
+        fold_type: foldConfig.fold_type,
         similar_customers: cloneSeries(similarCustomerSeries),
         target_customer: targetSplit
     };
 });
 
-return [{ output: enrichedFolds }];
+// Return in the format expected by downstream agents
+return [{ folds }];
