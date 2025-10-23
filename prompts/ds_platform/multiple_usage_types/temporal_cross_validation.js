@@ -1,11 +1,12 @@
 /**
  * Generate complete temporal cross-validation fold datasets for time-series forecasting.
- * Input: group_by_customers.json (training_dataset + target_dataset)
- * Output: 5 complete folds with actual customer records
+ * Input: group_by_customers.json (training_dataset + target_dataset) with usage_type grouping
+ * Output: 5 complete folds with actual customer records, organized by target customer and usage_type
  *
- * - All similar customers are used as training data in every fold
- * - Target customer (BlackRock) data is split temporally for walk-forward validation
+ * - All similar customers (training_dataset) are used as training data in every fold
+ * - Target customer(s) data is split temporally for walk-forward validation
  * - Each fold trains on progressively more target customer history
+ * - Folds are generated PER USAGE TYPE for EACH target customer
  * - Folds 1-4: Validation folds with known validation data
  * - Fold 5: Production fold forecasting unknown future
  */
@@ -168,9 +169,9 @@ function sortRecords(records) {
 }
 
 /**
- * Build complete series for similar customers (all their history)
+ * Build complete series for similar customers (all their history) for a specific usage type
  */
-function buildSimilarCustomerSeries(records) {
+function buildSimilarCustomerSeries(records, usageType) {
     const sorted = sortRecords(records);
     if (!sorted.length) {
         return null;
@@ -182,12 +183,12 @@ function buildSimilarCustomerSeries(records) {
         total_credit_usage: toNumber(record.total_credit_usage)
     }));
 
-    const { customer_id, customer_name, usage_type } = sorted[0].record || {};
+    const { customer_id, customer_name } = sorted[0].record || {};
 
     return {
         customer_id,
         customer_name,
-        usage_type,
+        usage_type: usageType,
         records: formatted
     };
 }
@@ -195,7 +196,7 @@ function buildSimilarCustomerSeries(records) {
 /**
  * Split target customer records into training, validation, and test sets based on temporal fold config
  */
-function splitTargetCustomerRecords(allRecords, foldConfig) {
+function splitTargetCustomerRecords(allRecords, foldConfig, usageType) {
     const sorted = sortRecords(allRecords);
     if (!sorted.length) {
         return null;
@@ -207,7 +208,7 @@ function splitTargetCustomerRecords(allRecords, foldConfig) {
         total_credit_usage: toNumber(record.total_credit_usage)
     }));
 
-    const { customer_id, customer_name, usage_type } = sorted[0].record || {};
+    const { customer_id, customer_name } = sorted[0].record || {};
     const { training_end_month_index, validation_month_index, test_month_index } = foldConfig;
 
     // For production fold (no validation), use all data for training
@@ -219,7 +220,7 @@ function splitTargetCustomerRecords(allRecords, foldConfig) {
         return {
             customer_id,
             customer_name,
-            usage_type,
+            usage_type: usageType,
             training_records: formatted,
             validation_record: null,
             test_month: nextMonth
@@ -243,10 +244,81 @@ function splitTargetCustomerRecords(allRecords, foldConfig) {
     return {
         customer_id,
         customer_name,
-        usage_type,
+        usage_type: usageType,
         training_records: trainingRecords,
         validation_record: validationRecord,
         test_month: testMonth
+    };
+}
+
+/**
+ * Process a single target customer and generate folds for all their usage types
+ */
+function processTargetCustomer(targetCustomerId, targetCustomerUsageTypes, trainingLookup, foldConfigs) {
+    // Get all unique usage types from this target customer
+    const targetUsageTypes = Object.keys(targetCustomerUsageTypes);
+
+    if (targetUsageTypes.length === 0) {
+        console.log(`Warning: Target customer ${targetCustomerId} has no usage types`);
+        return null;
+    }
+
+    console.log(`Processing target customer ${targetCustomerId} with ${targetUsageTypes.length} usage type(s): ${targetUsageTypes.join(', ')}`);
+
+    // Process each usage type separately
+    const usageTypeFolds = targetUsageTypes.map((usageType) => {
+        console.log(`  Processing usage type: ${usageType}`);
+
+        // Build similar customer series for this usage type
+        // Only include similar customers that have data for this specific usage type
+        const similarCustomerSeries = Object.entries(trainingLookup)
+            .map(([customerId, usageTypeRecords]) => {
+                // usageTypeRecords is { usage_type: [records] }
+                const recordsForUsageType = usageTypeRecords[usageType];
+                if (!recordsForUsageType || !recordsForUsageType.length) {
+                    return null; // This customer doesn't have this usage type
+                }
+                return buildSimilarCustomerSeries(recordsForUsageType, usageType);
+            })
+            .filter(Boolean);
+
+        console.log(`    Found ${similarCustomerSeries.length} similar customers with usage type: ${usageType}`);
+
+        // Get target customer records for this usage type
+        const targetRecordsForUsageType = targetCustomerUsageTypes[usageType];
+
+        if (!targetRecordsForUsageType || !targetRecordsForUsageType.length) {
+            console.log(`    Warning: Target customer has no records for usage type: ${usageType}`);
+            return null;
+        }
+
+        // Process each temporal fold for this usage type
+        const folds = foldConfigs.map((foldConfig) => {
+            const targetSplit = splitTargetCustomerRecords(
+                targetRecordsForUsageType,
+                foldConfig.target_customer_config,
+                usageType
+            );
+
+            return {
+                fold_id: foldConfig.fold_id,
+                random_data_seed: foldConfig.random_data_seed,
+                description: foldConfig.description,
+                fold_type: foldConfig.fold_type,
+                similar_customers: cloneSeries(similarCustomerSeries),
+                target_customer: targetSplit
+            };
+        });
+
+        return {
+            usage_type: usageType,
+            folds: folds
+        };
+    }).filter(Boolean);
+
+    return {
+        target_customer_id: targetCustomerId,
+        usage_type_folds: usageTypeFolds
     };
 }
 
@@ -260,39 +332,35 @@ const groupJson = groupNode?.json || {};
 const trainingLookup = groupJson.training_dataset || {};
 const targetLookup = groupJson.target_dataset || {};
 
-// Get target customer data (should be BlackRock)
+// Get all target customer IDs
 const targetCustomerIds = Object.keys(targetLookup);
-if (targetCustomerIds.length !== 1) {
-    throw new Error(`Expected exactly 1 target customer, found ${targetCustomerIds.length}`);
+if (targetCustomerIds.length === 0) {
+    throw new Error('No target customers found in target_dataset');
 }
 
-const targetCustomerId = targetCustomerIds[0];
-const targetCustomerRecords = targetLookup[targetCustomerId];
+console.log(`Processing ${targetCustomerIds.length} target customer(s)`);
 
-// Build similar customer series (use all their data in every fold)
-const similarCustomerSeries = Object.entries(trainingLookup)
-    .map(([customerId, records]) => buildSimilarCustomerSeries(records))
-    .filter(Boolean);
-
-// Generate fold configurations
+// Generate fold configurations (same for all customers and usage types)
 const foldConfigs = generateFoldConfigs();
 
-// Process each temporal fold
-const folds = foldConfigs.map((foldConfig) => {
-    const targetSplit = splitTargetCustomerRecords(
-        targetCustomerRecords,
-        foldConfig.target_customer_config
-    );
-
-    return {
-        fold_id: foldConfig.fold_id,
-        random_data_seed: foldConfig.random_data_seed,
-        description: foldConfig.description,
-        fold_type: foldConfig.fold_type,
-        similar_customers: cloneSeries(similarCustomerSeries),
-        target_customer: targetSplit
-    };
-});
+// Process each target customer
+const targetCustomerResults = targetCustomerIds.map((targetCustomerId) => {
+    const targetCustomerUsageTypes = targetLookup[targetCustomerId]; // { usage_type: [records] }
+    return processTargetCustomer(targetCustomerId, targetCustomerUsageTypes, trainingLookup, foldConfigs);
+}).filter(Boolean);
 
 // Return in the format expected by downstream agents
-return [{ folds }];
+// Structure: [
+//   {
+//     target_customer_id: "id1",
+//     usage_type_folds: [
+//       { usage_type: "type1", folds: [...] },
+//       { usage_type: "type2", folds: [...] }
+//     ]
+//   },
+//   {
+//     target_customer_id: "id2",
+//     usage_type_folds: [...]
+//   }
+// ]
+return targetCustomerResults;
