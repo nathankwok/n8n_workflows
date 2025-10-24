@@ -56,10 +56,7 @@ Object.values(training_dataset).forEach(usageTypeObj => {
 });
 
 
-console.log(training_dataset);
 // grouped is: { "<customer-id>": { "<usage-type>": [rows sorted by month asc], ... }, ... }
-
-
 
 
 const target_dataset = input_data.target_dataset.reduce((acc, row) => {

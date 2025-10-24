@@ -1,12 +1,14 @@
 
 const crypto = require('crypto');
 
-// Read the input JSON file
-const inputPath = path.join(__dirname, 'obfuscate_customer_name.json');
-const data = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
+const input_data = $input.first().json.output;
+const training_dataset = input_data.training_dataset;
+const target_dataset = input_data.target_dataset;
 
 // Create a mapping object to store original -> obfuscated names
 const customerNameMapping = {};
+// Create a mapping object to store customer_id -> original customer name
+const customerIdToNameMapping = {};
 
 // Function to create a simple hash
 // Reason: Using MD5 for deterministic hash generation - same input always produces same output
@@ -31,18 +33,26 @@ function obfuscateCustomerName(originalName) {
 
 // Process the dataset
 function obfuscateDataset(dataset) {
-  return dataset.map(record => ({
-    ...record,
-    customer_name: obfuscateCustomerName(record.customer_name)
-  }));
+  return dataset.filter(record => record.customer_id && record.customer_name && record.customer_name.length > 0 && record.customer_id.length > 0).map(record => {
+    // Store customer_id -> original customer_name mapping
+    // Reason: Track customer_id to name relationship before obfuscation for reference
+
+    if (record.customer_id && record.customer_name && record.customer_name.length > 0 && record.customer_id.length > 0) {
+      customerIdToNameMapping[record.customer_id] = record.customer_name;
+
+    }
+
+    return {
+      ...record,
+      customer_name: obfuscateCustomerName(record.customer_name)
+    };
+  });
 }
 
 // Obfuscate both training and target datasets
 const obfuscated_customer_data = {
-  output: {
-    training_dataset: obfuscateDataset(data.output.training_dataset),
-    target_dataset: obfuscateDataset(data.output.target_dataset)
-  }
+  training_dataset: obfuscateDataset(training_dataset),
+  target_dataset: obfuscateDataset(target_dataset)
 };
 
 // Create mapping output with forward and reverse mappings
@@ -51,7 +61,8 @@ const customer_name_mapping = {
   reverse_mapping: Object.entries(customerNameMapping).reduce((acc, [original, obfuscated]) => {
     acc[obfuscated] = original;
     return acc;
-  }, {})
+  }, {}),
+  customer_id_to_name: customerIdToNameMapping
 };
 
 // Return the result as an array of objects
