@@ -27,56 +27,56 @@ function generateFoldConfigs() {
         {
             fold_id: 'fold_1',
             random_data_seed: generateRandomSeed(),
-            description: 'Train on target months 0-18, validate on month 19',
+            description: 'Train on target months 0-18, validate on month 19, predict months 20-22',
             fold_type: 'validation',
             target_customer_config: {
                 training_end_month_index: 18,
                 validation_month_index: 19,
-                test_month_index: 20
+                test_month_indices: [20, 21, 22]  // Predict next 3 months
             }
         },
         {
             fold_id: 'fold_2',
             random_data_seed: generateRandomSeed(),
-            description: 'Train on target months 0-19, validate on month 20',
+            description: 'Train on target months 0-19, validate on month 20, predict months 21-23',
             fold_type: 'validation',
             target_customer_config: {
                 training_end_month_index: 19,
                 validation_month_index: 20,
-                test_month_index: 21
+                test_month_indices: [21, 22, 23]  // Predict next 3 months
             }
         },
         {
             fold_id: 'fold_3',
             random_data_seed: generateRandomSeed(),
-            description: 'Train on target months 0-20, validate on month 21',
+            description: 'Train on target months 0-20, validate on month 21, predict months 22-24',
             fold_type: 'validation',
             target_customer_config: {
                 training_end_month_index: 20,
                 validation_month_index: 21,
-                test_month_index: 22
+                test_month_indices: [22, 23, null]  // Month 24 may not exist in historical data
             }
         },
         {
             fold_id: 'fold_4',
             random_data_seed: generateRandomSeed(),
-            description: 'Train on target months 0-21, validate on month 22',
+            description: 'Train on target months 0-21, validate on month 22, predict months 23-25',
             fold_type: 'validation',
             target_customer_config: {
                 training_end_month_index: 21,
                 validation_month_index: 22,
-                test_month_index: 23
+                test_month_indices: [23, null, null]  // Months 24-25 may not exist in historical data
             }
         },
         {
             fold_id: 'fold_5_production',
             random_data_seed: generateRandomSeed(),
-            description: 'Train on all available target history (0-23), forecast next unknown month (24)',
+            description: 'Train on all available target history (0-23), forecast next 3 unknown months (24-26)',
             fold_type: 'production',
             target_customer_config: {
                 training_end_month_index: null,
                 validation_month_index: null,
-                test_month_index: null
+                test_month_indices: null  // Will be calculated as next 3 months
             }
         }
     ];
@@ -209,13 +209,19 @@ function splitTargetCustomerRecords(allRecords, foldConfig, usageType) {
     }));
 
     const { customer_id, customer_name } = sorted[0].record || {};
-    const { training_end_month_index, validation_month_index, test_month_index } = foldConfig;
+    const { training_end_month_index, validation_month_index, test_month_indices } = foldConfig;
 
     // For production fold (no validation), use all data for training
     if (training_end_month_index === null) {
         const lastRecord = formatted[formatted.length - 1];
         const lastDate = parseBillingMonth(lastRecord.billing_month);
-        const nextMonth = formatBillingMonth(addMonths(lastDate, 1), null);
+
+        // Generate next 3 months
+        const testMonths = [
+            formatBillingMonth(addMonths(lastDate, 1), null),
+            formatBillingMonth(addMonths(lastDate, 2), null),
+            formatBillingMonth(addMonths(lastDate, 3), null)
+        ];
 
         return {
             customer_id,
@@ -223,23 +229,29 @@ function splitTargetCustomerRecords(allRecords, foldConfig, usageType) {
             usage_type: usageType,
             training_records: formatted,
             validation_record: null,
-            test_month: nextMonth
+            test_months: testMonths
         };
     }
 
     // Split data temporally for validation folds
     const trainingRecords = formatted.slice(0, training_end_month_index + 1);
     const validationRecord = formatted[validation_month_index] || null;
-    const testRecord = formatted[test_month_index] || null;
 
-    // Calculate test month
-    let testMonth = null;
-    if (testRecord) {
-        testMonth = testRecord.billing_month;
-    } else if (validationRecord) {
-        const valDate = parseBillingMonth(validationRecord.billing_month);
-        testMonth = formatBillingMonth(addMonths(valDate, 1), null);
-    }
+    // Get test records for the next 3 months (may not all exist in historical data)
+    const testRecords = test_month_indices.map(index =>
+        index !== null ? formatted[index] || null : null
+    );
+
+    // Calculate test months - use actual data if available, otherwise calculate from validation month
+    const testMonths = testRecords.map((record, i) => {
+        if (record) {
+            return record.billing_month;
+        } else if (validationRecord) {
+            const valDate = parseBillingMonth(validationRecord.billing_month);
+            return formatBillingMonth(addMonths(valDate, i + 1), null);
+        }
+        return null;
+    });
 
     return {
         customer_id,
@@ -247,7 +259,8 @@ function splitTargetCustomerRecords(allRecords, foldConfig, usageType) {
         usage_type: usageType,
         training_records: trainingRecords,
         validation_record: validationRecord,
-        test_month: testMonth
+        test_months: testMonths,
+        test_records: testRecords  // Include actual test records if they exist
     };
 }
 

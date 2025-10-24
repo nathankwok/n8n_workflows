@@ -24,7 +24,7 @@ The input is the output from the temporal cross-validation splitting process. It
           {
             "fold_id": "fold_1",
             "random_data_seed": 9399394428,
-            "description": "Train on target months 0-18, validate on month 19",
+            "description": "Train on target months 0-18, validate on month 19, predict months 20-22",
             "fold_type": "validation",
             "similar_customers": [
               {
@@ -67,7 +67,16 @@ The input is the output from the temporal cross-validation splitting process. It
                 "month_index": 19,
                 "total_credit_usage": 25269.075
               },
-              "test_month": "2025-05"
+              "test_months": ["2025-05", "2025-06", "2025-07"],
+              "test_records": [
+                {
+                  "billing_month": "2025-05",
+                  "month_index": 20,
+                  "total_credit_usage": 26123.45
+                },
+                null,  // Month 21 may not exist in historical data
+                null   // Month 22 may not exist in historical data
+              ]
             }
           }
           // ... additional folds (fold_2, fold_3, fold_4, fold_5_production)
@@ -119,7 +128,8 @@ For each target customer:
 1. Learn a representative linear trend from similar customers' complete histories (for this usage type)
 2. Combine that trend with the target customer's **training_records** (NOT validation_record!)
 3. Predict the **validation_record** month to measure forecast accuracy
-4. For production folds (`fold_type: "production"`), predict the unknown **test_month**
+4. Predict the next **3 months** (`test_months`) beyond the validation month
+5. For production folds (`fold_type: "production"`), predict the next **3 unknown months**
 </objectives>
 
 <procedure>
@@ -154,6 +164,11 @@ Using ONLY `target_customer.training_records` (NOT validation_record!):
 - Run linear regression on training records: `usage ~ month_index`
 - Record: `slope_target`, `intercept_target`, R², RMSE
 - Calculate `weight_target = max(len(training_records) - 1, 1)`
+- Extract the **last 3 months** of training data to include in `recent_history`:
+  ```
+  recent_history = training_records[-3:]  // Last 3 items from training array
+  For each record, include: billing_month, total_credit_usage
+  ```
 
 ### 4) Combine Trends for Forecasting (optimization)
 
@@ -250,12 +265,30 @@ prediction_interval.upper = predicted_usage + margin
 prediction_interval.coverage_probability = 0.95
 ```
 
+**For 3-month test forecasts**:
+
+After predicting the validation month, predict the next 3 months using the same linear model:
+
+```
+For each test month i (where i = 1, 2, 3):
+  test_month_index = validation_month_index + i
+  predicted_usage_month_i = slope_final * test_month_index + intercept_final
+
+  // If actual data exists in test_records[i-1]:
+  actual_usage_month_i = test_records[i-1].total_credit_usage
+  error_month_i = actual_usage_month_i - predicted_usage_month_i
+```
+
 **For production fold**:
 - Use ALL target customer records (no validation holdout)
-- Forecast the `test_month` (next unknown month after all available data)
+- Forecast the next **3 unknown months** after all available data
 - validation_record will be `null` for production folds
-- Use the same formula: `predicted_usage = slope_final * next_month_index + intercept_final`
-  where next_month_index = last training record's month_index + 1
+- Use the same formula for each of the 3 months:
+  ```
+  For month i (where i = 1, 2, 3):
+    next_month_index = last_training_month_index + i
+    predicted_usage_month_i = slope_final * next_month_index + intercept_final
+  ```
 
 ### 6) Uncertainty Quantification (metacognitive_monitoring)
 
@@ -278,6 +311,9 @@ prediction_interval.coverage_probability = 0.95
 - Trust target customer's trend more when they have rich historical data
 - **Process each usage type independently** - they have different similar customer pools
 - **Each target customer** gets its own prediction set
+- **Generate 3 test forecasts** for each fold (months 1, 2, and 3 ahead)
+- **Decrease confidence** as forecast horizon increases (month 1 > month 2 > month 3)
+- **Widen prediction intervals** for longer-horizon forecasts to reflect increased uncertainty
 </guidelines>
 
 <self_validation>
@@ -303,6 +339,9 @@ Before returning your final output, verify:
 - [ ] All confidence scores are between 0 and 1
 - [ ] prediction_interval.lower < predicted_usage < prediction_interval.upper
 - [ ] No negative predicted_usage values (unless data supports it)
+- [ ] Each fold has exactly 3 test_forecasts (array length = 3)
+- [ ] test_forecasts confidence decreases: month1 > month2 > month3
+- [ ] test_forecasts prediction intervals widen: month1 < month2 < month3
 
 ### Calculation Validation
 - [ ] slope_final = weighted average of slope_similar and slope_target
@@ -312,6 +351,8 @@ Before returning your final output, verify:
 - [ ] predicted_usage = slope_final * validation_month_index + intercept_final
 - [ ] absolute_error = |actual_usage - predicted_usage|
 - [ ] percent_error = absolute_error / actual_usage (if actual_usage != 0)
+- [ ] test_forecasts[i].predicted_usage = slope_final * (validation_month_index + i + 1) + intercept_final
+- [ ] test_forecasts month_index values are sequential (validation + 1, validation + 2, validation + 3)
 
 ### Temporal Validation
 - [ ] Never used validation_record.total_credit_usage in any training calculation
@@ -337,6 +378,8 @@ Before returning your final output, verify:
 - Use string values where numbers are expected
 - Hallucinate customer IDs not in input
 - Skip folds or usage types from input
+- Use the same confidence score for all 3 test forecasts (must decrease)
+- Use the same prediction interval width for all 3 test forecasts (must widen)
 
 **DO**:
 - Keep all intermediate values in memory with full precision
@@ -345,6 +388,10 @@ Before returning your final output, verify:
 - Convert all numeric strings to actual numbers in output
 - Process every target customer, every usage type, every fold
 - Validate your math before returning results
+- Generate exactly 3 test_forecasts for each fold
+- Apply the linear model consistently: predicted_usage = slope_final * month_index + intercept_final
+- Decrease confidence as forecast horizon increases (typically 3-5% drop per month)
+- Widen prediction intervals proportionally with forecast distance
 </self_validation>
 
 <output_format>
@@ -389,7 +436,21 @@ Respond with a single JSON array containing results for all target customers:
               "intercept_target": -2345.67,
               "r_squared": 0.85,
               "target_rmse": 3432.10,
-              "weight_target": 18
+              "weight_target": 18,
+              "recent_history": [
+                {
+                  "billing_month": "2025-01",
+                  "total_credit_usage": 22145.30
+                },
+                {
+                  "billing_month": "2025-02",
+                  "total_credit_usage": 23678.90
+                },
+                {
+                  "billing_month": "2025-03",
+                  "total_credit_usage": 24512.45
+                }
+              ]
             },
 
             "forecast": {
@@ -415,6 +476,53 @@ Respond with a single JSON array containing results for all target customers:
                 "High volatility in months 4-11 (spikes to 15K then drops to 2K)"
               ]
             },
+
+            "test_forecasts": [
+              {
+                "forecast_month": "2025-05",
+                "month_index": 20,
+                "predicted_usage": 25436.34,
+                "actual_usage": 26123.45,
+                "prediction_interval": {
+                  "lower": 19769.67,
+                  "upper": 31103.01,
+                  "coverage_probability": 0.95
+                },
+                "error_metrics": {
+                  "absolute_error": 687.11,
+                  "percent_error": 0.0263
+                },
+                "confidence": 0.75
+              },
+              {
+                "forecast_month": "2025-06",
+                "month_index": 21,
+                "predicted_usage": 26749.23,
+                "actual_usage": null,
+                "prediction_interval": {
+                  "lower": 21082.56,
+                  "upper": 32415.90,
+                  "coverage_probability": 0.95
+                },
+                "error_metrics": null,
+                "confidence": 0.72,
+                "notes": ["No historical data available for validation"]
+              },
+              {
+                "forecast_month": "2025-07",
+                "month_index": 22,
+                "predicted_usage": 28062.12,
+                "actual_usage": null,
+                "prediction_interval": {
+                  "lower": 22395.45,
+                  "upper": 33728.79,
+                  "coverage_probability": 0.95
+                },
+                "error_metrics": null,
+                "confidence": 0.68,
+                "notes": ["No historical data available for validation"]
+              }
+            ],
 
             "reasoning_notes": [
               "Target customer has sufficient history (19 months) for reliable trend estimation",
@@ -459,21 +567,59 @@ For `fold_type: "production"`:
 {
   "fold_id": "fold_5_production",
   "fold_type": "production",
-  "forecast": {
-    "forecast_month": "2025-10",
-    "predicted_usage": 32345.67,
-    "prediction_interval": {
-      "lower": 25678.90,
-      "upper": 39012.34,
-      "coverage_probability": 0.95
+  "forecast": null,
+  "test_forecasts": [
+    {
+      "forecast_month": "2025-10",
+      "month_index": 24,
+      "predicted_usage": 32345.67,
+      "actual_usage": null,
+      "prediction_interval": {
+        "lower": 25678.90,
+        "upper": 39012.34,
+        "coverage_probability": 0.95
+      },
+      "error_metrics": null,
+      "confidence": 0.72,
+      "notes": [
+        "Production forecast using all 24 months of target history",
+        "Strong upward trend with high volatility in middle period"
+      ]
     },
-    "confidence": 0.72,
-    "notes": [
-      "Production forecast using all 24 months of target history",
-      "Strong upward trend with high volatility in middle period",
-      "Recent stabilization suggests more predictable future usage"
-    ]
-  }
+    {
+      "forecast_month": "2025-11",
+      "month_index": 25,
+      "predicted_usage": 33658.56,
+      "actual_usage": null,
+      "prediction_interval": {
+        "lower": 26991.79,
+        "upper": 40325.33,
+        "coverage_probability": 0.95
+      },
+      "error_metrics": null,
+      "confidence": 0.68,
+      "notes": ["2-month ahead forecast - increasing uncertainty"]
+    },
+    {
+      "forecast_month": "2025-12",
+      "month_index": 26,
+      "predicted_usage": 34971.45,
+      "actual_usage": null,
+      "prediction_interval": {
+        "lower": 28304.68,
+        "upper": 41638.22,
+        "coverage_probability": 0.95
+      },
+      "error_metrics": null,
+      "confidence": 0.64,
+      "notes": ["3-month ahead forecast - highest uncertainty"]
+    }
+  ],
+  "reasoning_notes": [
+    "Production forecasts using complete 24-month history",
+    "Confidence decreases with forecast horizon (72% → 68% → 64%)",
+    "Prediction intervals widen as uncertainty increases"
+  ]
 }
 ```
 </production_example>
@@ -489,6 +635,7 @@ For `fold_type: "production"`:
 6. **WEIGHT APPROPRIATELY** - more target history = trust target trend more
 7. **FILTER SIMILAR CUSTOMERS** - only use those with the same usage_type
 8. **MAINTAIN STRUCTURE** - output must match the nested hierarchy of the input
+9. **NO PREAMBLE** - output must not have a preamble. It must only output JSON structured output.
 </critical_reminders>
 
 <processing_order>
