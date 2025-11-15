@@ -1,1 +1,639 @@
-{"updatedAt":"2025-11-15T21:32:40.000Z","createdAt":"2025-10-01T05:54:59.236Z","id":"RMfcJExZ0DdXdMnJ","name":"Slack_Error","active":false,"isArchived":false,"nodes":[{"parameters":{"workflowInputs":{"values":[{"name":"body","type":"object"},{"name":"headers_host"},{"name":"workflow","type":"object"},{"name":"execution","type":"object"}]}},"id":"3bf2b606-99bb-4e81-97bc-e18dba8f0bc4","typeVersion":1.1,"name":"Trigger","type":"n8n-nodes-base.executeWorkflowTrigger","position":[8208,2496]},{"parameters":{"workflowId":{"__rl":true,"value":"OFpD7aepKHcHCvqz","mode":"list","cachedResultUrl":"/workflow/OFpD7aepKHcHCvqz","cachedResultName":"Global Vars"},"workflowInputs":{"mappingMode":"defineBelow","value":{}},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[8512,2496],"id":"94ec78ba-181f-4f3d-935e-a5d5a3d84f71","name":"Global Vars"},{"parameters":{},"type":"n8n-nodes-base.errorTrigger","typeVersion":1,"position":[8224,1840],"id":"efb19dfe-4e39-4cc4-8680-4c17cefc2cad","name":"Error Trigger"},{"parameters":{"workflowId":{"__rl":true,"value":"OFpD7aepKHcHCvqz","mode":"list","cachedResultUrl":"/workflow/OFpD7aepKHcHCvqz","cachedResultName":"Global Vars"},"workflowInputs":{"mappingMode":"defineBelow","value":{}},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[8528,1840],"id":"50e0d7d5-e457-4fa1-9bda-f1aaef315670","name":"Global Vars1"},{"parameters":{"content":"## Manual Error Workflow\n- Triggered on an error path of a node. This will be set as a node in a workflow\n","height":720,"width":1664,"color":6},"type":"n8n-nodes-base.stickyNote","position":[8048,2224],"typeVersion":1,"id":"93976b12-9464-416a-9447-5df53fb9eace","name":"Sticky Note"},{"parameters":{"content":"## Error Workflow\n- Triggered when a workflow fails and the failing node stops the workflow entirely","height":416,"width":1408,"color":3},"type":"n8n-nodes-base.stickyNote","position":[8048,1680],"typeVersion":1,"id":"3f7dc33e-3595-4f67-afd5-e047bd34d512","name":"Sticky Note1"},{"parameters":{"assignments":{"assignments":[{"id":"285cc352-ec3b-4dd9-a1be-14ecc4193543","name":"message","value":"=The `{{ $('Global Vars').first().json.workflow.name }}` workflow with execution id <https://{{ $('Global Vars').first().json.headers_host }}/workflow/{{ $('Global Vars').first().json.workflow.id }}/executions/{{ $('Global Vars').first().json.execution.id }}|{{ $('Global Vars').first().json.execution.id }}> has failed.","type":"string"},{"id":"c25e39df-59ee-4a7d-af34-45d65a1da0a8","name":"body","value":"={\n  \"channel_id\": \"{{ $('Global Vars').first().json.slack['alerts-data-eng_channel_id'] }}\"\n}","type":"object"}]},"options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[9152,2464],"id":"ca965bda-371b-4380-943e-238e1a2148a5","name":"Create alerts-data-eng Slack Error Payload"},{"parameters":{"assignments":{"assignments":[{"id":"285cc352-ec3b-4dd9-a1be-14ecc4193543","name":"message","value":"=<@{{ $('Global Vars').first().json.body.reaction_user_id }}>, I could not generate dashboard recommendations at this moment :sob:","type":"string"},{"id":"c25e39df-59ee-4a7d-af34-45d65a1da0a8","name":"body","value":"={\n  \"channel_id\": \"{{ $('Global Vars').first().json.body.channel_id }}\",\n  \"message_ts\": \"{{ $('Global Vars').item.json.body.message_thread_ts }}\"\n}","type":"object"}]},"options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[9152,2720],"id":"0c9632ab-5ab0-4f96-a115-505f82465e81","name":"Create message channel Slack Error Payload"},{"parameters":{"method":"POST","url":"={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={{ $('Create alerts-data-eng Slack Error Payload').first().json.toJsonString() }}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[9472,2464],"id":"0241e273-e0ef-4158-b854-c08c4cd7661c","name":"Send alerts-data-eng Slack Error Message","alwaysOutputData":false},{"parameters":{"method":"POST","url":"={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={{ $('Create message channel Slack Error Payload').first().json.toJsonString() }}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[9472,2720],"id":"9aefcb67-72e2-4997-88fc-d7ce1f3ada95","name":"Send message channel Slack Error Message","alwaysOutputData":false},{"parameters":{"assignments":{"assignments":[{"id":"285cc352-ec3b-4dd9-a1be-14ecc4193543","name":"message","value":"=:warning: The `{{ $('Global Vars1').first().json.workflow.name }}` workflow with execution id <{{ $('Global Vars1').first().json.execution.url }}|{{ $('Global Vars1').first().json.execution.id }}> has failed with the following error:\n```{{ $('Global Vars1').first().json.execution.error.name }}: {{ $('Global Vars1').first().json.execution.error.message }}``` in `{{ $('Global Vars1').first().json.execution.error.node.name }}`","type":"string"},{"id":"c25e39df-59ee-4a7d-af34-45d65a1da0a8","name":"body","value":"={\n  \"channel_id\": \"{{ $('Global Vars1').item.json.slack['alerts-data-eng_channel_id'] }}\"\n}","type":"object"}]},"options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[8832,1840],"id":"d55a93f5-13b8-4d4f-bc3e-e4b57a6e3ee3","name":"Create alerts-data-eng Slack Error Payload1"},{"parameters":{"method":"POST","url":"={{ $('Global Vars1').item.json.zapier_slack_response_webhook.webhook_url }}","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={{ $('Create alerts-data-eng Slack Error Payload1').first().json.toJsonString() }}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[9152,1840],"id":"53036b62-6443-4aba-a110-004ba678d906","name":"Send alerts-data-eng Slack Error Message1","alwaysOutputData":false},{"parameters":{"rules":{"values":[{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $('Global Vars').first().json.body.channel_id }}","rightValue":"={{ $('Global Vars').first().json.slack['data-eng-test-ai-channel_channel_id'] }}","operator":{"type":"string","operation":"equals"},"id":"1220cb42-974c-4ced-8d2c-0e69c38322fe"}],"combinator":"and"},"renameOutput":true,"outputKey":"data-eng-test-ai-channel"},{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"id":"9d0f55cb-d25d-4c49-a198-d3e563a11685","leftValue":"={{ $('Global Vars').first().json.body.channel_id }}","rightValue":"={{ $('Global Vars').first().json.slack['ask-data_channel_id'] }}","operator":{"type":"string","operation":"equals","name":"filter.operator.equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"ask-data"}]},"options":{"ignoreCase":true}},"type":"n8n-nodes-base.switch","typeVersion":3.3,"position":[8832,2416],"id":"412e06e8-df0e-48e4-b87e-956e472546f3","name":"Switch"},{"parameters":{"assignments":{"assignments":[{"id":"285cc352-ec3b-4dd9-a1be-14ecc4193543","name":"message","value":"=The `{{ $('Global Vars').first().json.workflow.name }}` workflow with execution id <https://{{ $('Global Vars').first().json.headers_host }}/workflow/{{ $('Global Vars').first().json.workflow.id }}/executions/{{ $('Global Vars').first().json.execution.id }}|{{ $('Global Vars').first().json.execution.id }}> has failed.","type":"string"},{"id":"c25e39df-59ee-4a7d-af34-45d65a1da0a8","name":"body","value":"={\n  \"channel_id\": \"{{ $('Global Vars').first().json.slack['data-eng-test-ai-channel_channel_id'] }}\"\n}","type":"object"}]},"options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[9152,2288],"id":"3c376788-f9df-4237-b042-f128b3581c59","name":"Create data-eng-test-ai-channel Slack Error Payload"},{"parameters":{"method":"POST","url":"={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={{ $('Create data-eng-test-ai-channel Slack Error Payload').first().json.toJsonString() }}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[9472,2288],"id":"4bbaca76-7358-48f9-b0d6-744c5b6cf23a","name":"Send data-eng-test-ai-channel Slack Error Message","alwaysOutputData":false}],"connections":{"Trigger":{"main":[[{"node":"Global Vars","type":"main","index":0}]]},"Global Vars":{"main":[[{"node":"Create message channel Slack Error Payload","type":"main","index":0},{"node":"Switch","type":"main","index":0}]]},"Error Trigger":{"main":[[{"node":"Global Vars1","type":"main","index":0}]]},"Global Vars1":{"main":[[{"node":"Create alerts-data-eng Slack Error Payload1","type":"main","index":0}]]},"Create alerts-data-eng Slack Error Payload":{"main":[[{"node":"Send alerts-data-eng Slack Error Message","type":"main","index":0}]]},"Create message channel Slack Error Payload":{"main":[[{"node":"Send message channel Slack Error Message","type":"main","index":0}]]},"Create alerts-data-eng Slack Error Payload1":{"main":[[{"node":"Send alerts-data-eng Slack Error Message1","type":"main","index":0}]]},"Send alerts-data-eng Slack Error Message":{"main":[[]]},"Switch":{"main":[[{"node":"Create data-eng-test-ai-channel Slack Error Payload","type":"main","index":0}],[{"node":"Create alerts-data-eng Slack Error Payload","type":"main","index":0}]]},"Create data-eng-test-ai-channel Slack Error Payload":{"main":[[{"node":"Send data-eng-test-ai-channel Slack Error Message","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{"Trigger":[{"json":{"body":{"channel_id":"C0912AANW1L","channel_name":"data-eng-test-ai-channel","conversation_id":"C0912AANW1L","event_id":"1759782050.002800","event_timestamp":"2025-10-06T20:20:50.002Z","is_message_user_bot":"False","message_text":"is there a hircine search that can list all the paying customers ? ie. give me a list of all orgs with an active billing plan , or equivalent query somewhere","message_thread_ts":"1759781835.431009","message_thread_ts_time":"2025-10-06T20:17:15.000Z","message_timestamp":"2025-10-06T20:17:15.431Z","message_ts":"1759781835.431009","message_user_email":"nkwok@cribl.io","message_user_first_name":"Nathan","message_user_id":"U06PVBEK9T6","message_user_last_name":"Kwok","message_user_name":"nathan_kwok","reaction":"omni","reaction_user_email":"nkwok@cribl.io","reaction_user_id":"U06PVBEK9T6","team_domain":"cribl","team_id":"T3XQYAF26","thread_conversation_text":"is there a hircine search that can list all the paying customers ? ie. give me a list of all orgs with an active billing plan , or equivalent query somewhere \\n#__--__#\\n<@U06PVBEK9T6> I found a few dashboards that cover paying customer accounts and active billing plans. These might help you list all organizations with active billing.\n\n• [Customer: Customer Breakdown](<https://cribl.omniapp.co/dashboards/de229002>) in [Customer Experience](<https://cribl.omniapp.co/f/Customer-Experience>)\n• [Customer: Cloud Credit Consumption](<https://cribl.omniapp.co/dashboards/credit-consumption>) in [Product](<https://cribl.omniapp.co/f/Product>)\n• [Overview: OEM Metrics](<https://cribl.omniapp.co/dashboards/47d94e3c>) in [Revenue](<https://cribl.omniapp.co/f/Revenue>)"},"headers_host":"n8n-relayer-1.app.n8n.cloud","workflow":{"active":true,"id":"7FCTtH9OsXu8HDxI","name":"ask-data Omni Dashboard Search HTTP"},"execution":{"id":"6228","mode":"production","resumeUrl":"https://n8n-relayer-1.app.n8n.cloud/webhook-waiting/6228","resumeFormUrl":"https://n8n-relayer-1.app.n8n.cloud/form-waiting/6228","customData":{}}}}],"Error Trigger":[{"json":{"execution":{"id":"1497","url":"https://n8n-relayer-1.app.n8n.cloud/workflow/7FCTtH9OsXu8HDxI/executions/1497","error":{"level":"warning","tags":{},"description":"To continue the execution when this happens, change the 'On Error' parameter in the root node's settings","timestamp":1759299825152,"context":{"outputParserFailReason":"Model output does not match the expected schema"},"functionality":"regular","name":"NodeOperationError","node":{"parameters":{"notice":"","schemaType":"manual","inputSchema":"{\n  \"type\": \"integer\"\n}\n","autoFix":false},"type":"@n8n/n8n-nodes-langchain.outputParserStructured","typeVersion":1.3,"position":[3136,2608],"id":"b2dc7e11-fc79-4fe9-b0b2-9ea1a2bc76c2","name":"Cortex Agent Structured Output Parser"},"messages":[],"message":"Model output doesn't fit required format","stack":"NodeOperationError: Model output doesn't fit required format\n    at N8nStructuredOutputParser.parse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_fc553bfe732254ec5207074cf9e2ceb7/node_modules/@n8n/n8n-nodes-langchain/utils/output_parsers/N8nStructuredOutputParser.ts:56:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at RunnableLambda.func (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_fc553bfe732254ec5207074cf9e2ceb7/node_modules/@n8n/n8n-nodes-langchain/nodes/agents/Agent/agents/ToolsAgent/common.ts:219:27)\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@langchain+core@0.3.68_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30.1_@o_8765aa945f981de137f9a48155aa0f8f/node_modules/@langchain/core/dist/runnables/base.cjs:1716:34"},"lastNodeExecuted":"Extract Key Words Agent","mode":"webhook"},"workflow":{"id":"7FCTtH9OsXu8HDxI","name":"ask-data Omni Dashboard Search HTTP"}}}]},"versionId":"2a6d8022-308b-4296-a1ec-21e07af08aed","triggerCount":0,"shared":[{"updatedAt":"2025-10-01T05:54:59.240Z","createdAt":"2025-10-01T05:54:59.240Z","role":"workflow:owner","workflowId":"RMfcJExZ0DdXdMnJ","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[]}
+{
+  "updatedAt": "2025-11-15T22:07:30.000Z",
+  "createdAt": "2025-10-01T05:54:59.236Z",
+  "id": "RMfcJExZ0DdXdMnJ",
+  "name": "Slack_Error",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "body",
+              "type": "object"
+            },
+            {
+              "name": "headers_host"
+            },
+            {
+              "name": "workflow",
+              "type": "object"
+            },
+            {
+              "name": "execution",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "id": "3bf2b606-99bb-4e81-97bc-e18dba8f0bc4",
+      "typeVersion": 1.1,
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        8208,
+        2496
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OFpD7aepKHcHCvqz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OFpD7aepKHcHCvqz",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        8512,
+        2496
+      ],
+      "id": "94ec78ba-181f-4f3d-935e-a5d5a3d84f71",
+      "name": "Global Vars"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        8224,
+        1840
+      ],
+      "id": "efb19dfe-4e39-4cc4-8680-4c17cefc2cad",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OFpD7aepKHcHCvqz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OFpD7aepKHcHCvqz",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        8528,
+        1840
+      ],
+      "id": "50e0d7d5-e457-4fa1-9bda-f1aaef315670",
+      "name": "Global Vars1"
+    },
+    {
+      "parameters": {
+        "content": "## Manual Error Workflow\n- Triggered on an error path of a node. This will be set as a node in a workflow\n",
+        "height": 720,
+        "width": 1664,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        8048,
+        2224
+      ],
+      "typeVersion": 1,
+      "id": "93976b12-9464-416a-9447-5df53fb9eace",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Error Workflow\n- Triggered when a workflow fails and the failing node stops the workflow entirely",
+        "height": 416,
+        "width": 1408,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        8048,
+        1680
+      ],
+      "typeVersion": 1,
+      "id": "3f7dc33e-3595-4f67-afd5-e047bd34d512",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "285cc352-ec3b-4dd9-a1be-14ecc4193543",
+              "name": "message",
+              "value": "=The `{{ $('Global Vars').first().json.workflow.name }}` workflow with execution id <https://{{ $('Global Vars').first().json.headers_host }}/workflow/{{ $('Global Vars').first().json.workflow.id }}/executions/{{ $('Global Vars').first().json.execution.id }}|{{ $('Global Vars').first().json.execution.id }}> has failed.",
+              "type": "string"
+            },
+            {
+              "id": "c25e39df-59ee-4a7d-af34-45d65a1da0a8",
+              "name": "body",
+              "value": "={\n  \"channel_id\": \"{{ $('Global Vars').first().json.slack['alerts-data-eng_channel_id'] }}\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9152,
+        2464
+      ],
+      "id": "ca965bda-371b-4380-943e-238e1a2148a5",
+      "name": "Create alerts-data-eng Slack Error Payload"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "285cc352-ec3b-4dd9-a1be-14ecc4193543",
+              "name": "message",
+              "value": "=<@{{ $('Global Vars').first().json.body.reaction_user_id }}>, I could not generate dashboard recommendations at this moment :sob:",
+              "type": "string"
+            },
+            {
+              "id": "c25e39df-59ee-4a7d-af34-45d65a1da0a8",
+              "name": "body",
+              "value": "={\n  \"channel_id\": \"{{ $('Global Vars').first().json.body.channel_id }}\",\n  \"message_ts\": \"{{ $('Global Vars').item.json.body.message_thread_ts }}\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9152,
+        2720
+      ],
+      "id": "0c9632ab-5ab0-4f96-a115-505f82465e81",
+      "name": "Create message channel Slack Error Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Create alerts-data-eng Slack Error Payload').first().json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9472,
+        2464
+      ],
+      "id": "0241e273-e0ef-4158-b854-c08c4cd7661c",
+      "name": "Send alerts-data-eng Slack Error Message",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Create message channel Slack Error Payload').first().json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9472,
+        2720
+      ],
+      "id": "9aefcb67-72e2-4997-88fc-d7ce1f3ada95",
+      "name": "Send message channel Slack Error Message",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "285cc352-ec3b-4dd9-a1be-14ecc4193543",
+              "name": "message",
+              "value": "=:warning: The `{{ $('Global Vars1').first().json.workflow.name }}` workflow with execution id <{{ $('Global Vars1').first().json.execution.url }}|{{ $('Global Vars1').first().json.execution.id }}> has failed with the following error:\n```{{ $('Global Vars1').first().json.execution.error.name }}: {{ $('Global Vars1').first().json.execution.error.message }}``` in `{{ $('Global Vars1').first().json.execution.error.node.name }}`",
+              "type": "string"
+            },
+            {
+              "id": "c25e39df-59ee-4a7d-af34-45d65a1da0a8",
+              "name": "body",
+              "value": "={\n  \"channel_id\": \"{{ $('Global Vars1').item.json.slack['alerts-data-eng_channel_id'] }}\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8832,
+        1840
+      ],
+      "id": "d55a93f5-13b8-4d4f-bc3e-e4b57a6e3ee3",
+      "name": "Create alerts-data-eng Slack Error Payload1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars1').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Create alerts-data-eng Slack Error Payload1').first().json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9152,
+        1840
+      ],
+      "id": "53036b62-6443-4aba-a110-004ba678d906",
+      "name": "Send alerts-data-eng Slack Error Message1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Global Vars').first().json.body.channel_id }}",
+                    "rightValue": "={{ $('Global Vars').first().json.slack['data-eng-test-ai-channel_channel_id'] }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1220cb42-974c-4ced-8d2c-0e69c38322fe"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "data-eng-test-ai-channel"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d0f55cb-d25d-4c49-a198-d3e563a11685",
+                    "leftValue": "={{ $('Global Vars').first().json.body.channel_id }}",
+                    "rightValue": "={{ $('Global Vars').first().json.slack['ask-data_channel_id'] }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ask-data"
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        8832,
+        2416
+      ],
+      "id": "412e06e8-df0e-48e4-b87e-956e472546f3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "285cc352-ec3b-4dd9-a1be-14ecc4193543",
+              "name": "message",
+              "value": "=The `{{ $('Global Vars').first().json.workflow.name }}` workflow with execution id <https://{{ $('Global Vars').first().json.headers_host }}/workflow/{{ $('Global Vars').first().json.workflow.id }}/executions/{{ $('Global Vars').first().json.execution.id }}|{{ $('Global Vars').first().json.execution.id }}> has failed.",
+              "type": "string"
+            },
+            {
+              "id": "c25e39df-59ee-4a7d-af34-45d65a1da0a8",
+              "name": "body",
+              "value": "={\n  \"channel_id\": \"{{ $('Global Vars').first().json.slack['data-eng-test-ai-channel_channel_id'] }}\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9152,
+        2288
+      ],
+      "id": "3c376788-f9df-4237-b042-f128b3581c59",
+      "name": "Create data-eng-test-ai-channel Slack Error Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Global Vars').item.json.zapier_slack_response_webhook.webhook_url }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Create data-eng-test-ai-channel Slack Error Payload').first().json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9472,
+        2288
+      ],
+      "id": "4bbaca76-7358-48f9-b0d6-744c5b6cf23a",
+      "name": "Send data-eng-test-ai-channel Slack Error Message",
+      "alwaysOutputData": false
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "Create message channel Slack Error Payload",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Global Vars1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars1": {
+      "main": [
+        [
+          {
+            "node": "Create alerts-data-eng Slack Error Payload1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create alerts-data-eng Slack Error Payload": {
+      "main": [
+        [
+          {
+            "node": "Send alerts-data-eng Slack Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create message channel Slack Error Payload": {
+      "main": [
+        [
+          {
+            "node": "Send message channel Slack Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create alerts-data-eng Slack Error Payload1": {
+      "main": [
+        [
+          {
+            "node": "Send alerts-data-eng Slack Error Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send alerts-data-eng Slack Error Message": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create data-eng-test-ai-channel Slack Error Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create alerts-data-eng Slack Error Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create data-eng-test-ai-channel Slack Error Payload": {
+      "main": [
+        [
+          {
+            "node": "Send data-eng-test-ai-channel Slack Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1759782050.002800",
+            "event_timestamp": "2025-10-06T20:20:50.002Z",
+            "is_message_user_bot": "False",
+            "message_text": "is there a hircine search that can list all the paying customers ? ie. give me a list of all orgs with an active billing plan , or equivalent query somewhere",
+            "message_thread_ts": "1759781835.431009",
+            "message_thread_ts_time": "2025-10-06T20:17:15.000Z",
+            "message_timestamp": "2025-10-06T20:17:15.431Z",
+            "message_ts": "1759781835.431009",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "omni",
+            "reaction_user_email": "nkwok@cribl.io",
+            "reaction_user_id": "U06PVBEK9T6",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26",
+            "thread_conversation_text": "is there a hircine search that can list all the paying customers ? ie. give me a list of all orgs with an active billing plan , or equivalent query somewhere \\n#__--__#\\n<@U06PVBEK9T6> I found a few dashboards that cover paying customer accounts and active billing plans. These might help you list all organizations with active billing.\n\n• [Customer: Customer Breakdown](<https://cribl.omniapp.co/dashboards/de229002>) in [Customer Experience](<https://cribl.omniapp.co/f/Customer-Experience>)\n• [Customer: Cloud Credit Consumption](<https://cribl.omniapp.co/dashboards/credit-consumption>) in [Product](<https://cribl.omniapp.co/f/Product>)\n• [Overview: OEM Metrics](<https://cribl.omniapp.co/dashboards/47d94e3c>) in [Revenue](<https://cribl.omniapp.co/f/Revenue>)"
+          },
+          "headers_host": "n8n-relayer-1.app.n8n.cloud",
+          "workflow": {
+            "active": true,
+            "id": "7FCTtH9OsXu8HDxI",
+            "name": "ask-data Omni Dashboard Search HTTP"
+          },
+          "execution": {
+            "id": "6228",
+            "mode": "production",
+            "resumeUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook-waiting/6228",
+            "resumeFormUrl": "https://n8n-relayer-1.app.n8n.cloud/form-waiting/6228",
+            "customData": {}
+          }
+        }
+      }
+    ],
+    "Error Trigger": [
+      {
+        "json": {
+          "execution": {
+            "id": "1497",
+            "url": "https://n8n-relayer-1.app.n8n.cloud/workflow/7FCTtH9OsXu8HDxI/executions/1497",
+            "error": {
+              "level": "warning",
+              "tags": {},
+              "description": "To continue the execution when this happens, change the 'On Error' parameter in the root node's settings",
+              "timestamp": 1759299825152,
+              "context": {
+                "outputParserFailReason": "Model output does not match the expected schema"
+              },
+              "functionality": "regular",
+              "name": "NodeOperationError",
+              "node": {
+                "parameters": {
+                  "notice": "",
+                  "schemaType": "manual",
+                  "inputSchema": "{\n  \"type\": \"integer\"\n}\n",
+                  "autoFix": false
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                  3136,
+                  2608
+                ],
+                "id": "b2dc7e11-fc79-4fe9-b0b2-9ea1a2bc76c2",
+                "name": "Cortex Agent Structured Output Parser"
+              },
+              "messages": [],
+              "message": "Model output doesn't fit required format",
+              "stack": "NodeOperationError: Model output doesn't fit required format\n    at N8nStructuredOutputParser.parse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_fc553bfe732254ec5207074cf9e2ceb7/node_modules/@n8n/n8n-nodes-langchain/utils/output_parsers/N8nStructuredOutputParser.ts:56:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at RunnableLambda.func (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_fc553bfe732254ec5207074cf9e2ceb7/node_modules/@n8n/n8n-nodes-langchain/nodes/agents/Agent/agents/ToolsAgent/common.ts:219:27)\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@langchain+core@0.3.68_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30.1_@o_8765aa945f981de137f9a48155aa0f8f/node_modules/@langchain/core/dist/runnables/base.cjs:1716:34"
+            },
+            "lastNodeExecuted": "Extract Key Words Agent",
+            "mode": "webhook"
+          },
+          "workflow": {
+            "id": "7FCTtH9OsXu8HDxI",
+            "name": "ask-data Omni Dashboard Search HTTP"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "5b2d4c91-e272-425f-bafd-a00b919fbe9c",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-10-01T05:54:59.240Z",
+      "createdAt": "2025-10-01T05:54:59.240Z",
+      "role": "workflow:owner",
+      "workflowId": "RMfcJExZ0DdXdMnJ",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-09-29T05:57:24.200Z",
+      "createdAt": "2025-09-29T05:57:24.200Z",
+      "id": "JC97st4iY7gpPYhF",
+      "name": "subworkflow"
+    }
+  ]
+}
