@@ -1,1 +1,1235 @@
-{"updatedAt":"2025-11-16T01:37:40.000Z","createdAt":"2025-11-15T23:39:49.140Z","id":"biW8aKwAI78Eo4Gw","name":"PDF_Processing_Pipeline","active":false,"isArchived":false,"nodes":[{"parameters":{"rule":{"interval":[{"triggerAtHour":9}]}},"id":"c214b04f-b039-4274-9501-5418fb697e16","name":"Set Schedule","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1.2,"position":[-10016,4464]},{"parameters":{"assignments":{"assignments":[{"id":"id-1","name":"fileSearchStoreName","value":"<__PLACEHOLDER_VALUE__Your File Search Store Name__>","type":"string"}]},"includeOtherFields":true,"options":{}},"id":"3bb8a03d-151d-4ce8-a533-bcabdf81f93d","name":"File Search Store Name (Manual)","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-9568,4464]},{"parameters":{"assignments":{"assignments":[{"id":"id-1","name":"storeId","value":"<__PLACEHOLDER_VALUE__Store ID from your table/database lookup__>","type":"string"}]},"includeOtherFields":true,"options":{}},"id":"abf307da-488c-4e25-b878-41c18a66baa5","name":"Get The Store ID","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-9344,4464]},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"id":"id-1","leftValue":"={{ $('Get The Store ID').item.json.storeId }}","operator":{"type":"string","operation":"notEmpty"}}],"combinator":"and"},"options":{}},"id":"60dee38e-ac2d-46e3-9c21-458a6af011fc","name":"IF","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[-9120,4464]},{"parameters":{"resource":"fileFolder","searchMethod":"query","queryString":"mimeType='application/pdf'","filter":{},"options":{}},"id":"18d75be6-1134-416b-819e-05e2d3e02e14","name":"Search files and folders","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[-8560,4448],"credentials":{"googleDriveOAuth2Api":{"id":"XOPXkOVbKhQILqsj","name":"Google Drive"}}},{"parameters":{"jsCode":"// Check if import lock is active\nconst importLock = $input.first().json.import_lock;\n\nif (importLock === 'active' || importLock === true) {\n  throw new Error('Import is already in progress. Lock is active.');\n}\n\n// Set lock to active and return all input items\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: 'active'\n  }\n}));"},"id":"4db6a683-7c82-489c-979b-eb8ce56362a6","name":"Lock Flag","type":"n8n-nodes-base.code","typeVersion":2,"position":[-8384,4272]},{"parameters":{"options":{}},"id":"c0f19397-d7cf-43d0-8e93-8da1bc8d2573","name":"Loop Over Items","type":"n8n-nodes-base.splitInBatches","typeVersion":3,"position":[-8144,4448]},{"parameters":{"operation":"download","fileId":{"__rl":true,"mode":"id","value":"={{ $('Search files and folders').item.json.id }}"},"options":{}},"id":"426fd173-aa8b-4d3a-b2a6-d54904b1294d","name":"Download file","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[-7920,4464],"credentials":{"googleDriveOAuth2Api":{"id":"XOPXkOVbKhQILqsj","name":"Google Drive"}}},{"parameters":{"mode":"runOnceForEachItem","jsCode":"const crypto = require('crypto');\n\n// Get the binary data from the previous node\nconst binaryData = $input.item.binary.data;\nconst fileName = $input.item.json.name;\nconst fileSize = $input.item.json.size;\n\n// Generate SHA256 hash from binary data\nconst buffer = Buffer.from(binaryData.data, 'base64');\nconst contentHash = crypto.createHash('sha256').update(buffer).digest('hex');\n\n// Create document ID from filename (lowercase, replace non-alphanumeric with underscore)\nconst documentId = fileName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');\n\n// Return the required fields\nreturn {\n  document_id: documentId,\n  content_hash: contentHash,\n  file_name: fileName,\n  file_size: fileSize\n};"},"id":"5f3c57ae-69d3-4c56-8c13-9959d9937609","name":"Generate Hash","type":"n8n-nodes-base.code","typeVersion":2,"position":[-7696,4464]},{"parameters":{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"loose"},"conditions":[{"id":"id-1","leftValue":"={{ $('Search Record Manager').item.json.document_id }}","operator":{"type":"string","operation":"empty"}}],"combinator":"and"},"options":{}},"id":"3f2638bc-6332-41d0-9aa9-a0af02d6a25e","name":"New Doc?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[-7248,4464]},{"parameters":{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"loose"},"conditions":[{"id":"id-1","leftValue":"={{ $json.content_hash }}","operator":{"type":"string","operation":"notEmpty"}}],"combinator":"and"},"options":{}},"id":"c6c7045c-8c6c-43b8-be2e-563d1185deec","name":"Identical Content Exists?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[-6784,4144]},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict"},"conditions":[{"id":"id-1","leftValue":"={{ $('Generate Hash').item.json.hash }}","rightValue":"={{ $('Search Record Manager').item.json.hash }}","operator":{"type":"string","operation":"notEquals"}}],"combinator":"and"},"options":{}},"id":"d160b5e1-f738-4320-b85d-abc5e13fde2a","name":"Has it Changed?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[-6768,4528]},{"parameters":{"jsCode":"// Log that the file is being skipped (no changes detected)\nfor (const item of $input.all()) {\n  console.log(`Skipping file: ${item.json.name || 'Unknown'} - No changes detected`);\n}\n\n// Return all input items unchanged\nreturn $input.all();"},"id":"15fbbb90-bfb8-48e4-9cc0-745a547237e4","name":"Do Nothing","type":"n8n-nodes-base.code","typeVersion":2,"position":[-6496,3568]},{"parameters":{"content":"### TODO\ncheck for identical contents using hash of contents"},"type":"n8n-nodes-base.stickyNote","position":[-7104,4256],"typeVersion":1,"id":"f9d65b64-6792-4e60-bb4e-9206219bb19a","name":"Sticky Note"},{"parameters":{"operation":"move","fileId":{"mode":"id","value":"={{ $json.id }}"},"driveId":{"mode":"list","value":""},"folderId":{"mode":"id","value":"TODO_ARCHIVE_FOLDER_ID"}},"id":"8e5fb666-d494-4055-8209-2592275f35ef","name":"Archive Unchanged File","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[-6272,3568],"credentials":{"googleDriveOAuth2Api":{"id":"XOPXkOVbKhQILqsj","name":"Google Drive"}},"notes":"TODO: Set archive folder ID"},{"parameters":{"method":"DELETE","url":"=https://generativelanguage.googleapis.com/v1beta/{{ $('Search Record Manager').item.json.file_id }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"x-goog-api-key","value":"={{ $credentials.apiKey }}"}]},"options":{}},"id":"4f73f19d-9609-470f-996e-1bf5309792b9","name":"Delete Old from Gemini","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[-6544,4672],"notes":"Delete outdated version from Gemini"},{"parameters":{"operation":"executeQuery","query":"DELETE FROM gemini_record_manager WHERE document_id = $1","options":{}},"id":"44215034-981b-4286-be12-c8bc57c4f7ec","name":"Delete Old Record","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[-6320,4672]},{"parameters":{"mode":"runOnceForEachItem","jsCode":"// Reload binary from Google Drive (n8n limitation workaround)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"},"id":"0c32f510-66e0-40d0-9f86-e2feb06d45c6","name":"Reload Binary for PDF","type":"n8n-nodes-base.code","typeVersion":2,"position":[-6096,4560],"notes":"Binary reload required due to n8n limitation"},{"parameters":{"operation":"executeQuery","query":"SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1","options":{}},"id":"809f12a6-d76f-42bc-9e3c-ae94cbd1e434","name":"Check for Identical Contents","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[-7008,4144],"notes":"TODO: Configure Postgres credentials and ensure table exists"},{"parameters":{"operation":"executeQuery","query":"SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1","options":{}},"id":"4fd71460-524e-4b58-9868-8cfbd8411224","name":"Search for Same File Name","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[-7472,4464],"notes":"TODO: Configure Postgres credentials and ensure table exists"},{"parameters":{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"loose"},"conditions":[{"id":"id-1","leftValue":"={{ $json.binary }}","operator":{"type":"object","operation":"exists"}},{"id":"id-2","leftValue":"={{ $json.file_size }}","rightValue":"0","operator":{"type":"number","operation":"gt"}}],"combinator":"and"},"options":{}},"id":"7fe96413-2762-4a4c-8496-c32799cc5300","name":"IF1","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[-5872,4560]},{"parameters":{"operation":"pdf","options":{"joinPages":true,"maxPages":5}},"id":"8f2ab3d7-a7c1-4a68-af65-eb92a0bd00f0","name":"Extract from File","type":"n8n-nodes-base.extractFromFile","typeVersion":1,"position":[-5648,4560]},{"parameters":{"assignments":{"assignments":[{"id":"id-1","name":"document_type","value":"<__PLACEHOLDER_VALUE__Document Type (e.g., invoice, contract, report)__>","type":"string"},{"id":"id-2","name":"period","value":"<__PLACEHOLDER_VALUE__Period (e.g., 2024-Q1, January 2024)__>","type":"string"},{"id":"id-3","name":"entities","value":"[\"<__PLACEHOLDER_VALUE__Entity 1__>\", \"<__PLACEHOLDER_VALUE__Entity 2__>\"]","type":"array"},{"id":"id-4","name":"categories","value":"[\"<__PLACEHOLDER_VALUE__Category 1__>\", \"<__PLACEHOLDER_VALUE__Category 2__>\"]","type":"array"}]},"includeOtherFields":true,"options":{}},"id":"93099eb1-7530-4b21-b188-8f0d0da1abb3","name":"Custom Metadata (Manual)","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-5072,4560]},{"parameters":{"promptType":"define","text":"={{ $json.text }}","hasOutputParser":true,"batching":{}},"id":"f7638bc7-0ba4-490d-9b52-cc51b8ff3196","name":"Extract Metadata with Gemini","type":"@n8n/n8n-nodes-langchain.chainLlm","typeVersion":1.7,"position":[-5424,4560]},{"parameters":{"modelName":"models/gemini-1.5-pro","options":{"temperature":0.1}},"id":"10ea86ce-a71c-4262-ad3b-a8053792c88a","name":"Google Gemini Chat Model","type":"@n8n/n8n-nodes-langchain.lmChatGoogleGemini","typeVersion":1,"position":[-5424,4784],"credentials":{"googlePalmApi":{"id":"LKQbGwmroZKBfciU","name":"Gemini - Cribl"}}},{"parameters":{"schemaType":"manual","inputSchema":"{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"document_type\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"period\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"entities\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t},\n\t\t\"summary\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"categories\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t}\n\t}\n}"},"id":"b9210b09-29ad-4af7-bf40-184c4e74390d","name":"Structured Output Parser","type":"@n8n/n8n-nodes-langchain.outputParserStructured","typeVersion":1.3,"position":[-5296,4784]},{"parameters":{"method":"POST","url":"https://generativelanguage.googleapis.com/upload/v1beta/files","sendHeaders":true,"headerParameters":{"parameters":[{"name":"X-Goog-Upload-Protocol","value":"resumable"},{"name":"X-Goog-Upload-Command","value":"start"},{"name":"X-Goog-Upload-Header-Content-Length","value":"={{ $json.file_size }}"},{"name":"X-Goog-Upload-Header-Content-Type","value":"application/pdf"},{"name":"x-goog-api-key","value":"<__PLACEHOLDER_VALUE__Your Gemini API Key__>"},{"name":"Content-Type","value":"application/json"}]},"sendBody":true,"specifyBody":"json","jsonBody":"={\n  \"file\": {\n    \"display_name\": \"={{ $json.file_name }}\",\n    \"custom_metadata\": \"={{ $json.metadata }}\"\n  }\n}","options":{}},"id":"9b474dc2-370a-49ea-b74c-f53a7a9a7ecb","name":"Set File Parameters & Get Upload URL","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[-4656,4960]},{"parameters":{"mode":"runOnceForEachItem","jsCode":"// Reload binary from Google Drive for upload (second reload)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"},"id":"7f4bdd09-6e47-47a4-a532-0a0f4a4b6296","name":"Reload Binary for Upload","type":"n8n-nodes-base.code","typeVersion":2,"position":[-4336,4960]},{"parameters":{"method":"POST","url":"={{ $('Set File Parameters & Get Upload URL').item.json.uploadUrl }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"X-Goog-Upload-Offset","value":"0"},{"name":"X-Goog-Upload-Command","value":"upload, finalize"},{"name":"x-goog-api-key","value":"<__PLACEHOLDER_VALUE__Your Gemini API Key__>"},{"name":"Content-Type","value":"application/pdf"}]},"sendBody":true,"contentType":"binaryData","inputDataFieldName":"data","options":{}},"id":"ee9520b8-a3c2-4094-9649-fb3e37efad18","name":"Upload to File Search Store","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[-4048,4960]},{"parameters":{"amount":3},"id":"5ab7b75d-0a34-444b-a97b-896bb8723eb3","name":"Initial Wait","type":"n8n-nodes-base.wait","typeVersion":1.1,"position":[-3792,4960],"webhookId":"65ffbc87-56e5-48ba-bc9d-5e128ced5081"},{"parameters":{"url":"=https://generativelanguage.googleapis.com/v1beta/files/{{ $json.file_id }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"x-goog-api-key","value":"<__PLACEHOLDER_VALUE__Your Gemini API Key__>"}]},"options":{}},"id":"f0f653ae-a748-46d7-b6a2-f1b2827d160e","name":"Check if Processed","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[-3536,4960]},{"parameters":{"operation":"move","fileId":{"__rl":true,"mode":"id","value":"={{ $json.id }}"},"driveId":{"__rl":true,"mode":"list","value":"My Drive"},"folderId":{"mode":"id","value":"<__PLACEHOLDER_VALUE__Processed folder ID__>"}},"id":"0dcccf07-7c70-4346-a6d8-1450d27b1551","name":"Archive Processed File","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[-3232,4960],"credentials":{"googleDriveOAuth2Api":{"id":"XOPXkOVbKhQILqsj","name":"Google Drive"}}},{"parameters":{"jsCode":"// Release the import lock\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: null\n  }\n}));"},"id":"493e7b88-ba03-4f79-a47b-72f6ffce3ffc","name":"Clear Processing Flag","type":"n8n-nodes-base.code","typeVersion":2,"position":[-7696,4176]},{"parameters":{"binaryData":true},"type":"n8n-nodes-base.crypto","typeVersion":1,"position":[-7680,4688],"id":"e5a084fa-63f6-438e-85f3-6e65601bfada","name":"Crypto"},{"parameters":{"assignments":{"assignments":[]},"includeOtherFields":true,"options":{}},"id":"83acb5c9-2191-46d9-9f95-532c65cd6709","name":"Workflow Configuration","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-9792,4464]}],"connections":{"Set Schedule":{"main":[[{"node":"Workflow Configuration","type":"main","index":0}]]},"File Search Store Name (Manual)":{"main":[[{"node":"Get The Store ID","type":"main","index":0}]]},"Get The Store ID":{"main":[[{"node":"IF","type":"main","index":0}]]},"IF":{"main":[[{"node":"Search files and folders","type":"main","index":0}]]},"Search files and folders":{"main":[[{"node":"Loop Over Items","type":"main","index":0},{"node":"Lock Flag","type":"main","index":0}]]},"Loop Over Items":{"main":[[{"node":"Clear Processing Flag","type":"main","index":0}],[{"node":"Download file","type":"main","index":0}]]},"Download file":{"main":[[{"node":"Generate Hash","type":"main","index":0},{"node":"Crypto","type":"main","index":0}]]},"Generate Hash":{"main":[[{"node":"Search for Same File Name","type":"main","index":0}]]},"New Doc?":{"main":[[{"node":"Check for Identical Contents","type":"main","index":0}],[{"node":"Has it Changed?","type":"main","index":0}]]},"Archive Unchanged File":{"main":[[{"node":"Loop Over Items","type":"main","index":0}]]},"Identical Content Exists?":{"main":[[{"node":"Do Nothing","type":"main","index":0}],[{"node":"Reload Binary for PDF","type":"main","index":0}]]},"Delete Old from Gemini":{"main":[[{"node":"Delete Old Record","type":"main","index":0}]]},"Do Nothing":{"main":[[{"node":"Archive Unchanged File","type":"main","index":0}]]},"Has it Changed?":{"main":[[{"node":"Delete Old from Gemini","type":"main","index":0}],[{"node":"Do Nothing","type":"main","index":0}]]},"Delete Old Record":{"main":[[{"node":"Reload Binary for PDF","type":"main","index":0}]]},"Check for Identical Contents":{"main":[[{"node":"Identical Content Exists?","type":"main","index":0}]]},"Search for Same File Name":{"main":[[{"node":"New Doc?","type":"main","index":0}]]},"Google Gemini Chat Model":{"ai_languageModel":[[{"node":"Extract Metadata with Gemini","type":"ai_languageModel","index":0}]]},"Structured Output Parser":{"ai_outputParser":[[{"node":"Extract Metadata with Gemini","type":"ai_outputParser","index":0}]]},"Reload Binary for PDF":{"main":[[{"node":"IF1","type":"main","index":0}]]},"IF1":{"main":[[{"node":"Extract from File","type":"main","index":0}]]},"Extract from File":{"main":[[{"node":"Extract Metadata with Gemini","type":"main","index":0}]]},"Extract Metadata with Gemini":{"main":[[{"node":"Custom Metadata (Manual)","type":"main","index":0}]]},"Custom Metadata (Manual)":{"main":[[{"node":"Set File Parameters & Get Upload URL","type":"main","index":0}]]},"Set File Parameters & Get Upload URL":{"main":[[{"node":"Reload Binary for Upload","type":"main","index":0}]]},"Reload Binary for Upload":{"main":[[{"node":"Upload to File Search Store","type":"main","index":0}]]},"Upload to File Search Store":{"main":[[{"node":"Initial Wait","type":"main","index":0}]]},"Initial Wait":{"main":[[{"node":"Check if Processed","type":"main","index":0}]]},"Check if Processed":{"main":[[{"node":"Archive Processed File","type":"main","index":0}]]},"Archive Processed File":{"main":[[{"node":"Loop Over Items","type":"main","index":0}]]},"Workflow Configuration":{"main":[[{"node":"File Search Store Name (Manual)","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":null,"pinData":{},"versionId":"a2d38e4b-b75c-483a-8d06-c9f32977293c","triggerCount":0,"shared":[{"updatedAt":"2025-11-15T23:39:49.144Z","createdAt":"2025-11-15T23:39:49.144Z","role":"workflow:owner","workflowId":"biW8aKwAI78Eo4Gw","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[]}
+{
+  "updatedAt": "2025-11-17T08:05:34.000Z",
+  "createdAt": "2025-11-15T23:39:49.140Z",
+  "id": "biW8aKwAI78Eo4Gw",
+  "name": "PDF_Processing_Pipeline",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "c214b04f-b039-4274-9501-5418fb697e16",
+      "name": "Set Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -10016,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "fileSearchStoreName",
+              "value": "<__PLACEHOLDER_VALUE__Your File Search Store Name__>",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "3bb8a03d-151d-4ce8-a533-bcabdf81f93d",
+      "name": "File Search Store Name (Manual)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -9568,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "storeId",
+              "value": "<__PLACEHOLDER_VALUE__Store ID from your table/database lookup__>",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "abf307da-488c-4e25-b878-41c18a66baa5",
+      "name": "Get The Store ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -9344,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Get The Store ID').item.json.storeId }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "60dee38e-ac2d-46e3-9c21-458a6af011fc",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -9120,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "mimeType='application/pdf'",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "172HxoeJMtLyabbWRfEA9S8goFwOkS4Kq",
+            "mode": "list",
+            "cachedResultName": "Municipal_Bonds",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/172HxoeJMtLyabbWRfEA9S8goFwOkS4Kq"
+          }
+        },
+        "options": {}
+      },
+      "id": "18d75be6-1134-416b-819e-05e2d3e02e14",
+      "name": "Search files and folders",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -8672,
+        4448
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XOPXkOVbKhQILqsj",
+          "name": "Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check if import lock is active\nconst importLock = $input.first().json.import_lock;\n\nif (importLock === 'active' || importLock === true) {\n  throw new Error('Import is already in progress. Lock is active.');\n}\n\n// Set lock to active and return all input items\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: 'active'\n  }\n}));"
+      },
+      "id": "4db6a683-7c82-489c-979b-eb8ce56362a6",
+      "name": "Lock Flag",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -8384,
+        4272
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c0f19397-d7cf-43d0-8e93-8da1bc8d2573",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -8144,
+        4448
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Search files and folders').item.json.id }}"
+        },
+        "options": {}
+      },
+      "id": "426fd173-aa8b-4d3a-b2a6-d54904b1294d",
+      "name": "Download file",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -7920,
+        4464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XOPXkOVbKhQILqsj",
+          "name": "Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Search Record Manager').item.json.document_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "empty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3f2638bc-6332-41d0-9aa9-a0af02d6a25e",
+      "name": "New Doc?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -7248,
+        4464
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.content_hash }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c6c7045c-8c6c-43b8-be2e-563d1185deec",
+      "name": "Identical Content Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -6784,
+        4144
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Generate Hash').item.json.hash }}",
+              "rightValue": "={{ $('Search Record Manager').item.json.hash }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d160b5e1-f738-4320-b85d-abc5e13fde2a",
+      "name": "Has it Changed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -6768,
+        4528
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log that the file is being skipped (no changes detected)\nfor (const item of $input.all()) {\n  console.log(`Skipping file: ${item.json.name || 'Unknown'} - No changes detected`);\n}\n\n// Return all input items unchanged\nreturn $input.all();"
+      },
+      "id": "15fbbb90-bfb8-48e4-9cc0-745a547237e4",
+      "name": "Do Nothing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -6496,
+        3568
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "### TODO\ncheck for identical contents using hash of contents"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7104,
+        4256
+      ],
+      "typeVersion": 1,
+      "id": "f9d65b64-6792-4e60-bb4e-9206219bb19a",
+      "name": "Sticky Note",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "mode": "list",
+          "value": ""
+        },
+        "folderId": {
+          "mode": "id",
+          "value": "TODO_ARCHIVE_FOLDER_ID"
+        }
+      },
+      "id": "8e5fb666-d494-4055-8209-2592275f35ef",
+      "name": "Archive Unchanged File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -6272,
+        3568
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XOPXkOVbKhQILqsj",
+          "name": "Google Drive"
+        }
+      },
+      "disabled": true,
+      "notes": "TODO: Set archive folder ID"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/{{ $('Search Record Manager').item.json.file_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $credentials.apiKey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4f73f19d-9609-470f-996e-1bf5309792b9",
+      "name": "Delete Old from Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -6544,
+        4672
+      ],
+      "disabled": true,
+      "notes": "Delete outdated version from Gemini"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM gemini_record_manager WHERE document_id = $1",
+        "options": {}
+      },
+      "id": "44215034-981b-4286-be12-c8bc57c4f7ec",
+      "name": "Delete Old Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -6320,
+        4672
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Reload binary from Google Drive (n8n limitation workaround)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"
+      },
+      "id": "0c32f510-66e0-40d0-9f86-e2feb06d45c6",
+      "name": "Reload Binary for PDF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -6096,
+        4560
+      ],
+      "disabled": true,
+      "notes": "Binary reload required due to n8n limitation"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1",
+        "options": {}
+      },
+      "id": "809f12a6-d76f-42bc-9e3c-ae94cbd1e434",
+      "name": "Check for Identical Contents",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -7008,
+        4144
+      ],
+      "disabled": true,
+      "notes": "TODO: Configure Postgres credentials and ensure table exists"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1",
+        "options": {}
+      },
+      "id": "4fd71460-524e-4b58-9868-8cfbd8411224",
+      "name": "Search for Same File Name",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -7472,
+        4464
+      ],
+      "disabled": true,
+      "notes": "TODO: Configure Postgres credentials and ensure table exists"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.binary }}",
+              "operator": {
+                "type": "object",
+                "operation": "exists"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $json.file_size }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7fe96413-2762-4a4c-8496-c32799cc5300",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5872,
+        4560
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": true,
+          "maxPages": 5
+        }
+      },
+      "id": "8f2ab3d7-a7c1-4a68-af65-eb92a0bd00f0",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -5648,
+        4560
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "document_type",
+              "value": "<__PLACEHOLDER_VALUE__Document Type (e.g., invoice, contract, report)__>",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "period",
+              "value": "<__PLACEHOLDER_VALUE__Period (e.g., 2024-Q1, January 2024)__>",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "entities",
+              "value": "[\"<__PLACEHOLDER_VALUE__Entity 1__>\", \"<__PLACEHOLDER_VALUE__Entity 2__>\"]",
+              "type": "array"
+            },
+            {
+              "id": "id-4",
+              "name": "categories",
+              "value": "[\"<__PLACEHOLDER_VALUE__Category 1__>\", \"<__PLACEHOLDER_VALUE__Category 2__>\"]",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "93099eb1-7530-4b21-b188-8f0d0da1abb3",
+      "name": "Custom Metadata (Manual)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5072,
+        4560
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "f7638bc7-0ba4-490d-9b52-cc51b8ff3196",
+      "name": "Extract Metadata with Gemini",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -5424,
+        4560
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-pro",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "10ea86ce-a71c-4262-ad3b-a8053792c88a",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -5424,
+        4784
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"document_type\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"period\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"entities\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t},\n\t\t\"summary\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"categories\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t}\n\t}\n}"
+      },
+      "id": "b9210b09-29ad-4af7-bf40-184c4e74390d",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -5296,
+        4784
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/upload/v1beta/files",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Protocol",
+              "value": "resumable"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "start"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Length",
+              "value": "={{ $json.file_size }}"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Type",
+              "value": "application/pdf"
+            },
+            {
+              "name": "x-goog-api-key",
+              "value": "<__PLACEHOLDER_VALUE__Your Gemini API Key__>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"file\": {\n    \"display_name\": \"={{ $json.file_name }}\",\n    \"custom_metadata\": \"={{ $json.metadata }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "9b474dc2-370a-49ea-b74c-f53a7a9a7ecb",
+      "name": "Set File Parameters & Get Upload URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4656,
+        4960
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Reload binary from Google Drive for upload (second reload)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"
+      },
+      "id": "7f4bdd09-6e47-47a4-a532-0a0f4a4b6296",
+      "name": "Reload Binary for Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4336,
+        4960
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set File Parameters & Get Upload URL').item.json.uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Offset",
+              "value": "0"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "upload, finalize"
+            },
+            {
+              "name": "x-goog-api-key",
+              "value": "<__PLACEHOLDER_VALUE__Your Gemini API Key__>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/pdf"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "ee9520b8-a3c2-4094-9649-fb3e37efad18",
+      "name": "Upload to File Search Store",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4048,
+        4960
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "5ab7b75d-0a34-444b-a97b-896bb8723eb3",
+      "name": "Initial Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3792,
+        4960
+      ],
+      "webhookId": "65ffbc87-56e5-48ba-bc9d-5e128ced5081",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "=https://generativelanguage.googleapis.com/v1beta/files/{{ $json.file_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "<__PLACEHOLDER_VALUE__Your Gemini API Key__>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f0f653ae-a748-46d7-b6a2-f1b2827d160e",
+      "name": "Check if Processed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3536,
+        4960
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Processed folder ID__>"
+        }
+      },
+      "id": "0dcccf07-7c70-4346-a6d8-1450d27b1551",
+      "name": "Archive Processed File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -3232,
+        4960
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XOPXkOVbKhQILqsj",
+          "name": "Google Drive"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Release the import lock\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: null\n  }\n}));"
+      },
+      "id": "493e7b88-ba03-4f79-a47b-72f6ffce3ffc",
+      "name": "Clear Processing Flag",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -7696,
+        4176
+      ]
+    },
+    {
+      "parameters": {
+        "type": "SHA256",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        -7696,
+        4464
+      ],
+      "id": "e5a084fa-63f6-438e-85f3-6e65601bfada",
+      "name": "Crypto"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "83acb5c9-2191-46d9-9f95-532c65cd6709",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -9792,
+        4464
+      ]
+    }
+  ],
+  "connections": {
+    "Set Schedule": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Search Store Name (Manual)": {
+      "main": [
+        [
+          {
+            "node": "Get The Store ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get The Store ID": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Lock Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Clear Processing Flag",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Doc?": {
+      "main": [
+        [
+          {
+            "node": "Check for Identical Contents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Has it Changed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Unchanged File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identical Content Exists?": {
+      "main": [
+        [
+          {
+            "node": "Do Nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reload Binary for PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old from Gemini": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Do Nothing": {
+      "main": [
+        [
+          {
+            "node": "Archive Unchanged File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has it Changed?": {
+      "main": [
+        [
+          {
+            "node": "Delete Old from Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Do Nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Record": {
+      "main": [
+        [
+          {
+            "node": "Reload Binary for PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Identical Contents": {
+      "main": [
+        [
+          {
+            "node": "Identical Content Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for Same File Name": {
+      "main": [
+        [
+          {
+            "node": "New Doc?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Metadata with Gemini",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract Metadata with Gemini",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Binary for PDF": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata with Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata with Gemini": {
+      "main": [
+        [
+          {
+            "node": "Custom Metadata (Manual)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Custom Metadata (Manual)": {
+      "main": [
+        [
+          {
+            "node": "Set File Parameters & Get Upload URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Parameters & Get Upload URL": {
+      "main": [
+        [
+          {
+            "node": "Reload Binary for Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Binary for Upload": {
+      "main": [
+        [
+          {
+            "node": "Upload to File Search Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to File Search Store": {
+      "main": [
+        [
+          {
+            "node": "Initial Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initial Wait": {
+      "main": [
+        [
+          {
+            "node": "Check if Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Processed": {
+      "main": [
+        [
+          {
+            "node": "Archive Processed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Processed File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "File Search Store Name (Manual)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto": {
+      "main": [
+        [
+          {
+            "node": "Search for Same File Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Search files and folders": [
+      {
+        "json": {
+          "id": "1hbH3OO4owrZmTealsg-QfGP0-fJTwcNY",
+          "name": "cajon_valley.pdf"
+        }
+      },
+      {
+        "json": {
+          "id": "13MdCKZ35O7QAflRhXf6tEjWU2Z7bLR1r",
+          "name": "east_side_union_high.pdf"
+        }
+      }
+    ],
+    "Crypto": [
+      {
+        "json": {
+          "id": "1hbH3OO4owrZmTealsg-QfGP0-fJTwcNY",
+          "name": "cajon_valley.pdf",
+          "data": "ded53838e8a0ccf5532bf7cc9729ce89ff2aa1ffcb116ddea391daf850c6d291"
+        }
+      }
+    ]
+  },
+  "versionId": "6b63a506-d601-4ca7-aa34-316d7cb05022",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-15T23:39:49.144Z",
+      "createdAt": "2025-11-15T23:39:49.144Z",
+      "role": "workflow:owner",
+      "workflowId": "biW8aKwAI78Eo4Gw",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "tags": []
+}
