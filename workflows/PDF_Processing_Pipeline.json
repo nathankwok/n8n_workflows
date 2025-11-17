@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T08:05:34.000Z",
+  "updatedAt": "2025-11-17T10:29:41.000Z",
   "createdAt": "2025-11-15T23:39:49.140Z",
   "id": "biW8aKwAI78Eo4Gw",
   "name": "PDF_Processing_Pipeline",
@@ -21,55 +21,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -10016,
-        4464
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "id-1",
-              "name": "fileSearchStoreName",
-              "value": "<__PLACEHOLDER_VALUE__Your File Search Store Name__>",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "id": "3bb8a03d-151d-4ce8-a533-bcabdf81f93d",
-      "name": "File Search Store Name (Manual)",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -9568,
-        4464
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "id-1",
-              "name": "storeId",
-              "value": "<__PLACEHOLDER_VALUE__Store ID from your table/database lookup__>",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "id": "abf307da-488c-4e25-b878-41c18a66baa5",
-      "name": "Get The Store ID",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -9344,
+        -9904,
         4464
       ]
     },
@@ -79,12 +31,13 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
               "id": "id-1",
-              "leftValue": "={{ $('Get The Store ID').item.json.storeId }}",
+              "leftValue": "={{ $json.gemini_file_store_name }}",
               "operator": {
                 "type": "string",
                 "operation": "notEmpty"
@@ -137,19 +90,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Check if import lock is active\nconst importLock = $input.first().json.import_lock;\n\nif (importLock === 'active' || importLock === true) {\n  throw new Error('Import is already in progress. Lock is active.');\n}\n\n// Set lock to active and return all input items\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: 'active'\n  }\n}));"
-      },
-      "id": "4db6a683-7c82-489c-979b-eb8ce56362a6",
-      "name": "Lock Flag",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -8384,
-        4272
-      ]
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "id": "c0f19397-d7cf-43d0-8e93-8da1bc8d2573",
@@ -190,22 +130,25 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": false,
+            "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "loose",
+            "version": 2
           },
           "conditions": [
             {
               "id": "id-1",
-              "leftValue": "={{ $('Search Record Manager').item.json.document_id }}",
+              "leftValue": "={{ $json.toJsonString() }}",
               "operator": {
-                "type": "string",
-                "operation": "empty"
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
               }
             }
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "id": "3f2638bc-6332-41d0-9aa9-a0af02d6a25e",
@@ -213,18 +156,18 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -7248,
+        -6448,
         4464
-      ],
-      "disabled": true
+      ]
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": false,
+            "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
@@ -245,7 +188,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -6784,
+        -5984,
         4144
       ],
       "disabled": true
@@ -256,7 +199,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
@@ -278,10 +222,9 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -6768,
+        -6032,
         4528
-      ],
-      "disabled": true
+      ]
     },
     {
       "parameters": {
@@ -292,7 +235,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6496,
+        -5696,
         3568
       ],
       "disabled": true
@@ -303,7 +246,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -7104,
+        -6512,
         4256
       ],
       "typeVersion": 1,
@@ -332,7 +275,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -6272,
+        -5472,
         3568
       ],
       "credentials": {
@@ -364,7 +307,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -6544,
+        -5744,
         4672
       ],
       "disabled": true,
@@ -381,7 +324,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -6320,
+        -5520,
         4672
       ],
       "disabled": true
@@ -396,45 +339,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6096,
+        -5296,
         4560
       ],
       "disabled": true,
       "notes": "Binary reload required due to n8n limitation"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1",
-        "options": {}
-      },
-      "id": "809f12a6-d76f-42bc-9e3c-ae94cbd1e434",
-      "name": "Check for Identical Contents",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -7008,
-        4144
-      ],
-      "disabled": true,
-      "notes": "TODO: Configure Postgres credentials and ensure table exists"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1",
-        "options": {}
-      },
-      "id": "4fd71460-524e-4b58-9868-8cfbd8411224",
-      "name": "Search for Same File Name",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -7472,
-        4464
-      ],
-      "disabled": true,
-      "notes": "TODO: Configure Postgres credentials and ensure table exists"
     },
     {
       "parameters": {
@@ -472,7 +381,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -5872,
+        -5072,
         4560
       ],
       "disabled": true
@@ -490,7 +399,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -5648,
+        -4848,
         4560
       ],
       "disabled": true
@@ -533,7 +442,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -5072,
+        -4272,
         4560
       ],
       "disabled": true
@@ -550,7 +459,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -5424,
+        -4624,
         4560
       ],
       "disabled": true
@@ -567,7 +476,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -5424,
+        -4624,
         4784
       ],
       "credentials": {
@@ -588,7 +497,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -5296,
+        -4496,
         4784
       ],
       "disabled": true
@@ -636,7 +545,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4656,
+        -3856,
         4960
       ],
       "disabled": true
@@ -651,7 +560,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4336,
+        -3536,
         4960
       ],
       "disabled": true
@@ -691,7 +600,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4048,
+        -3248,
         4960
       ],
       "disabled": true
@@ -705,7 +614,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -3792,
+        -2992,
         4960
       ],
       "webhookId": "65ffbc87-56e5-48ba-bc9d-5e128ced5081",
@@ -730,7 +639,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3536,
+        -2736,
         4960
       ],
       "disabled": true
@@ -758,7 +667,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -3232,
+        -2432,
         4960
       ],
       "credentials": {
@@ -771,47 +680,229 @@
     },
     {
       "parameters": {
-        "jsCode": "// Release the import lock\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    import_lock: null\n  }\n}));"
-      },
-      "id": "493e7b88-ba03-4f79-a47b-72f6ffce3ffc",
-      "name": "Clear Processing Flag",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -7696,
-        4176
-      ]
-    },
-    {
-      "parameters": {
-        "type": "SHA256",
-        "binaryData": true
-      },
-      "type": "n8n-nodes-base.crypto",
-      "typeVersion": 1,
-      "position": [
-        -7696,
-        4464
-      ],
-      "id": "e5a084fa-63f6-438e-85f3-6e65601bfada",
-      "name": "Crypto"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": []
-        },
+        "mode": "raw",
+        "jsonOutput": "{\n  \"gemini_file_store_name\": \"fileSearchStores/docparsing-q2d4v79x1uw7\"\n}\n",
         "includeOtherFields": true,
         "options": {}
       },
       "id": "83acb5c9-2191-46d9-9f95-532c65cd6709",
-      "name": "Workflow Configuration",
+      "name": "Global Vars",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -9792,
+        -9408,
         4464
       ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "IlGavx32TAXCSixq",
+          "mode": "list",
+          "cachedResultName": "workflow_lock",
+          "cachedResultUrl": "/projects/2vHf2VxAoKk0WgJE/datatables/IlGavx32TAXCSixq"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "workflow_id": "={{ $workflow.id }}",
+            "workflow_name": "={{ $workflow.name }}",
+            "execution_id": "={{ $execution.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "workflow_id",
+              "displayName": "workflow_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -8400,
+        4272
+      ],
+      "id": "420b690c-65c0-4324-91d3-05a71ba06ff4",
+      "name": "Obtain Lock"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "IlGavx32TAXCSixq",
+          "mode": "list",
+          "cachedResultName": "workflow_lock",
+          "cachedResultUrl": "/projects/2vHf2VxAoKk0WgJE/datatables/IlGavx32TAXCSixq"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "workflow_id",
+              "keyValue": "={{ $workflow.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -7760,
+        4176
+      ],
+      "id": "e3efdb1e-46ef-46b9-96b0-861124fb9c0d",
+      "name": "Clear Lock"
+    },
+    {
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": {
+          "__rl": true,
+          "value": "IlGavx32TAXCSixq",
+          "mode": "list",
+          "cachedResultName": "workflow_lock",
+          "cachedResultUrl": "/projects/2vHf2VxAoKk0WgJE/datatables/IlGavx32TAXCSixq"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "workflow_id",
+              "keyValue": "={{ $workflow.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -9632,
+        4464
+      ],
+      "id": "a1f23a19-3871-4e6b-85f7-7fe1b756c283",
+      "name": "Check if lock exists"
+    },
+    {
+      "parameters": {
+        "type": "SHA256",
+        "value": "={{ $json.name }}",
+        "dataPropertyName": "document_name_hash"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        -7392,
+        4464
+      ],
+      "id": "568fa631-5a11-4bb4-9199-094d4b041f59",
+      "name": "Document Name Hash"
+    },
+    {
+      "parameters": {
+        "type": "SHA256",
+        "binaryData": true,
+        "dataPropertyName": "document_content_hash"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        -7680,
+        4464
+      ],
+      "id": "e5a084fa-63f6-438e-85f3-6e65601bfada",
+      "name": "Document Content Hash"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "gemini_file_store",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "document_name_hash",
+              "keyValue": "={{ $json.document_name_hash }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -7040,
+        4464
+      ],
+      "id": "2d6bf7c7-ea74-48bc-be1f-31ddb8631693",
+      "name": "Get document name hash",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "V1uzndLMe2n07Mxy",
+          "name": "Supabase Bonds"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "gemini_file_store",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "document_content_hash",
+              "keyValue": "={{ $('Document Name Hash').item.json.document_content_hash }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -6240,
+        4144
+      ],
+      "id": "f41f05e4-47d5-4249-b3ad-d3c18c2b081b",
+      "name": "Get document name hash1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "V1uzndLMe2n07Mxy",
+          "name": "Supabase Bonds"
+        }
+      }
     }
   ],
   "connections": {
@@ -819,29 +910,7 @@
       "main": [
         [
           {
-            "node": "Workflow Configuration",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "File Search Store Name (Manual)": {
-      "main": [
-        [
-          {
-            "node": "Get The Store ID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get The Store ID": {
-      "main": [
-        [
-          {
-            "node": "IF",
+            "node": "Check if lock exists",
             "type": "main",
             "index": 0
           }
@@ -868,7 +937,7 @@
             "index": 0
           },
           {
-            "node": "Lock Flag",
+            "node": "Obtain Lock",
             "type": "main",
             "index": 0
           }
@@ -879,7 +948,7 @@
       "main": [
         [
           {
-            "node": "Clear Processing Flag",
+            "node": "Clear Lock",
             "type": "main",
             "index": 0
           }
@@ -897,7 +966,7 @@
       "main": [
         [
           {
-            "node": "Crypto",
+            "node": "Document Content Hash",
             "type": "main",
             "index": 0
           }
@@ -908,7 +977,7 @@
       "main": [
         [
           {
-            "node": "Check for Identical Contents",
+            "node": "Get document name hash1",
             "type": "main",
             "index": 0
           }
@@ -996,28 +1065,6 @@
         [
           {
             "node": "Reload Binary for PDF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check for Identical Contents": {
-      "main": [
-        [
-          {
-            "node": "Identical Content Exists?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Search for Same File Name": {
-      "main": [
-        [
-          {
-            "node": "New Doc?",
             "type": "main",
             "index": 0
           }
@@ -1167,22 +1214,71 @@
         ]
       ]
     },
-    "Workflow Configuration": {
+    "Global Vars": {
       "main": [
         [
           {
-            "node": "File Search Store Name (Manual)",
+            "node": "IF",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Crypto": {
+    "Obtain Lock": {
+      "main": [
+        []
+      ]
+    },
+    "Check if lock exists": {
       "main": [
         [
           {
-            "node": "Search for Same File Name",
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Name Hash": {
+      "main": [
+        [
+          {
+            "node": "Get document name hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Content Hash": {
+      "main": [
+        [
+          {
+            "node": "Document Name Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get document name hash": {
+      "main": [
+        [
+          {
+            "node": "New Doc?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get document name hash1": {
+      "main": [
+        [
+          {
+            "node": "Identical Content Exists?",
             "type": "main",
             "index": 0
           }
@@ -1209,18 +1305,9 @@
           "name": "east_side_union_high.pdf"
         }
       }
-    ],
-    "Crypto": [
-      {
-        "json": {
-          "id": "1hbH3OO4owrZmTealsg-QfGP0-fJTwcNY",
-          "name": "cajon_valley.pdf",
-          "data": "ded53838e8a0ccf5532bf7cc9729ce89ff2aa1ffcb116ddea391daf850c6d291"
-        }
-      }
     ]
   },
-  "versionId": "6b63a506-d601-4ca7-aa34-316d7cb05022",
+  "versionId": "3fa30366-4683-4601-9358-7e2857800e35",
   "triggerCount": 0,
   "shared": [
     {
