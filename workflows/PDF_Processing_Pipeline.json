@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T12:38:53.000Z",
+  "updatedAt": "2025-11-19T14:44:58.000Z",
   "createdAt": "2025-11-15T23:39:49.140Z",
   "id": "biW8aKwAI78Eo4Gw",
   "name": "PDF_Processing_Pipeline",
@@ -421,7 +421,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3664,
+        -3584,
         4496
       ],
       "disabled": true
@@ -429,7 +429,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.text }}",
+        "text": "=Parse the following structued output json codeblock into a string:\n{{ $json.content.parts[0].text }}",
         "hasOutputParser": true,
         "batching": {}
       },
@@ -440,11 +440,11 @@
       "position": [
         -4016,
         4496
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
-        "modelName": "models/gemini-1.5-pro",
         "options": {
           "temperature": 0.1
         }
@@ -462,12 +462,12 @@
           "id": "LKQbGwmroZKBfciU",
           "name": "Gemini - Cribl"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"document_type\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"period\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"entities\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t},\n\t\t\"summary\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"categories\": {\n\t\t\t\"type\": \"array\",\n\t\t\t\"items\": {\n\t\t\t\t\"type\": \"string\"\n\t\t\t}\n\t\t}\n\t}\n}"
+        "jsonSchemaExample": "{\n  \"document_title\": \"ABC Elementary School District General Obligation Bonds\",\n  \"school_district_name\": \"ABC Elementary School District\",\n  \"county\": \"San Diego County\",\n  \"state\": \"CA\",\n  \"overall_rating\": \"AA-\",\n  \"overall_rating_agency\": \"S&P\",\n  \"overall_due_date\": \"2045-08-01\",\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 56000000,\n      \"election_year\": \"2024\",\n      \"bond_type\": \"General Obligation Bonds\",\n      \"bond_series\": \"A\",\n      \"due_date\": \"2045-08-01\"\n    },\n    {\n      \"bond_amount\": 22000000,\n      \"election_year\": \"2016\",\n      \"bond_type\": \"2025 Refunding General\",\n      \"bond_series\": \"D\",\n      \"due_date\": \"2045-08-01\"\n    }\n  ]\n}"
       },
       "id": "b9210b09-29ad-4af7-bf40-184c4e74390d",
       "name": "Structured Output Parser",
@@ -476,7 +476,8 @@
       "position": [
         -3872,
         4720
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -519,8 +520,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3248,
-        4912
+        -3024,
+        4496
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -540,8 +541,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2928,
-        4912
+        -2704,
+        4496
       ],
       "disabled": true
     },
@@ -578,8 +579,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -2640,
-        4912
+        -2416,
+        4496
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -598,8 +599,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -2384,
-        4912
+        -2160,
+        4496
       ],
       "webhookId": "65ffbc87-56e5-48ba-bc9d-5e128ced5081",
       "disabled": true
@@ -623,8 +624,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -2128,
-        4912
+        -1904,
+        4496
       ],
       "disabled": true
     },
@@ -651,8 +652,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -1824,
-        4912
+        -1504,
+        5040
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -983,12 +984,14 @@
     },
     {
       "parameters": {
-        "content": "### TODO\nAdd row to db"
+        "content": "### TODO\nAdd row to db",
+        "height": 496,
+        "width": 624
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1616,
-        4816
+        -1792,
+        4848
       ],
       "typeVersion": 1,
       "id": "af23958b-0581-42a0-a24f-2afc7019bc8a",
@@ -999,11 +1002,11 @@
         "resource": "document",
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-2.0-flash",
+          "value": "models/gemini-2.5-flash",
           "mode": "list",
-          "cachedResultName": "models/gemini-2.0-flash"
+          "cachedResultName": "models/gemini-2.5-flash"
         },
-        "text": "what is the title of this document? it should be on the first page, but it may not be at the top of the first page. the title of the document has the name of the school district, bond information, and election year (with a possible series letter)",
+        "text": "=<role>\nYou are given the text of a municipal bond PDF. Your task is to extract specific fields and return ONLY a single valid JSON object that follows the schema below.\n</role>\n\n<task>\n1. Find the title of the document.\n   - It should be on the first page.\n   - It may not be at the very top.\n   - The title usually contains: the name of the school district, bond information, and the election year (possibly with a series letter).\n\n2. From the document, extract:\n   - Document title\n   - School district name\n   - County\n   - State\n   - Any overall rating stated for the bonds\n   - Any rating agency for the overall rating\n   - Any overall due date or final maturity date\n\n3. Also identify each bond issue described in the document. For each bond issue, group the following fields together in one object (there may be multiple such objects):\n   - Bond dollar amount\n   - Election year\n   - Type of bond\n   - Bond series\n   - Rating for that bond or series, if available\n   - Due date or final maturity date for that bond or series, if available, in the format of YYYY-MM-DD\n\nIf a field cannot be found, return it as null rather than guessing. Do NOT make up or invent values if they cannot be found in the document.\n</task>\n\n<output_format>\nYour output MUST be valid JSON and match this exact structure:\n\n```\n{\n  \"document_title\": string or null,\n  \"school_district_name\": string or null,\n  \"county\": string or null,\n  \"state\": string or null,\n  \"overall_rating\": string or null,\n  \"overall_rating_agency\": string or null,\n  \"overall_due_date\": string or null,\n  \"bond_issues\": [\n    {\n      \"bond_amount\": integer or null,\n      \"election_year\": string or null,\n      \"bond_type\": string or null,\n      \"bond_series\": string or null,\n      \"due_date\": string or null\n    }\n  ]\n}\n```\n</output_format>\n\n<example>\n```\n{\n  \"document_title\": \"ABC Elementary School District General Obligation Bonds\",\n  \"school_district_name\": \"ABC Elementary School District\",\n  \"county\": \"San Diego County\",\n  \"state\": \"CA\",\n  \"overall_rating\": \"AA-\",\n  \"overall_rating_agency\": \"S&P\",\n  \"overall_due_date\": \"2045-08-01\",\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 56000000,\n      \"election_year\": \"2024\",\n      \"bond_type\": \"General Obligation Bonds\",\n      \"bond_series\": \"A\",\n      \"due_date\": \"2045-08-01\"\n    },\n    {\n      \"bond_amount\": 22000000,\n      \"election_year\": \"2016\",\n      \"bond_type\": \"2025 Refunding General\",\n      \"bond_series\": \"D\",\n      \"due_date\": \"2045-08-01\"\n    }\n  ]\n}\n```\n</example>\n\n<guidelines>\nRules:\n- Return ONLY the JSON. No explanations, no comments, no extra text.\n- If there are no bond issues found, return \"bond_issues\" as an empty array.\n- If there is more than one plausible value for a field, choose the one that best matches typical municipal bond cover-page conventions.\n</guidelines>",
         "inputType": "binary",
         "options": {}
       },
@@ -1020,7 +1023,86 @@
           "id": "LKQbGwmroZKBfciU",
           "name": "Gemini - Cribl"
         }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "=<role> \nYou are given the text of a municipal bond PDF. Your task is to extract specific fields and return ONLY a single valid JSON object that follows the schema below. \n</role> \n<task> 1. Find the title of the document. \n- The title will appear on the first page, but it may not be at the very top. \n- It usually contains the name of the school district, bond information, and the election year (with a possible series letter). \n- Use this text as the `document_title`.\n\nFrom the document, extract the following summary details (place these as top‑level fields in the JSON):\n\ndocument_title – the full title identified above.\n\nschool_district_name – usually part of the title.\n\ncounty – for example, “San Diego County, California”.\n\nstate – the two‑letter state abbreviation.\n\noverall_rating – the overall bond rating on the cover page.\n\noverall_rating_agency – the rating agency (e.g., S&P, Moody’s, Fitch) associated with the overall rating.\n\noverall_due_date – any final maturity date for the entire bond issue, formatted as YYYY-MM-DD if available.\n\nbond_legal_counsel – the law firm serving as bond counsel (should be a single firm).\n\nbond_disclosure_counsel – the firm serving as disclosure counsel; if not separately provided, use null.\n\ndate_bond_closes – the expected closing date of the bonds (e.g., “on or about July 13, 2023”).\n\ndate_of_delivery – the date of delivery, if given separately.\n\ninterest_payment_dates – how often interest is paid (e.g., “February 1 and August 1 (semiannually)”).\n\ninterest_commencing_date – the first interest payment date, formatted as YYYY-MM-DD if possible.\n\nredemption_dates – a list of any optional or mandatory redemption dates mentioned; if none are provided, use null.\n\nunderwriters – a list of investment banks underwriting the bonds; each entry should have a name field.\n\nsuperintendent – the name of the district’s superintendent.\n\nfinancial_management_contact – an object containing the name, title, address and phone number for the district’s financial management contact (such as a deputy superintendent or chief business official).\n\nboard_of_education – a list of objects, each containing the board member’s name and role (President, Vice President, Clerk, Member, etc.).\n\nassessed_valuation_summary – an object containing:\n\nfiscal_year – the fiscal year of the most recent assessed valuation.\n\ntotal_assessed_valuation – the total assessed valuation (as a number, without commas).\n\nvaluation_source – the source of the data (e.g., “California Municipal Statistics, Inc.”).\n\nis_county_teeter_plan_participant – true if the county uses a Teeter Plan, false otherwise.\n\nnotes – any explanatory notes about changes in assessed valuation or related context.\n\nestimated_sources_and_uses – an object containing:\n\ntotal_sources – the total sources of funds across all issues.\n\ntotal_uses – the total uses of funds across all issues.\n\nsources_by_issue – a list of objects, each with issue (name of the bond issue), principal_amount, net_original_issue_premium (or discount), and total for that issue.\n\nuses_by_category – a list of objects, each with a category (e.g., “Deposit to Building Fund” or “Costs of Issuance”), the total_amount, and columns for each issue listing how much of that category is funded by each issue (use null for issues not contributing to that category).\n\ndebt_service_schedule – a list of schedules, one for each bond series; each schedule entry must include the issue name and a list of annual entries with period_ending (date in YYYY-MM-DD format), principal, interest, and total_debt_service amounts.\n\nIdentify each bond issue described in the document. For each bond issue, create an object containing:\n\nbond_amount – the principal amount of the bond issue.\n\nelection_year – the election year authorizing the issue (e.g., 2018, 2020).\n\nbond_type – a description such as “General Obligation Bonds” or “Refunding Bonds”.\n\nbond_series – the series letter or descriptor (e.g., “Series A”, “Series 2025 Refunding”).\n\nrating – the rating for that series, if provided.\n\ndue_date – the final maturity date for that series, in YYYY-MM-DD format if available.\n\ninterest_commencing_date – the first interest payment date for that series, in YYYY-MM-DD format.\n\nredemption_policy – an object with optional_call_date, maturities_callable_after, and redemption_price if the document describes call provisions; otherwise, use null.\n\nmaturity_schedule – an object with:\n\nbase_cusip – the base CUSIP number for the series.\n\nmaturities – a list of objects, each containing maturity_date (in YYYY-MM-DD), principal_amount, interest_rate, yield, price, and cusip.\n\ndebt_service_schedule – a list of objects with period_ending (in YYYY-MM-DD), principal, interest, and total_debt_service values for that series.\n\nIf any of the fields listed above are not present in the document, set their value to null. Do NOT guess or fabricate values.\n\nReturn exactly one JSON object that matches the structure shown below. Do not include any explanations or additional text outside the JSON.\n</task>\n\n<output_format>\nYour output MUST be valid JSON and match this exact structure:\n```\n{\n  \"document_title\": \"EAST SIDE UNION HIGH SCHOOL DISTRICT GENERAL OBLIGATION BONDS, 2016 ELECTION, SERIES D\",\n  \"school_district_name\": \"East Side Union High School District\",\n  \"county\": \"Santa Clara County, California\",\n  \"state\": \"CA\",\n  \"overall_rating\": \"Aa3\",\n  \"overall_rating_agency\": \"Moody’s\",\n  \"overall_due_date\": \"2035-08-01\",\n  \"bond_legal_counsel\": \"Jones Hall, A Professional Law Corporation\",\n  \"bond_disclosure_counsel\": \"Jones Hall, A Professional Law Corporation\",\n  \"date_bond_closes\": \"2025-05-21\",\n  \"date_of_delivery\": \"Date of Delivery\",\n  \"interest_payment_dates\": \"February 1 and August 1 (semiannually)\",\n  \"interest_commencing_date\": \"2025-08-01\",\n  \"redemption_dates\": null,\n  \"underwriters\": [\n    { \"name\": \"Loop Capital Markets\" }\n  ],\n  \"superintendent\": \"Glenn Vander Zee\",\n  \"financial_management_contact\": {\n    \"name\": \"Tom Huynh\",\n    \"title\": \"Associate Superintendent of Business Services\",\n    \"address\": \"District Address Line\",\n    \"phone\": \"(408) 123-4567\"\n  },\n  \"board_of_education\": [\n    { \"name\": \"Brian Do\", \"role\": \"President\" },\n    { \"name\": \"Van T. Le\", \"role\": \"Vice President\" },\n    { \"name\": \"Lorena Chavez\", \"role\": \"Clerk\" },\n    { \"name\": \"Pattie Cortese\", \"role\": \"Member\" },\n    { \"name\": \"J. Manuel Herrera\", \"role\": \"Member\" }\n  ],\n  \"assessed_valuation_summary\": {\n    \"fiscal_year\": \"2022-23\",\n    \"total_assessed_valuation\": 41140207319,\n    \"valuation_source\": \"California Municipal Statistics, Inc.\",\n    \"is_county_teeter_plan_participant\": true,\n    \"notes\": \"The assessed valuation for fiscal year 2022-23 was $41,140,207,319. This reflects an increase of approximately 25.22% from fiscal year 2018-19. The County utilizes the Teeter Plan, which guarantees the District receives 100% of the secured tax levy, making receipt of property taxes not subject to delinquencies.\"\n  },\n  \"estimated_sources_and_uses\": {\n    \"total_sources\": 104664986.60,\n    \"total_uses\": 104664986.60,\n    \"sources_by_issue\": [\n      {\n        \"issue\": \"2016 Election, Series D Bonds\",\n        \"principal_amount\": 56000000.00,\n        \"net_original_issue_premium\": 3430454.20,\n        \"total\": 59430454.20\n      },\n      {\n        \"issue\": \"2025 Refunding Bonds, Series A\",\n        \"principal_amount\": 6420000.00,\n        \"net_original_issue_premium\": 575387.70,\n        \"total\": 6995387.70\n      },\n      {\n        \"issue\": \"2025 Refunding Bonds, Series B\",\n        \"principal_amount\": 35545000.00,\n        \"net_original_issue_premium\": 2694144.70,\n        \"total\": 38239144.70\n      }\n    ],\n    \"uses_by_category\": [\n      {\n        \"category\": \"Deposit to Building Fund\",\n        \"total_amount\": 55754000.00,\n        \"series_d_amount\": 55754000.00,\n        \"series_a_amount\": null,\n        \"series_b_amount\": null\n      },\n      {\n        \"category\": \"Deposit to Escrow Fund\",\n        \"total_amount\": 44800000.00,\n        \"series_d_amount\": null,\n        \"series_a_amount\": 6809964.91,\n        \"series_b_amount\": 37931962.59\n      },\n      {\n        \"category\": \"Deposit to Debt Service Fund\",\n        \"total_amount\": 3263551.73,\n        \"series_d_amount\": 3263551.73,\n        \"series_a_amount\": null,\n        \"series_b_amount\": null\n      },\n      {\n        \"category\": \"Costs of Issuance\",\n        \"total_amount\": 905507.37,\n        \"series_d_amount\": 412902.47,\n        \"series_a_amount\": 185422.79,\n        \"series_b_amount\": 307182.11\n      }\n    ]\n  },\n  \"debt_service_schedule\": [\n    {\n      \"issue\": \"2016 Election, Series D Bonds\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 544444.44, \"total_debt_service\": 544444.44 },\n        { \"period_ending\": \"2026-08-01\", \"principal\": 16080000.00, \"interest\": 2800000.00, \"total_debt_service\": 18880000.00 }\n      ]\n    },\n    {\n      \"issue\": \"2025 Refunding Bonds, Series A\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 62416.67, \"total_debt_service\": 62416.67 }\n      ]\n    },\n    {\n      \"issue\": \"2025 Refunding Bonds, Series B\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": 560000.00, \"interest\": 345576.39, \"total_debt_service\": 905576.39 }\n      ]\n    }\n  ],\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 56000000,\n      \"election_year\": \"2016\",\n      \"bond_type\": \"General Obligation Bonds\",\n      \"bond_series\": \"Series D\",\n      \"rating\": \"Aa3\",\n      \"due_date\": \"2033-08-01\",\n      \"interest_commencing_date\": \"2025-08-01\",\n      \"redemption_policy\": null,\n      \"maturity_schedule\": {\n        \"base_cusip\": \"275282\",\n        \"maturities\": [\n          {\n            \"maturity_date\": \"2026-08-01\",\n            \"principal_amount\": 16080000,\n            \"interest_rate\": \"5.000%\",\n            \"yield\": \"3.080%\",\n            \"price\": \"102.230\",\n            \"cusip\": \"TA9\"\n          },\n          {\n            \"maturity_date\": \"2027-08-01\",\n            \"principal_amount\": 8160000,\n            \"interest_rate\": \"5.000\",\n            \"yield\": \"3.100\",\n            \"price\": \"103.996\",\n            \"cusip\": \"TB7\"\n          }\n        ]\n      },\n      \"debt_service_schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 544444.44, \"total_debt_service\": 544444.44 },\n        { \"period_ending\": \"2026-08-01\", \"principal\": 16080000.00, \"interest\": 2800000.00, \"total_debt_service\": 18880000.00 }\n      ]\n    }\n  ]\n}\n```\n</output_format>\n\n<guidelines> \nRules: \n- Return ONLY the JSON. Do not include explanations, comments, or extra text outside of the JSON. \n- Do not include any fields that are not specified in the schema above. \n- Use numeric types for numbers (without commas or currency symbols) unless they are part of a string such as an interest rate. \n- If there are no bond issues found, return `\"bond_issues\"` as an empty array. \n- If there is more than one plausible value for a field, choose the value that best matches typical municipal bond cover‑page conventions. \n</guidelines>\n",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -4208,
+        4928
+      ],
+      "id": "6f3f8aef-1c61-466a-a36c-da3b825c573b",
+      "name": "Analyze document1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
+        }
       }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Parse the following structued output json codeblock into a string:\n{{ $json.content.parts[0].text }}\n\nOutput only the json string without any extra text and without a preamble.",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "72d9ed40-67d8-42a0-9efb-97be2f8e512b",
+      "name": "Extract Metadata with Gemini1",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -4016,
+        4928
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "2c0744a7-e1fc-4a4f-a28e-3c0da363e3cc",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -4016,
+        5152
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"document_title\": \"EAST SIDE UNION HIGH SCHOOL DISTRICT GENERAL OBLIGATION BONDS, 2016 ELECTION, SERIES D\",\n  \"school_district_name\": \"East Side Union High School District\",\n  \"county\": \"Santa Clara County, California\",\n  \"state\": \"CA\",\n  \"overall_rating\": \"Aa3\",\n  \"overall_rating_agency\": \"Moody’s\",\n  \"overall_due_date\": \"2035-08-01\",\n  \"bond_legal_counsel\": \"Jones Hall, A Professional Law Corporation\",\n  \"bond_disclosure_counsel\": \"Jones Hall, A Professional Law Corporation\",\n  \"date_bond_closes\": \"2025-05-21\",\n  \"date_of_delivery\": \"Date of Delivery\",\n  \"interest_payment_dates\": \"February 1 and August 1 (semiannually)\",\n  \"interest_commencing_date\": \"2025-08-01\",\n  \"redemption_dates\": null,\n  \"underwriters\": [\n    { \"name\": \"Loop Capital Markets\" }\n  ],\n  \"superintendent\": \"Glenn Vander Zee\",\n  \"financial_management_contact\": {\n    \"name\": \"Tom Huynh\",\n    \"title\": \"Associate Superintendent of Business Services\",\n    \"address\": \"District Address Line\",\n    \"phone\": \"(408) 123-4567\"\n  },\n  \"board_of_education\": [\n    { \"name\": \"Brian Do\", \"role\": \"President\" },\n    { \"name\": \"Van T. Le\", \"role\": \"Vice President\" },\n    { \"name\": \"Lorena Chavez\", \"role\": \"Clerk\" },\n    { \"name\": \"Pattie Cortese\", \"role\": \"Member\" },\n    { \"name\": \"J. Manuel Herrera\", \"role\": \"Member\" }\n  ],\n  \"assessed_valuation_summary\": {\n    \"fiscal_year\": \"2022-23\",\n    \"total_assessed_valuation\": 41140207319,\n    \"valuation_source\": \"California Municipal Statistics, Inc.\",\n    \"is_county_teeter_plan_participant\": true,\n    \"notes\": \"The assessed valuation for fiscal year 2022-23 was $41,140,207,319. This reflects an increase of approximately 25.22% from fiscal year 2018-19. The County utilizes the Teeter Plan, which guarantees the District receives 100% of the secured tax levy, making receipt of property taxes not subject to delinquencies.\"\n  },\n  \"estimated_sources_and_uses\": {\n    \"total_sources\": 104664986.60,\n    \"total_uses\": 104664986.60,\n    \"sources_by_issue\": [\n      {\n        \"issue\": \"2016 Election, Series D Bonds\",\n        \"principal_amount\": 56000000.00,\n        \"net_original_issue_premium\": 3430454.20,\n        \"total\": 59430454.20\n      },\n      {\n        \"issue\": \"2025 Refunding Bonds, Series A\",\n        \"principal_amount\": 6420000.00,\n        \"net_original_issue_premium\": 575387.70,\n        \"total\": 6995387.70\n      },\n      {\n        \"issue\": \"2025 Refunding Bonds, Series B\",\n        \"principal_amount\": 35545000.00,\n        \"net_original_issue_premium\": 2694144.70,\n        \"total\": 38239144.70\n      }\n    ],\n    \"uses_by_category\": [\n      {\n        \"category\": \"Deposit to Building Fund\",\n        \"total_amount\": 55754000.00,\n        \"series_d_amount\": 55754000.00,\n        \"series_a_amount\": null,\n        \"series_b_amount\": null\n      },\n      {\n        \"category\": \"Deposit to Escrow Fund\",\n        \"total_amount\": 44800000.00,\n        \"series_d_amount\": null,\n        \"series_a_amount\": 6809964.91,\n        \"series_b_amount\": 37931962.59\n      },\n      {\n        \"category\": \"Deposit to Debt Service Fund\",\n        \"total_amount\": 3263551.73,\n        \"series_d_amount\": 3263551.73,\n        \"series_a_amount\": null,\n        \"series_b_amount\": null\n      },\n      {\n        \"category\": \"Costs of Issuance\",\n        \"total_amount\": 905507.37,\n        \"series_d_amount\": 412902.47,\n        \"series_a_amount\": 185422.79,\n        \"series_b_amount\": 307182.11\n      }\n    ]\n  },\n  \"debt_service_schedule\": [\n    {\n      \"issue\": \"2016 Election, Series D Bonds\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 544444.44, \"total_debt_service\": 544444.44 },\n        { \"period_ending\": \"2026-08-01\", \"principal\": 16080000.00, \"interest\": 2800000.00, \"total_debt_service\": 18880000.00 }\n      ]\n    },\n    {\n      \"issue\": \"2025 Refunding Bonds, Series A\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 62416.67, \"total_debt_service\": 62416.67 }\n      ]\n    },\n    {\n      \"issue\": \"2025 Refunding Bonds, Series B\",\n      \"schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": 560000.00, \"interest\": 345576.39, \"total_debt_service\": 905576.39 }\n      ]\n    }\n  ],\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 56000000,\n      \"election_year\": \"2016\",\n      \"bond_type\": \"General Obligation Bonds\",\n      \"bond_series\": \"Series D\",\n      \"rating\": \"Aa3\",\n      \"due_date\": \"2033-08-01\",\n      \"interest_commencing_date\": \"2025-08-01\",\n      \"redemption_policy\": null,\n      \"maturity_schedule\": {\n        \"base_cusip\": \"275282\",\n        \"maturities\": [\n          {\n            \"maturity_date\": \"2026-08-01\",\n            \"principal_amount\": 16080000,\n            \"interest_rate\": \"5.000%\",\n            \"yield\": \"3.080%\",\n            \"price\": \"102.230\",\n            \"cusip\": \"TA9\"\n          },\n          {\n            \"maturity_date\": \"2027-08-01\",\n            \"principal_amount\": 8160000,\n            \"interest_rate\": \"5.000\",\n            \"yield\": \"3.100\",\n            \"price\": \"103.996\",\n            \"cusip\": \"TB7\"\n          }\n        ]\n      },\n      \"debt_service_schedule\": [\n        { \"period_ending\": \"2025-08-01\", \"principal\": null, \"interest\": 544444.44, \"total_debt_service\": 544444.44 },\n        { \"period_ending\": \"2026-08-01\", \"principal\": 16080000.00, \"interest\": 2800000.00, \"total_debt_service\": 18880000.00 }\n      ]\n    }\n  ]\n}"
+      },
+      "id": "4f5ccfb6-02cc-45a4-8e64-7801c59cd045",
+      "name": "Structured Output Parser1",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -3872,
+        5152
+      ]
     }
   ],
   "connections": {
@@ -1229,6 +1311,11 @@
             "node": "Analyze document",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Analyze document1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1402,6 +1489,39 @@
           }
         ]
       ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Metadata with Gemini1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract Metadata with Gemini1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document1": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata with Gemini1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1430,18 +1550,759 @@
           "content": {
             "parts": [
               {
-                "text": "Based on the provided OCR text, the title of the document is:\n\n**CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT (SAN DIEGO COUNTY, CALIFORNIA) GENERAL OBLIGATION BONDS 2000 ELECTION, SERIES C**\n"
+                "text": "```json\n{\n  \"document_title\": \"CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT\\n(SAN DIEGO COUNTY, CALIFORNIA)\\nGENERAL OBLIGATION BONDS\\n2000 ELECTION, SERIES C\",\n  \"school_district_name\": \"CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT\",\n  \"county\": \"SAN DIEGO COUNTY\",\n  \"state\": \"CALIFORNIA\",\n  \"overall_rating\": \"AAA\",\n  \"overall_rating_agency\": \"S&P\",\n  \"overall_due_date\": \"2032-08-01\",\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 16500000,\n      \"election_year\": \"2000\",\n      \"bond_type\": \"GENERAL OBLIGATION BONDS\",\n      \"bond_series\": \"C\",\n      \"due_date\": \"2032-08-01\"\n    }\n  ]\n}\n```"
               }
             ],
             "role": "model"
           },
           "finishReason": "STOP",
-          "avgLogprobs": -0.21098063854461022
+          "avgLogprobs": -0.004397247825656926
+        }
+      }
+    ],
+    "Extract Metadata with Gemini": [
+      {
+        "json": {
+          "output": {
+            "document_title": "CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT\n(SAN DIEGO COUNTY, CALIFORNIA)\nGENERAL OBLIGATION BONDS\n2000 ELECTION, SERIES C",
+            "school_district_name": "CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT",
+            "county": "SAN DIEGO COUNTY",
+            "state": "CALIFORNIA",
+            "overall_rating": "AAA",
+            "overall_rating_agency": "S&P",
+            "overall_due_date": "2032-08-01",
+            "bond_issues": [
+              {
+                "bond_amount": 16500000,
+                "election_year": "2000",
+                "bond_type": "GENERAL OBLIGATION BONDS",
+                "bond_series": "C",
+                "due_date": "2032-08-01"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "Analyze document1": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "```json\n{\n  \"document_title\": \"CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT SAN DIEGO COUNTY, CALIFORNIA GENERAL OBLIGATION BONDS 2000 ELECTION, SERIES C\",\n  \"school_district_name\": \"Cajon Valley Union Elementary School District\",\n  \"county\": \"San Diego County, California\",\n  \"state\": \"CA\",\n  \"overall_rating\": \"AAA\",\n  \"overall_rating_agency\": \"S&P\",\n  \"overall_due_date\": \"2032-08-01\",\n  \"bond_legal_counsel\": \"Jones Hall, A Professional Law Corporation\",\n  \"bond_disclosure_counsel\": null,\n  \"date_bond_closes\": \"2003-06-25\",\n  \"date_of_delivery\": \"2003-06-25\",\n  \"interest_payment_dates\": \"February 1 and August 1 (semiannually)\",\n  \"interest_commencing_date\": \"2004-02-01\",\n  \"redemption_dates\": [\n    \"Optional Redemption: Bonds maturing on or after August 1, 2012, callable on any date on or after August 1, 2011, at 102.0% (August 1, 2012), 101.0% (August 1, 2013), and 100.0% (August 1, 2014 and thereafter).\",\n    \"Mandatory Sinking Fund Redemption: August 1, 2029; August 1, 2030; August 1, 2031; August 1, 2032.\"\n  ],\n  \"underwriters\": null,\n  \"superintendent\": \"Dr. Janice Cook\",\n  \"financial_management_contact\": {\n    \"name\": \"G. Wayne Oetken\",\n    \"title\": \"Assistant Superintendent, Business Services\",\n    \"address\": \"189 Roanoke Road El Cajon, California 92022\",\n    \"phone\": null\n  },\n  \"board_of_education\": [\n    { \"name\": \"Jeff Kover\", \"role\": \"President\" },\n    { \"name\": \"Jane Cruz Alfano\", \"role\": \"Vice President\" },\n    { \"name\": \"Dianne Berto\", \"role\": \"Clerk\" },\n    { \"name\": \"Laoma Dana Davidson\", \"role\": \"Member\" },\n    { \"name\": \"Marsha Saben\", \"role\": \"Member\" }\n  ],\n  \"assessed_valuation_summary\": {\n    \"fiscal_year\": \"2002-03\",\n    \"total_assessed_valuation\": 8716563199,\n    \"valuation_source\": \"California Municipal Statistics, Inc.\",\n    \"is_county_teeter_plan_participant\": true,\n    \"notes\": \"The County of San Diego operates under the Teeter Plan, where public agencies receive their total secured tax levies and special assessments irrespective of actual collections and delinquencies. However, the document notes that the District's assurance of 100% collection of its total secured tax explicitly excludes general obligation bond payments.\"\n  },\n  \"estimated_sources_and_uses\": null,\n  \"debt_service_schedule\": [\n    {\n      \"issue\": \"2000 Election, Series C Bonds\",\n      \"schedule\": [\n        { \"period_ending\": \"2004-06-30\", \"principal\": 0, \"interest\": 397220.38, \"total_debt_service\": 397220.38 },\n        { \"period_ending\": \"2005-06-30\", \"principal\": 240000, \"interest\": 700717.50, \"total_debt_service\": 940717.50 },\n        { \"period_ending\": \"2006-06-30\", \"principal\": 295000, \"interest\": 624197.50, \"total_debt_service\": 919197.50 },\n        { \"period_ending\": \"2007-06-30\", \"principal\": 310000, \"interest\": 647467.50, \"total_debt_service\": 957467.50 },\n        { \"period_ending\": \"2008-06-30\", \"principal\": 325000, \"interest\": 624087.50, \"total_debt_service\": 949087.50 },\n        { \"period_ending\": \"2009-06-30\", \"principal\": 340000, \"interest\": 608722.50, \"total_debt_service\": 948722.50 },\n        { \"period_ending\": \"2010-06-30\", \"principal\": 360000, \"interest\": 588565.00, \"total_debt_service\": 948565.00 },\n        { \"period_ending\": \"2011-06-30\", \"principal\": 375000, \"interest\": 570155.00, \"total_debt_service\": 945155.00 },\n        { \"period_ending\": \"2012-06-30\", \"principal\": 395000, \"interest\": 552125.00, \"total_debt_service\": 947125.00 },\n        { \"period_ending\": \"2013-06-30\", \"principal\": 415000, \"interest\": 527800.00, \"total_debt_service\": 942800.00 },\n        { \"period_ending\": \"2014-06-30\", \"principal\": 430000, \"interest\": 527800.00, \"total_debt_service\": 957800.00 },\n        { \"period_ending\": \"2015-06-30\", \"principal\": 440000, \"interest\": 512325.00, \"total_debt_service\": 952325.00 },\n        { \"period_ending\": \"2016-06-30\", \"principal\": 460000, \"interest\": 497500.00, \"total_debt_service\": 957500.00 },\n        { \"period_ending\": \"2017-06-30\", \"principal\": 470000, \"interest\": 477246.25, \"total_debt_service\": 947246.25 },\n        { \"period_ending\": \"2018-06-30\", \"principal\": 485000, \"interest\": 457608.75, \"total_debt_service\": 942608.75 },\n        { \"period_ending\": \"2019-06-30\", \"principal\": 505000, \"interest\": 436240.00, \"total_debt_service\": 941240.00 },\n        { \"period_ending\": \"2020-06-30\", \"principal\": 530000, \"interest\": 413340.00, \"total_debt_service\": 943340.00 },\n        { \"period_ending\": \"2021-06-30\", \"principal\": 555000, \"interest\": 388855.00, \"total_debt_service\": 943855.00 },\n        { \"period_ending\": \"2022-06-30\", \"principal\": 580000, \"interest\": 363332.50, \"total_debt_service\": 943332.50 },\n        { \"period_ending\": \"2023-06-30\", \"principal\": 610000, \"interest\": 336350.00, \"total_debt_service\": 946350.00 },\n        { \"period_ending\": \"2024-06-30\", \"principal\": 635000, \"interest\": 307687.50, \"total_debt_service\": 942687.50 },\n        { \"period_ending\": \"2025-06-30\", \"principal\": 665000, \"interest\": 277472.50, \"total_debt_service\": 942472.50 },\n        { \"period_ending\": \"2026-06-30\", \"principal\": 695000, \"interest\": 245703.75, \"total_debt_service\": 940703.75 },\n        { \"period_ending\": \"2027-06-30\", \"principal\": 730000, \"interest\": 212442.50, \"total_debt_service\": 942442.50 },\n        { \"period_ending\": \"2028-06-30\", \"principal\": 765000, \"interest\": 177033.75, \"total_debt_service\": 942033.75 },\n        { \"period_ending\": \"2029-06-30\", \"principal\": 800000, \"interest\": 141255.00, \"total_debt_service\": 941255.00 },\n        { \"period_ending\": \"2030-06-30\", \"principal\": 835000, \"interest\": 102985.00, \"total_debt_service\": 937985.00 },\n        { \"period_ending\": \"2031-06-30\", \"principal\": 870000, \"interest\": 62995.00, \"total_debt_service\": 932995.00 },\n        { \"period_ending\": \"2032-06-30\", \"principal\": 910000, \"interest\": 212485.00, \"total_debt_service\": 931485.00 },\n        { \"period_ending\": \"2033-06-30\", \"principal\": 0, \"interest\": 212485.00, \"total_debt_service\": 212485.00 }\n      ]\n    }\n  ],\n  \"bond_issues\": [\n    {\n      \"bond_amount\": 16500000,\n      \"election_year\": \"2000\",\n      \"bond_type\": \"General Obligation Bonds\",\n      \"bond_series\": \"Series C\",\n      \"rating\": \"AAA\",\n      \"due_date\": \"2032-08-01\",\n      \"interest_commencing_date\": \"2004-02-01\",\n      \"redemption_policy\": {\n        \"optional_call_date\": \"2011-08-01\",\n        \"maturities_callable_after\": \"2012-08-01\",\n        \"redemption_price\": null\n      },\n      \"maturity_schedule\": {\n        \"base_cusip\": null,\n        \"maturities\": [\n          { \"maturity_date\": \"2003-08-01\", \"principal_amount\": 240000, \"interest_rate\": \"6.000%\", \"yield\": \"1.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2004-08-01\", \"principal_amount\": 295000, \"interest_rate\": \"6.000%\", \"yield\": \"1.200%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2005-08-01\", \"principal_amount\": 310000, \"interest_rate\": \"6.000%\", \"yield\": \"1.500%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2006-08-01\", \"principal_amount\": 325000, \"interest_rate\": \"6.000%\", \"yield\": \"1.750%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2007-08-01\", \"principal_amount\": 340000, \"interest_rate\": \"5.500%\", \"yield\": \"2.100%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2008-08-01\", \"principal_amount\": 360000, \"interest_rate\": \"5.500%\", \"yield\": \"2.500%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2009-08-01\", \"principal_amount\": 375000, \"interest_rate\": \"5.500%\", \"yield\": \"2.800%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2010-08-01\", \"principal_amount\": 395000, \"interest_rate\": \"4.150%\", \"yield\": \"3.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2011-08-01\", \"principal_amount\": 415000, \"interest_rate\": \"4.150%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2012-08-01\", \"principal_amount\": 430000, \"interest_rate\": \"3.200%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2013-08-01\", \"principal_amount\": 440000, \"interest_rate\": \"3.200%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2014-08-01\", \"principal_amount\": 460000, \"interest_rate\": \"3.375%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2015-08-01\", \"principal_amount\": 470000, \"interest_rate\": \"3.500%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2016-08-01\", \"principal_amount\": 485000, \"interest_rate\": \"3.600%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2017-08-01\", \"principal_amount\": 505000, \"interest_rate\": \"3.675%\", \"yield\": \"3.875%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2018-08-01\", \"principal_amount\": 530000, \"interest_rate\": \"3.750%\", \"yield\": \"3.900%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2019-08-01\", \"principal_amount\": 555000, \"interest_rate\": \"4.000%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2020-08-01\", \"principal_amount\": 580000, \"interest_rate\": \"4.100%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2021-08-01\", \"principal_amount\": 610000, \"interest_rate\": \"4.100%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2022-08-01\", \"principal_amount\": 635000, \"interest_rate\": \"4.100%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2023-08-01\", \"principal_amount\": 665000, \"interest_rate\": \"4.200%\", \"yield\": \"4.250%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2024-08-01\", \"principal_amount\": 695000, \"interest_rate\": \"4.200%\", \"yield\": \"4.250%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2025-08-01\", \"principal_amount\": 730000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2026-08-01\", \"principal_amount\": 765000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2027-08-01\", \"principal_amount\": 800000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2028-08-01\", \"principal_amount\": 835000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2029-08-01\", \"principal_amount\": 870000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2030-08-01\", \"principal_amount\": 910000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2031-08-01\", \"principal_amount\": 950000, \"interest_rate\": \"4.250%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null },\n          { \"maturity_date\": \"2032-08-01\", \"principal_amount\": 990000, \"interest_rate\": \"4.300%\", \"yield\": \"100.000%\", \"price\": \"100.000\", \"cusip\": null }\n        ]\n      },\n      \"debt_service_schedule\": [\n        { \"period_ending\": \"2004-06-30\", \"principal\": 0, \"interest\": 397220.38, \"total_debt_service\": 397220.38 },\n        { \"period_ending\": \"2005-06-30\", \"principal\": 240000, \"interest\": 700717.50, \"total_debt_service\": 940717.50 },\n        { \"period_ending\": \"2006-06-30\", \"principal\": 295000, \"interest\": 624197.50, \"total_debt_service\": 919197.50 },\n        { \"period_ending\": \"2007-06-30\", \"principal\": 310000, \"interest\": 647467.50, \"total_debt_service\": 957467.50 },\n        { \"period_ending\": \"2008-06-30\", \"principal\": 325000, \"interest\": 624087.50, \"total_debt_service\": 949087.50 },\n        { \"period_ending\": \"2009-06-30\", \"principal\": 340000, \"interest\": 608722.50, \"total_debt_service\": 948722.50 },\n        { \"period_ending\": \"2010-06-30\", \"principal\": 360000, \"interest\": 588565.00, \"total_debt_service\": 948565.00 },\n        { \"period_ending\": \"2011-06-30\", \"principal\": 375000, \"interest\": 570155.00, \"total_debt_service\": 945155.00 },\n        { \"period_ending\": \"2012-06-30\", \"principal\": 395000, \"interest\": 552125.00, \"total_debt_service\": 947125.00 },\n        { \"period_ending\": \"2013-06-30\", \"principal\": 415000, \"interest\": 527800.00, \"total_debt_service\": 942800.00 },\n        { \"period_ending\": \"2014-06-30\", \"principal\": 430000, \"interest\": 527800.00, \"total_debt_service\": 957800.00 },\n        { \"period_ending\": \"2015-06-30\", \"principal\": 440000, \"interest\": 512325.00, \"total_debt_service\": 952325.00 },\n        { \"period_ending\": \"2016-06-30\", \"principal\": 460000, \"interest\": 497500.00, \"total_debt_service\": 957500.00 },\n        { \"period_ending\": \"2017-06-30\", \"principal\": 470000, \"interest\": 477246.25, \"total_debt_service\": 947246.25 },\n        { \"period_ending\": \"2018-06-30\", \"principal\": 485000, \"interest\": 457608.75, \"total_debt_service\": 942608.75 },\n        { \"period_ending\": \"2019-06-30\", \"principal\": 505000, \"interest\": 436240.00, \"total_debt_service\": 941240.00 },\n        { \"period_ending\": \"2020-06-30\", \"principal\": 530000, \"interest\": 413340.00, \"total_debt_service\": 943340.00 },\n        { \"period_ending\": \"2021-06-30\", \"principal\": 555000, \"interest\": 388855.00, \"total_debt_service\": 943855.00 },\n        { \"period_ending\": \"2022-06-30\", \"principal\": 580000, \"interest\": 363332.50, \"total_debt_service\": 943332.50 },\n        { \"period_ending\": \"2023-06-30\", \"principal\": 610000, \"interest\": 336350.00, \"total_debt_service\": 946350.00 },\n        { \"period_ending\": \"2024-06-30\", \"principal\": 635000, \"interest\": 307687.50, \"total_debt_service\": 942687.50 },\n        { \"period_ending\": \"2025-06-30\", \"principal\": 665000, \"interest\": 277472.50, \"total_debt_service\": 942472.50 },\n        { \"period_ending\": \"2026-06-30\", \"principal\": 695000, \"interest\": 245703.75, \"total_debt_service\": 940703.75 },\n        { \"period_ending\": \"2027-06-30\", \"principal\": 730000, \"interest\": 212442.50, \"total_debt_service\": 942442.50 },\n        { \"period_ending\": \"2028-06-30\", \"principal\": 765000, \"interest\": 177033.75, \"total_debt_service\": 942033.75 },\n        { \"period_ending\": \"2029-06-30\", \"principal\": 800000, \"interest\": 141255.00, \"total_debt_service\": 941255.00 },\n        { \"period_ending\": \"2030-06-30\", \"principal\": 835000, \"interest\": 102985.00, \"total_debt_service\": 937985.00 },\n        { \"period_ending\": \"2031-06-30\", \"principal\": 870000, \"interest\": 62995.00, \"total_debt_service\": 932995.00 },\n        { \"period_ending\": \"2032-06-30\", \"principal\": 910000, \"interest\": 212485.00, \"total_debt_service\": 931485.00 },\n        { \"period_ending\": \"2033-06-30\", \"principal\": 0, \"interest\": 212485.00, \"total_debt_service\": 212485.00 }\n      ]\n    }\n  ]\n}\n```"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0,
+          "citationMetadata": {
+            "citationSources": [
+              {
+                "startIndex": 25278,
+                "endIndex": 25598,
+                "uri": "https://www.sausalito.gov/home/showpublisheddocument/17883/636326254065130000",
+                "license": ""
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "Extract Metadata with Gemini1": [
+      {
+        "json": {
+          "output": {
+            "document_title": "CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT SAN DIEGO COUNTY, CALIFORNIA GENERAL OBLIGATION BONDS 2000 ELECTION, SERIES C",
+            "school_district_name": "Cajon Valley Union Elementary School District",
+            "county": "San Diego County, California",
+            "state": "CA",
+            "overall_rating": "AAA",
+            "overall_rating_agency": "S&P",
+            "overall_due_date": "2032-08-01",
+            "bond_legal_counsel": "Jones Hall, A Professional Law Corporation",
+            "bond_disclosure_counsel": "",
+            "date_bond_closes": "2003-06-25",
+            "date_of_delivery": "2003-06-25",
+            "interest_payment_dates": "February 1 and August 1 (semiannually)",
+            "interest_commencing_date": "2004-02-01",
+            "redemption_dates": null,
+            "underwriters": [],
+            "superintendent": "Dr. Janice Cook",
+            "financial_management_contact": {
+              "name": "G. Wayne Oetken",
+              "title": "Assistant Superintendent, Business Services",
+              "address": "189 Roanoke Road El Cajon, California 92022",
+              "phone": ""
+            },
+            "board_of_education": [
+              {
+                "name": "Jeff Kover",
+                "role": "President"
+              },
+              {
+                "name": "Jane Cruz Alfano",
+                "role": "Vice President"
+              },
+              {
+                "name": "Dianne Berto",
+                "role": "Clerk"
+              },
+              {
+                "name": "Laoma Dana Davidson",
+                "role": "Member"
+              },
+              {
+                "name": "Marsha Saben",
+                "role": "Member"
+              }
+            ],
+            "assessed_valuation_summary": {
+              "fiscal_year": "2002-03",
+              "total_assessed_valuation": 8716563199,
+              "valuation_source": "California Municipal Statistics, Inc.",
+              "is_county_teeter_plan_participant": true,
+              "notes": "The County of San Diego operates under the Teeter Plan, where public agencies receive their total secured tax levies and special assessments irrespective of actual collections and delinquencies. However, the document notes that the District's assurance of 100% collection of its total secured tax explicitly excludes general obligation bond payments."
+            },
+            "estimated_sources_and_uses": {
+              "total_sources": 0,
+              "total_uses": 0,
+              "sources_by_issue": [],
+              "uses_by_category": []
+            },
+            "debt_service_schedule": [
+              {
+                "issue": "2000 Election, Series C Bonds",
+                "schedule": [
+                  {
+                    "period_ending": "2004-06-30",
+                    "principal": 0,
+                    "interest": 397220.38,
+                    "total_debt_service": 397220.38
+                  },
+                  {
+                    "period_ending": "2005-06-30",
+                    "principal": 240000,
+                    "interest": 700717.5,
+                    "total_debt_service": 940717.5
+                  },
+                  {
+                    "period_ending": "2006-06-30",
+                    "principal": 295000,
+                    "interest": 624197.5,
+                    "total_debt_service": 919197.5
+                  },
+                  {
+                    "period_ending": "2007-06-30",
+                    "principal": 310000,
+                    "interest": 647467.5,
+                    "total_debt_service": 957467.5
+                  },
+                  {
+                    "period_ending": "2008-06-30",
+                    "principal": 325000,
+                    "interest": 624087.5,
+                    "total_debt_service": 949087.5
+                  },
+                  {
+                    "period_ending": "2009-06-30",
+                    "principal": 340000,
+                    "interest": 608722.5,
+                    "total_debt_service": 948722.5
+                  },
+                  {
+                    "period_ending": "2010-06-30",
+                    "principal": 360000,
+                    "interest": 588565,
+                    "total_debt_service": 948565
+                  },
+                  {
+                    "period_ending": "2011-06-30",
+                    "principal": 375000,
+                    "interest": 570155,
+                    "total_debt_service": 945155
+                  },
+                  {
+                    "period_ending": "2012-06-30",
+                    "principal": 395000,
+                    "interest": 552125,
+                    "total_debt_service": 947125
+                  },
+                  {
+                    "period_ending": "2013-06-30",
+                    "principal": 415000,
+                    "interest": 527800,
+                    "total_debt_service": 942800
+                  },
+                  {
+                    "period_ending": "2014-06-30",
+                    "principal": 430000,
+                    "interest": 527800,
+                    "total_debt_service": 957800
+                  },
+                  {
+                    "period_ending": "2015-06-30",
+                    "principal": 440000,
+                    "interest": 512325,
+                    "total_debt_service": 952325
+                  },
+                  {
+                    "period_ending": "2016-06-30",
+                    "principal": 460000,
+                    "interest": 497500,
+                    "total_debt_service": 957500
+                  },
+                  {
+                    "period_ending": "2017-06-30",
+                    "principal": 470000,
+                    "interest": 477246.25,
+                    "total_debt_service": 947246.25
+                  },
+                  {
+                    "period_ending": "2018-06-30",
+                    "principal": 485000,
+                    "interest": 457608.75,
+                    "total_debt_service": 942608.75
+                  },
+                  {
+                    "period_ending": "2019-06-30",
+                    "principal": 505000,
+                    "interest": 436240,
+                    "total_debt_service": 941240
+                  },
+                  {
+                    "period_ending": "2020-06-30",
+                    "principal": 530000,
+                    "interest": 413340,
+                    "total_debt_service": 943340
+                  },
+                  {
+                    "period_ending": "2021-06-30",
+                    "principal": 555000,
+                    "interest": 388855,
+                    "total_debt_service": 943855
+                  },
+                  {
+                    "period_ending": "2022-06-30",
+                    "principal": 580000,
+                    "interest": 363332.5,
+                    "total_debt_service": 943332.5
+                  },
+                  {
+                    "period_ending": "2023-06-30",
+                    "principal": 610000,
+                    "interest": 336350,
+                    "total_debt_service": 946350
+                  },
+                  {
+                    "period_ending": "2024-06-30",
+                    "principal": 635000,
+                    "interest": 307687.5,
+                    "total_debt_service": 942687.5
+                  },
+                  {
+                    "period_ending": "2025-06-30",
+                    "principal": 665000,
+                    "interest": 277472.5,
+                    "total_debt_service": 942472.5
+                  },
+                  {
+                    "period_ending": "2026-06-30",
+                    "principal": 695000,
+                    "interest": 245703.75,
+                    "total_debt_service": 940703.75
+                  },
+                  {
+                    "period_ending": "2027-06-30",
+                    "principal": 730000,
+                    "interest": 212442.5,
+                    "total_debt_service": 942442.5
+                  },
+                  {
+                    "period_ending": "2028-06-30",
+                    "principal": 765000,
+                    "interest": 177033.75,
+                    "total_debt_service": 942033.75
+                  },
+                  {
+                    "period_ending": "2029-06-30",
+                    "principal": 800000,
+                    "interest": 141255,
+                    "total_debt_service": 941255
+                  },
+                  {
+                    "period_ending": "2030-06-30",
+                    "principal": 835000,
+                    "interest": 102985,
+                    "total_debt_service": 937985
+                  },
+                  {
+                    "period_ending": "2031-06-30",
+                    "principal": 870000,
+                    "interest": 62995,
+                    "total_debt_service": 932995
+                  },
+                  {
+                    "period_ending": "2032-06-30",
+                    "principal": 910000,
+                    "interest": 212485,
+                    "total_debt_service": 931485
+                  },
+                  {
+                    "period_ending": "2033-06-30",
+                    "principal": 0,
+                    "interest": 212485,
+                    "total_debt_service": 212485
+                  }
+                ]
+              }
+            ],
+            "bond_issues": [
+              {
+                "bond_amount": 16500000,
+                "election_year": "2000",
+                "bond_type": "General Obligation Bonds",
+                "bond_series": "Series C",
+                "rating": "AAA",
+                "due_date": "2032-08-01",
+                "interest_commencing_date": "2004-02-01",
+                "redemption_policy": null,
+                "maturity_schedule": {
+                  "base_cusip": "",
+                  "maturities": [
+                    {
+                      "maturity_date": "2003-08-01",
+                      "principal_amount": 240000,
+                      "interest_rate": "6.000%",
+                      "yield": "1.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2004-08-01",
+                      "principal_amount": 295000,
+                      "interest_rate": "6.000%",
+                      "yield": "1.200%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2005-08-01",
+                      "principal_amount": 310000,
+                      "interest_rate": "6.000%",
+                      "yield": "1.500%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2006-08-01",
+                      "principal_amount": 325000,
+                      "interest_rate": "6.000%",
+                      "yield": "1.750%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2007-08-01",
+                      "principal_amount": 340000,
+                      "interest_rate": "5.500%",
+                      "yield": "2.100%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2008-08-01",
+                      "principal_amount": 360000,
+                      "interest_rate": "5.500%",
+                      "yield": "2.500%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2009-08-01",
+                      "principal_amount": 375000,
+                      "interest_rate": "5.500%",
+                      "yield": "2.800%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2010-08-01",
+                      "principal_amount": 395000,
+                      "interest_rate": "4.150%",
+                      "yield": "3.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2011-08-01",
+                      "principal_amount": 415000,
+                      "interest_rate": "4.150%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2012-08-01",
+                      "principal_amount": 430000,
+                      "interest_rate": "3.200%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2013-08-01",
+                      "principal_amount": 440000,
+                      "interest_rate": "3.200%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2014-08-01",
+                      "principal_amount": 460000,
+                      "interest_rate": "3.375%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2015-08-01",
+                      "principal_amount": 470000,
+                      "interest_rate": "3.500%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2016-08-01",
+                      "principal_amount": 485000,
+                      "interest_rate": "3.600%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2017-08-01",
+                      "principal_amount": 505000,
+                      "interest_rate": "3.675%",
+                      "yield": "3.875%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2018-08-01",
+                      "principal_amount": 530000,
+                      "interest_rate": "3.750%",
+                      "yield": "3.900%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2019-08-01",
+                      "principal_amount": 555000,
+                      "interest_rate": "4.000%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2020-08-01",
+                      "principal_amount": 580000,
+                      "interest_rate": "4.100%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2021-08-01",
+                      "principal_amount": 610000,
+                      "interest_rate": "4.100%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2022-08-01",
+                      "principal_amount": 635000,
+                      "interest_rate": "4.100%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2023-08-01",
+                      "principal_amount": 665000,
+                      "interest_rate": "4.200%",
+                      "yield": "4.250%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2024-08-01",
+                      "principal_amount": 695000,
+                      "interest_rate": "4.200%",
+                      "yield": "4.250%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2025-08-01",
+                      "principal_amount": 730000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2026-08-01",
+                      "principal_amount": 765000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2027-08-01",
+                      "principal_amount": 800000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2028-08-01",
+                      "principal_amount": 835000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2029-08-01",
+                      "principal_amount": 870000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2030-08-01",
+                      "principal_amount": 910000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2031-08-01",
+                      "principal_amount": 950000,
+                      "interest_rate": "4.250%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    },
+                    {
+                      "maturity_date": "2032-08-01",
+                      "principal_amount": 990000,
+                      "interest_rate": "4.300%",
+                      "yield": "100.000%",
+                      "price": "100.000",
+                      "cusip": ""
+                    }
+                  ]
+                },
+                "debt_service_schedule": [
+                  {
+                    "period_ending": "2004-06-30",
+                    "principal": 0,
+                    "interest": 397220.38,
+                    "total_debt_service": 397220.38
+                  },
+                  {
+                    "period_ending": "2005-06-30",
+                    "principal": 240000,
+                    "interest": 700717.5,
+                    "total_debt_service": 940717.5
+                  },
+                  {
+                    "period_ending": "2006-06-30",
+                    "principal": 295000,
+                    "interest": 624197.5,
+                    "total_debt_service": 919197.5
+                  },
+                  {
+                    "period_ending": "2007-06-30",
+                    "principal": 310000,
+                    "interest": 647467.5,
+                    "total_debt_service": 957467.5
+                  },
+                  {
+                    "period_ending": "2008-06-30",
+                    "principal": 325000,
+                    "interest": 624087.5,
+                    "total_debt_service": 949087.5
+                  },
+                  {
+                    "period_ending": "2009-06-30",
+                    "principal": 340000,
+                    "interest": 608722.5,
+                    "total_debt_service": 948722.5
+                  },
+                  {
+                    "period_ending": "2010-06-30",
+                    "principal": 360000,
+                    "interest": 588565,
+                    "total_debt_service": 948565
+                  },
+                  {
+                    "period_ending": "2011-06-30",
+                    "principal": 375000,
+                    "interest": 570155,
+                    "total_debt_service": 945155
+                  },
+                  {
+                    "period_ending": "2012-06-30",
+                    "principal": 395000,
+                    "interest": 552125,
+                    "total_debt_service": 947125
+                  },
+                  {
+                    "period_ending": "2013-06-30",
+                    "principal": 415000,
+                    "interest": 527800,
+                    "total_debt_service": 942800
+                  },
+                  {
+                    "period_ending": "2014-06-30",
+                    "principal": 430000,
+                    "interest": 527800,
+                    "total_debt_service": 957800
+                  },
+                  {
+                    "period_ending": "2015-06-30",
+                    "principal": 440000,
+                    "interest": 512325,
+                    "total_debt_service": 952325
+                  },
+                  {
+                    "period_ending": "2016-06-30",
+                    "principal": 460000,
+                    "interest": 497500,
+                    "total_debt_service": 957500
+                  },
+                  {
+                    "period_ending": "2017-06-30",
+                    "principal": 470000,
+                    "interest": 477246.25,
+                    "total_debt_service": 947246.25
+                  },
+                  {
+                    "period_ending": "2018-06-30",
+                    "principal": 485000,
+                    "interest": 457608.75,
+                    "total_debt_service": 942608.75
+                  },
+                  {
+                    "period_ending": "2019-06-30",
+                    "principal": 505000,
+                    "interest": 436240,
+                    "total_debt_service": 941240
+                  },
+                  {
+                    "period_ending": "2020-06-30",
+                    "principal": 530000,
+                    "interest": 413340,
+                    "total_debt_service": 943340
+                  },
+                  {
+                    "period_ending": "2021-06-30",
+                    "principal": 555000,
+                    "interest": 388855,
+                    "total_debt_service": 943855
+                  },
+                  {
+                    "period_ending": "2022-06-30",
+                    "principal": 580000,
+                    "interest": 363332.5,
+                    "total_debt_service": 943332.5
+                  },
+                  {
+                    "period_ending": "2023-06-30",
+                    "principal": 610000,
+                    "interest": 336350,
+                    "total_debt_service": 946350
+                  },
+                  {
+                    "period_ending": "2024-06-30",
+                    "principal": 635000,
+                    "interest": 307687.5,
+                    "total_debt_service": 942687.5
+                  },
+                  {
+                    "period_ending": "2025-06-30",
+                    "principal": 665000,
+                    "interest": 277472.5,
+                    "total_debt_service": 942472.5
+                  },
+                  {
+                    "period_ending": "2026-06-30",
+                    "principal": 695000,
+                    "interest": 245703.75,
+                    "total_debt_service": 940703.75
+                  },
+                  {
+                    "period_ending": "2027-06-30",
+                    "principal": 730000,
+                    "interest": 212442.5,
+                    "total_debt_service": 942442.5
+                  },
+                  {
+                    "period_ending": "2028-06-30",
+                    "principal": 765000,
+                    "interest": 177033.75,
+                    "total_debt_service": 942033.75
+                  },
+                  {
+                    "period_ending": "2029-06-30",
+                    "principal": 800000,
+                    "interest": 141255,
+                    "total_debt_service": 941255
+                  },
+                  {
+                    "period_ending": "2030-06-30",
+                    "principal": 835000,
+                    "interest": 102985,
+                    "total_debt_service": 937985
+                  },
+                  {
+                    "period_ending": "2031-06-30",
+                    "principal": 870000,
+                    "interest": 62995,
+                    "total_debt_service": 932995
+                  },
+                  {
+                    "period_ending": "2032-06-30",
+                    "principal": 910000,
+                    "interest": 212485,
+                    "total_debt_service": 931485
+                  },
+                  {
+                    "period_ending": "2033-06-30",
+                    "principal": 0,
+                    "interest": 212485,
+                    "total_debt_service": 212485
+                  }
+                ]
+              }
+            ]
+          }
         }
       }
     ]
   },
-  "versionId": "c1e9dfcd-b826-426f-b4ec-483eed592a19",
+  "versionId": "5d8f8f00-b5c3-4331-abd9-66658011fa57",
   "triggerCount": 0,
   "shared": [
     {
