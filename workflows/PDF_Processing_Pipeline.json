@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T10:29:41.000Z",
+  "updatedAt": "2025-11-19T12:38:53.000Z",
   "createdAt": "2025-11-15T23:39:49.140Z",
   "id": "biW8aKwAI78Eo4Gw",
   "name": "PDF_Processing_Pipeline",
@@ -62,13 +62,14 @@
         "resource": "fileFolder",
         "searchMethod": "query",
         "queryString": "mimeType='application/pdf'",
+        "limit": 100,
         "filter": {
           "folderId": {
             "__rl": true,
-            "value": "172HxoeJMtLyabbWRfEA9S8goFwOkS4Kq",
+            "value": "1tWCIBgXf1072fCB2o4g2M2kzPKnnXmFD",
             "mode": "list",
-            "cachedResultName": "Municipal_Bonds",
-            "cachedResultUrl": "https://drive.google.com/drive/folders/172HxoeJMtLyabbWRfEA9S8goFwOkS4Kq"
+            "cachedResultName": "ingest",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1tWCIBgXf1072fCB2o4g2M2kzPKnnXmFD"
           }
         },
         "options": {}
@@ -156,9 +157,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -6448,
+        -6608,
         4464
-      ]
+      ],
+      "notesInFlow": true,
+      "notes": "If something returned, then we have processed the same file_id before.\nTrue means we have not seen file with this file_id before.\nFalse means we have seen file with this file_id before."
     },
     {
       "parameters": {
@@ -172,10 +175,11 @@
           "conditions": [
             {
               "id": "id-1",
-              "leftValue": "={{ $json.content_hash }}",
+              "leftValue": "={{ $json.toJsonString() }}",
               "operator": {
-                "type": "string",
-                "operation": "notEmpty"
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -188,10 +192,13 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -5984,
-        4144
+        -5840,
+        4000
       ],
-      "disabled": true
+      "notesInFlow": true,
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput",
+      "notes": "Does a different id file with the same contents exist?\nTrue means different file with same content exists. False means content is new."
     },
     {
       "parameters": {
@@ -205,8 +212,8 @@
           "conditions": [
             {
               "id": "id-1",
-              "leftValue": "={{ $('Generate Hash').item.json.hash }}",
-              "rightValue": "={{ $('Search Record Manager').item.json.hash }}",
+              "leftValue": "={{ $('Find file by file_id').item.json.document_content_hash }}",
+              "rightValue": "={{ $('Document Content Hash').item.json.document_content_hash }}",
               "operator": {
                 "type": "string",
                 "operation": "notEquals"
@@ -222,9 +229,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -6032,
-        4528
-      ]
+        -5840,
+        4480
+      ],
+      "notesInFlow": true,
+      "notes": "Compare db's document_content_hash to this workflow's document_content_hash. \nTrue means same document. False means different versions of \"same\" document."
     },
     {
       "parameters": {
@@ -235,39 +244,31 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5696,
-        3568
-      ],
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "content": "### TODO\ncheck for identical contents using hash of contents"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -6512,
-        4256
-      ],
-      "typeVersion": 1,
-      "id": "f9d65b64-6792-4e60-bb4e-9206219bb19a",
-      "name": "Sticky Note",
-      "disabled": true
+        -5232,
+        3280
+      ]
     },
     {
       "parameters": {
         "operation": "move",
         "fileId": {
-          "mode": "id",
-          "value": "={{ $json.id }}"
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
         },
         "driveId": {
+          "__rl": true,
+          "value": "My Drive",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
         },
         "folderId": {
-          "mode": "id",
-          "value": "TODO_ARCHIVE_FOLDER_ID"
+          "__rl": true,
+          "value": "1cRRMOtEaNWgFeNnzhwkKBzkkhqNcH1gO",
+          "mode": "list",
+          "cachedResultName": "archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1cRRMOtEaNWgFeNnzhwkKBzkkhqNcH1gO"
         }
       },
       "id": "8e5fb666-d494-4055-8209-2592275f35ef",
@@ -275,8 +276,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -5472,
-        3568
+        -5008,
+        3280
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -284,22 +285,14 @@
           "name": "Google Drive"
         }
       },
-      "disabled": true,
       "notes": "TODO: Set archive folder ID"
     },
     {
       "parameters": {
         "method": "DELETE",
         "url": "=https://generativelanguage.googleapis.com/v1beta/{{ $('Search Record Manager').item.json.file_id }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "x-goog-api-key",
-              "value": "={{ $credentials.apiKey }}"
-            }
-          ]
-        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
       "id": "4f73f19d-9609-470f-996e-1bf5309792b9",
@@ -307,9 +300,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -5744,
+        -5344,
         4672
       ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WQrHDqFW3lnlPoJG",
+          "name": "Gemini API"
+        }
+      },
       "disabled": true,
       "notes": "Delete outdated version from Gemini"
     },
@@ -324,39 +323,38 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -5520,
+        -5120,
         4672
       ],
       "disabled": true
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Reload binary from Google Drive (n8n limitation workaround)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"
+        "jsCode": "const items = $input.all();\n\n\n\nfor (const [index, item] of $input.all().entries()) {\n  item.binary = $(\"Download file\").itemMatching(index).binary;\n}\n\nreturn items;"
       },
       "id": "0c32f510-66e0-40d0-9f86-e2feb06d45c6",
       "name": "Reload Binary for PDF",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5296,
-        4560
+        -4688,
+        4512
       ],
-      "disabled": true,
       "notes": "Binary reload required due to n8n limitation"
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": false,
+            "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose"
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
               "id": "id-1",
-              "leftValue": "={{ $json.binary }}",
+              "leftValue": "={{ $binary }}",
               "operator": {
                 "type": "object",
                 "operation": "exists"
@@ -364,8 +362,8 @@
             },
             {
               "id": "id-2",
-              "leftValue": "={{ $json.file_size }}",
-              "rightValue": "0",
+              "leftValue": "={{ $binary.data.fileSize.split(\" \")[0].toNumber() }}",
+              "rightValue": 0,
               "operator": {
                 "type": "number",
                 "operation": "gt"
@@ -381,28 +379,9 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -5072,
-        4560
-      ],
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "pdf",
-        "options": {
-          "joinPages": true,
-          "maxPages": 5
-        }
-      },
-      "id": "8f2ab3d7-a7c1-4a68-af65-eb92a0bd00f0",
-      "name": "Extract from File",
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        -4848,
-        4560
-      ],
-      "disabled": true
+        -4464,
+        4512
+      ]
     },
     {
       "parameters": {
@@ -442,8 +421,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -4272,
-        4560
+        -3664,
+        4496
       ],
       "disabled": true
     },
@@ -459,10 +438,9 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -4624,
-        4560
-      ],
-      "disabled": true
+        -4016,
+        4496
+      ]
     },
     {
       "parameters": {
@@ -476,16 +454,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -4624,
-        4784
+        -4016,
+        4720
       ],
       "credentials": {
         "googlePalmApi": {
           "id": "LKQbGwmroZKBfciU",
           "name": "Gemini - Cribl"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -497,15 +474,16 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -4496,
-        4784
-      ],
-      "disabled": true
+        -3872,
+        4720
+      ]
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://generativelanguage.googleapis.com/upload/v1beta/files",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -526,10 +504,6 @@
               "value": "application/pdf"
             },
             {
-              "name": "x-goog-api-key",
-              "value": "<__PLACEHOLDER_VALUE__Your Gemini API Key__>"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -545,9 +519,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3856,
-        4960
+        -3248,
+        4912
       ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WQrHDqFW3lnlPoJG",
+          "name": "Gemini API"
+        }
+      },
       "disabled": true
     },
     {
@@ -560,8 +540,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3536,
-        4960
+        -2928,
+        4912
       ],
       "disabled": true
     },
@@ -569,6 +549,8 @@
       "parameters": {
         "method": "POST",
         "url": "={{ $('Set File Parameters & Get Upload URL').item.json.uploadUrl }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -579,10 +561,6 @@
             {
               "name": "X-Goog-Upload-Command",
               "value": "upload, finalize"
-            },
-            {
-              "name": "x-goog-api-key",
-              "value": "<__PLACEHOLDER_VALUE__Your Gemini API Key__>"
             },
             {
               "name": "Content-Type",
@@ -600,9 +578,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3248,
-        4960
+        -2640,
+        4912
       ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WQrHDqFW3lnlPoJG",
+          "name": "Gemini API"
+        }
+      },
       "disabled": true
     },
     {
@@ -614,8 +598,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -2992,
-        4960
+        -2384,
+        4912
       ],
       "webhookId": "65ffbc87-56e5-48ba-bc9d-5e128ced5081",
       "disabled": true
@@ -639,8 +623,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -2736,
-        4960
+        -2128,
+        4912
       ],
       "disabled": true
     },
@@ -667,8 +651,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -2432,
-        4960
+        -1824,
+        4912
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -848,13 +832,26 @@
     },
     {
       "parameters": {
+        "content": "### TODO\ncheck if id changes with new file version upload. Could use that instead of name hash"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7440,
+        4288
+      ],
+      "typeVersion": 1,
+      "id": "28de8987-4d27-422d-afc5-fa83dda58de6",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
         "operation": "get",
         "tableId": "gemini_file_store",
         "filters": {
           "conditions": [
             {
-              "keyName": "document_name_hash",
-              "keyValue": "={{ $json.document_name_hash }}"
+              "keyName": "file_id",
+              "keyValue": "={{ $('Download file').item.json.id }}"
             }
           ]
         }
@@ -866,14 +863,31 @@
         4464
       ],
       "id": "2d6bf7c7-ea74-48bc-be1f-31ddb8631693",
-      "name": "Get document name hash",
+      "name": "Find file by file_id",
       "alwaysOutputData": true,
       "credentials": {
         "supabaseApi": {
           "id": "V1uzndLMe2n07Mxy",
           "name": "Supabase Bonds"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "Returns a row if previous file with same Google Drive file_id"
+    },
+    {
+      "parameters": {
+        "content": "Does a different id file with the same contents exist?\nTrue means different file_id but same content exists. \nFalse means different file_id and content is entirely new (new file_id + new contents).",
+        "height": 352,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5936,
+        3856
+      ],
+      "typeVersion": 1,
+      "id": "a0816630-acbb-4e48-b7ee-9f388dfdd3e0",
+      "name": "Sticky Note"
     },
     {
       "parameters": {
@@ -891,16 +905,120 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -6240,
-        4144
+        -6192,
+        4000
       ],
       "id": "f41f05e4-47d5-4249-b3ad-d3c18c2b081b",
-      "name": "Get document name hash1",
+      "name": "Get document content hash",
       "alwaysOutputData": true,
+      "notesInFlow": true,
       "credentials": {
         "supabaseApi": {
           "id": "V1uzndLMe2n07Mxy",
           "name": "Supabase Bonds"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "Returns if a previously processed file also has the same contents"
+    },
+    {
+      "parameters": {
+        "content": "True means it is the same file_id AND the same contents (a row came back). \nTherefore, do nothing and archive this file.",
+        "height": 288,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5488,
+        3136
+      ],
+      "typeVersion": 1,
+      "id": "01a23695-f831-4d24-a97d-c4c735bbaf9b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "True means new file_id so it is potentially a new file. \n\nHowever, could have same content but different file_id. Therefore, see if different file_id with same content exists.\n\n\nFalse means we have processed this file before (with same file_id). But the file could have had its contents changed.",
+        "height": 496,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -6720,
+        4128
+      ],
+      "typeVersion": 1,
+      "id": "48ae29f6-8935-4c88-abb9-eab75f0d6b1e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Compare db's document_content_hash to this workflow's document_content_hash. \nTrue means same file_id but different contents.\nFalse means same file_id and same contents.",
+        "height": 336,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5936,
+        4368
+      ],
+      "typeVersion": 1,
+      "id": "717906f7-aa36-468b-92c6-5d78343e0c69",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Delete old file's vectors so only new content for the same file_id is vectorized",
+        "height": 320,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5424,
+        4560
+      ],
+      "typeVersion": 1,
+      "id": "ec4ab1f0-c5f4-4b47-a0da-52680afd9fbb",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "### TODO\nAdd row to db"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1616,
+        4816
+      ],
+      "typeVersion": 1,
+      "id": "af23958b-0581-42a0-a24f-2afc7019bc8a",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "text": "what is the title of this document? it should be on the first page, but it may not be at the top of the first page. the title of the document has the name of the school district, bond information, and election year (with a possible series letter)",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -4224,
+        4496
+      ],
+      "id": "63818a15-5600-45e6-88ab-4bee45834279",
+      "name": "Analyze document",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
         }
       }
     }
@@ -977,7 +1095,7 @@
       "main": [
         [
           {
-            "node": "Get document name hash1",
+            "node": "Get document content hash",
             "type": "main",
             "index": 0
           }
@@ -1108,18 +1226,7 @@
       "main": [
         [
           {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Extract Metadata with Gemini",
+            "node": "Analyze document",
             "type": "main",
             "index": 0
           }
@@ -1245,7 +1352,7 @@
       "main": [
         [
           {
-            "node": "Get document name hash",
+            "node": "Find file by file_id",
             "type": "main",
             "index": 0
           }
@@ -1263,7 +1370,7 @@
         ]
       ]
     },
-    "Get document name hash": {
+    "Find file by file_id": {
       "main": [
         [
           {
@@ -1274,11 +1381,22 @@
         ]
       ]
     },
-    "Get document name hash1": {
+    "Get document content hash": {
       "main": [
         [
           {
             "node": "Identical Content Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata with Gemini",
             "type": "main",
             "index": 0
           }
@@ -1305,9 +1423,25 @@
           "name": "east_side_union_high.pdf"
         }
       }
+    ],
+    "Analyze document": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "Based on the provided OCR text, the title of the document is:\n\n**CAJON VALLEY UNION ELEMENTARY SCHOOL DISTRICT (SAN DIEGO COUNTY, CALIFORNIA) GENERAL OBLIGATION BONDS 2000 ELECTION, SERIES C**\n"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "avgLogprobs": -0.21098063854461022
+        }
+      }
     ]
   },
-  "versionId": "3fa30366-4683-4601-9358-7e2857800e35",
+  "versionId": "c1e9dfcd-b826-426f-b4ec-483eed592a19",
   "triggerCount": 0,
   "shared": [
     {
