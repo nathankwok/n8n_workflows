@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-15T21:55:12.000Z",
+  "updatedAt": "2025-11-21T05:21:08.000Z",
   "createdAt": "2025-11-15T20:47:32.827Z",
   "id": "gcilbe9NvWGgtaEQ",
   "name": "Backup_Workflows_to_GitHub",
@@ -188,19 +188,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "23 */8 * * 1,2,4"
-            },
-            {
-              "field": "cronExpression",
-              "expression": "38 */11 * * 3,5"
-            },
-            {
-              "field": "cronExpression",
-              "expression": "0 3 8-14 * 2"
-            },
-            {
-              "field": "cronExpression",
-              "expression": "0 5 15-21 * 4"
+              "expression": "40 14 * * 1-5"
             }
           ]
         }
@@ -624,7 +612,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "47b468f0-be3e-4ba6-b5a0-477b7638544c",
+  "versionId": "2ebf9da4-6957-477d-a243-9f88a9737d5a",
   "triggerCount": 1,
   "shared": [
     {
