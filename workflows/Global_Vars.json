@@ -1,1 +1,564 @@
-{"updatedAt":"2025-11-15T21:36:14.000Z","createdAt":"2025-09-29T05:57:26.913Z","id":"OFpD7aepKHcHCvqz","name":"Global_Vars","active":false,"isArchived":false,"nodes":[{"parameters":{"mode":"raw","jsonOutput":"={\n  \"dashboard_discovery_model_version\": \"1.0\",\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_document_queries_query_table_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_queries_query_table_search_service\"\n  },\n  \"omni_document_queries_query_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_queries_query_name_search_service\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"omni_document_query_filters_field_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_query_filters_field_name_search_service\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\",\n    \"direct_message_webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u90bfmt/\"\n  },\n  \"slack\": {\n    \"alerts-data-eng_channel_id\": \"C06QXJR6V7T\",\n    \"ask-data_channel_id\": \"C02GRDZS7QF\",\n    \"data-eng-test-ai-channel_channel_id\": \"C0912AANW1L\",\n    \"zapier_bot_id\": \"B01304K3N6S\",\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni_api\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  },\n  \"snowflake_tables\": {\n    \"omni_users\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"OMNI_USERS\"\n    },\n    \"omni_documents\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENTS\"\n    },\n    \"omni_document_queries\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENT_QUERIES\"\n    },\n    \"dashboard_recommendations\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS\"\n    },\n    \"dashboard_recommendations_feedback\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS_FEEDBACK\"\n    },\n    \"n8n_workflow_executions\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"N8N_WORKFLOW_EXECUTIONS\"\n    }\n  }\n}","includeOtherFields":true,"include":"except","excludeFields":"headers,params,query,webhookUrl,executionMode","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[320,0],"id":"625168dd-dbe1-427b-85e1-6a72e8fd999b","name":"Global Vars","notes":"Adds common fields for dashboard discovery workflows"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"id":"4c0597d0-8243-49f8-bd58-5c8b0dc83099","leftValue":"={{ $json.body.message_user_email }}","rightValue":"","operator":{"type":"string","operation":"exists","singleValue":true}},{"id":"f71ac4db-d2d9-417a-8116-f582b7edd068","leftValue":"={{ $json.body.message_user_email }}","rightValue":"","operator":{"type":"string","operation":"notEmpty","singleValue":true}},{"id":"0b48e78a-ce21-49a9-b636-1e75255bb59e","leftValue":"={{ $json.body.message_user_email }}","rightValue":"cribl.io","operator":{"type":"string","operation":"endsWith"}}],"combinator":"and"},"options":{}},"type":"n8n-nodes-base.if","typeVersion":2.2,"position":[608,0],"id":"b6056298-f67e-46d9-97bd-d8c73bb61222","name":"If","alwaysOutputData":false,"onError":"continueRegularOutput"},{"parameters":{"mode":"raw","jsonOutput":"={{ $('Global Vars').item.json.toJsonString() }}\n\n ","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[848,256],"id":"b10008f1-07be-4e64-909d-35249cac31e4","name":"Return Output","notesInFlow":true,"notes":"Returns Global Vars output without change"},{"parameters":{"operation":"executeQuery","query":"select user_id from \"{{ $json.snowflake_tables.omni_users.snowflake_database }}\".\"{{ $json.snowflake_tables.omni_users.snowflake_schema }}\".\"{{ $json.snowflake_tables.omni_users.table_name }}\" where user_email = '{{ $('Global Vars').item.json.body.message_user_email }}'"},"type":"n8n-nodes-base.snowflake","typeVersion":1,"position":[960,-96],"id":"9d779891-797b-40a1-9b82-61b2069dbfed","name":"Get Omni User ID","credentials":{"snowflake":{"id":"C9vmzM7wtMKbWSDI","name":"Snowflake TRANSFORM"}}},{"parameters":{"jsCode":"const omni_user_id_obj = $('Get Omni User ID').item.json;\nconst global_vars_obj = $('Global Vars').item.json;\nconst omni_api = global_vars_obj['omni_api'];\n\nomni_api['omni_user_id'] = omni_user_id_obj['USER_ID'];\n\nglobal_vars_obj['omni_api'] = omni_api;\n\nreturn global_vars_obj;\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[1264,-96],"id":"1f4ecdd2-4390-4c13-a022-07ddabfc6200","name":"Insert Omni User ID into Omni API Obj"},{"parameters":{"inputSource":"passthrough"},"type":"n8n-nodes-base.executeWorkflowTrigger","typeVersion":1.1,"position":[0,0],"id":"91081dca-29aa-47b4-b8f4-2ed40a3d7776","name":"Trigger"}],"connections":{"Global Vars":{"main":[[{"node":"If","type":"main","index":0}]]},"If":{"main":[[{"node":"Get Omni User ID","type":"main","index":0}],[{"node":"Return Output","type":"main","index":0}]]},"Get Omni User ID":{"main":[[{"node":"Insert Omni User ID into Omni API Obj","type":"main","index":0}]]},"Insert Omni User ID into Omni API Obj":{"main":[[]]},"Trigger":{"main":[[{"node":"Global Vars","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":null,"pinData":{"Return Output":[{"json":{"body":{"channel_id":"C0912AANW1L","channel_name":"data-eng-test-ai-channel","conversation_id":"C0912AANW1L","event_id":"1759194864.008200","event_timestamp":"2025-09-30T01:14:24.008Z","is_message_user_bot":"False","message_text":"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?","message_timestamp":"2025-09-30T01:14:21.395Z","message_ts":"1759194861.395459","message_user_email":"nkwok@cribl.io","message_user_first_name":"Nathan","message_user_id":"U06PVBEK9T6","message_user_last_name":"Kwok","message_user_name":"nathan_kwok","reaction":"omni","reaction_user_email":"nkwok@cribl.io","reaction_user_id":"U06PVBEK9T6","team_domain":"cribl","team_id":"T3XQYAF26"},"snowflake_base_url":"https://ml16699-hya89079.snowflakecomputing.com","omni_documents_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_documents_search_service"},"omni_document_queries_query_table_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_table_search_service"},"omni_document_queries_query_name_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_name_search_service"},"omni_documents_analyst_agent":{"snowflake_database":"SNOWFLAKE_INTELLIGENCE","snowflake_schema":"AGENTS","agent_name":"OMNI_DOCUMENTS_ANALYST_AGENT"},"zapier_slack_response_webhook":{"webhook_url":"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"},"slack":{"error_message":"The Omni agent could not find relevant dashboards :cry:"},"omni_api":{"omni_base_url":"https://cribl.omniapp.co","model_id":"4345b118-cbbe-4f7c-a705-ea0aa8da57c0"},"snowflake_tables":{"omni_users":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"OMNI_USERS"},"omni_documents":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENTS"},"omni_document_queries":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENT_QUERIES"},"dashboard_recommendations":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS"},"dashboard_recommendations_feedback":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS_FEEDBACK"}}}}],"Insert Omni User ID into Omni API Obj":[{"json":{"body":{"channel_id":"C0912AANW1L","channel_name":"data-eng-test-ai-channel","conversation_id":"C0912AANW1L","event_id":"1759194864.008200","event_timestamp":"2025-09-30T01:14:24.008Z","is_message_user_bot":"False","message_text":"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?","message_timestamp":"2025-09-30T01:14:21.395Z","message_ts":"1759194861.395459","message_user_email":"nkwok@cribl.io","message_user_first_name":"Nathan","message_user_id":"U06PVBEK9T6","message_user_last_name":"Kwok","message_user_name":"nathan_kwok","reaction":"omni","reaction_user_email":"nkwok@cribl.io","reaction_user_id":"U06PVBEK9T6","team_domain":"cribl","team_id":"T3XQYAF26"},"snowflake_base_url":"https://ml16699-hya89079.snowflakecomputing.com","omni_documents_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_documents_search_service"},"omni_document_queries_query_table_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_table_search_service"},"omni_document_queries_query_name_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_name_search_service"},"omni_documents_analyst_agent":{"snowflake_database":"SNOWFLAKE_INTELLIGENCE","snowflake_schema":"AGENTS","agent_name":"OMNI_DOCUMENTS_ANALYST_AGENT"},"zapier_slack_response_webhook":{"webhook_url":"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"},"slack":{"error_message":"The Omni agent could not find relevant dashboards :cry:"},"omni_api":{"omni_base_url":"https://cribl.omniapp.co","model_id":"4345b118-cbbe-4f7c-a705-ea0aa8da57c0","omni_user_id":"893ce348-0fb2-44ac-b0f8-06521a341580"},"snowflake_tables":{"omni_users":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"OMNI_USERS"},"omni_documents":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENTS"},"omni_document_queries":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENT_QUERIES"},"dashboard_recommendations":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS"},"dashboard_recommendations_feedback":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS_FEEDBACK"}}}}],"Get Omni User ID":[{"json":{"USER_ID":"893ce348-0fb2-44ac-b0f8-06521a341580"}}],"Trigger":[{"json":{"headers":{"host":"n8n-relayer-1.app.n8n.cloud","user-agent":"PostmanRuntime/7.47.1","content-length":"948","accept":"*/*","accept-encoding":"gzip, br","authorization":"Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=","cdn-loop":"cloudflare; loops=1; subreqs=1","cf-connecting-ip":"172.56.42.92","cf-ew-via":"15","cf-ipcountry":"US","cf-ray":"986fe3e933d24b1f-LAX","cf-visitor":"{\"scheme\":\"https\"}","cf-worker":"n8n.cloud","content-type":"application/json","x-forwarded-for":"172.56.42.92, 104.23.251.97","x-forwarded-host":"n8n-relayer-1.app.n8n.cloud","x-forwarded-port":"443","x-forwarded-proto":"https","x-forwarded-server":"traefik-prod-users-gwc-72-585f59b6c7-ndz7z","x-is-trusted":"yes","x-real-ip":"172.56.42.92"},"params":{},"query":{},"body":{"channel_id":"C0912AANW1L","channel_name":"data-eng-test-ai-channel","conversation_id":"C0912AANW1L","event_id":"1759194864.008200","event_timestamp":"2025-09-30T01:14:24.008Z","is_message_user_bot":"False","message_text":"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?","message_timestamp":"2025-09-30T01:14:21.395Z","message_ts":"1759194861.395459","message_user_email":"nkwok@cribl.io","message_user_first_name":"Nathan","message_user_id":"U06PVBEK9T6","message_user_last_name":"Kwok","message_user_name":"nathan_kwok","reaction":"omni","reaction_user_email":"nkwok@cribl.io","reaction_user_id":"U06PVBEK9T6","team_domain":"cribl","team_id":"T3XQYAF26"},"webhookUrl":"https://n8n-relayer-1.app.n8n.cloud/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc","executionMode":"test"}}],"Global Vars":[{"json":{"body":{"channel_id":"C0912AANW1L","channel_name":"data-eng-test-ai-channel","conversation_id":"C0912AANW1L","event_id":"1759194864.008200","event_timestamp":"2025-09-30T01:14:24.008Z","is_message_user_bot":"False","message_text":"Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?","message_timestamp":"2025-09-30T01:14:21.395Z","message_ts":"1759194861.395459","message_user_email":"nkwok@cribl.io","message_user_first_name":"Nathan","message_user_id":"U06PVBEK9T6","message_user_last_name":"Kwok","message_user_name":"nathan_kwok","reaction":"omni","reaction_user_email":"nkwok@cribl.io","reaction_user_id":"U06PVBEK9T6","team_domain":"cribl","team_id":"T3XQYAF26"},"snowflake_base_url":"https://ml16699-hya89079.snowflakecomputing.com","omni_documents_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_documents_search_service"},"omni_document_queries_query_table_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_document_queries_query_table_search_service"},"omni_document_queries_query_name_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_document_queries_query_name_search_service"},"omni_documents_analyst_agent":{"snowflake_database":"SNOWFLAKE_INTELLIGENCE","snowflake_schema":"AGENTS","agent_name":"OMNI_DOCUMENTS_ANALYST_AGENT"},"omni_document_query_filters_field_name_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_document_query_filters_field_name_search_service"},"zapier_slack_response_webhook":{"webhook_url":"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"},"slack":{"alerts-data-eng_channel_id":"C06QXJR6V7T","ask-data_channel_id":"C02GRDZS7QF","data-eng-test-ai-channel_channel_id":"C0912AANW1L","zapier_bot_id":"B01304K3N6S","error_message":"The Omni agent could not find relevant dashboards :cry:"},"omni_api":{"omni_base_url":"https://cribl.omniapp.co","model_id":"4345b118-cbbe-4f7c-a705-ea0aa8da57c0"},"snowflake_tables":{"omni_users":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"OMNI_USERS"},"omni_documents":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENTS"},"omni_document_queries":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENT_QUERIES"},"dashboard_recommendations":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS"},"dashboard_recommendations_feedback":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS_FEEDBACK"},"n8n_workflow_executions":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"N8N_WORKFLOW_EXECUTIONS"}}}}]},"versionId":"f021d84c-4231-4a58-9972-2cfb663648f0","triggerCount":0,"shared":[{"updatedAt":"2025-09-29T05:57:26.917Z","createdAt":"2025-09-29T05:57:26.917Z","role":"workflow:owner","workflowId":"OFpD7aepKHcHCvqz","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[{"updatedAt":"2025-09-29T05:57:24.200Z","createdAt":"2025-09-29T05:57:24.200Z","id":"JC97st4iY7gpPYhF","name":"subworkflow"}]}
+{
+  "updatedAt": "2025-11-15T21:36:14.000Z",
+  "createdAt": "2025-09-29T05:57:26.913Z",
+  "id": "OFpD7aepKHcHCvqz",
+  "name": "Global_Vars",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"dashboard_discovery_model_version\": \"1.0\",\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_document_queries_query_table_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_queries_query_table_search_service\"\n  },\n  \"omni_document_queries_query_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_queries_query_name_search_service\"\n  },\n  \"omni_documents_analyst_agent\": {\n    \"snowflake_database\": \"SNOWFLAKE_INTELLIGENCE\",\n    \"snowflake_schema\": \"AGENTS\",\n    \"agent_name\": \"OMNI_DOCUMENTS_ANALYST_AGENT\"\n  },\n  \"omni_document_query_filters_field_name_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_document_query_filters_field_name_search_service\"\n  },\n  \"zapier_slack_response_webhook\": {\n    \"webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/\",\n    \"direct_message_webhook_url\": \"https://hooks.zapier.com/hooks/catch/23046078/u90bfmt/\"\n  },\n  \"slack\": {\n    \"alerts-data-eng_channel_id\": \"C06QXJR6V7T\",\n    \"ask-data_channel_id\": \"C02GRDZS7QF\",\n    \"data-eng-test-ai-channel_channel_id\": \"C0912AANW1L\",\n    \"zapier_bot_id\": \"B01304K3N6S\",\n    \"error_message\": \"The Omni agent could not find relevant dashboards :cry:\"\n  },\n  \"omni_api\":{\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  },\n  \"snowflake_tables\": {\n    \"omni_users\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"OMNI_USERS\"\n    },\n    \"omni_documents\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENTS\"\n    },\n    \"omni_document_queries\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENT_QUERIES\"\n    },\n    \"dashboard_recommendations\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS\"\n    },\n    \"dashboard_recommendations_feedback\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS_FEEDBACK\"\n    },\n    \"n8n_workflow_executions\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"N8N_WORKFLOW_EXECUTIONS\"\n    }\n  }\n}",
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "headers,params,query,webhookUrl,executionMode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        0
+      ],
+      "id": "625168dd-dbe1-427b-85e1-6a72e8fd999b",
+      "name": "Global Vars",
+      "notes": "Adds common fields for dashboard discovery workflows"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4c0597d0-8243-49f8-bd58-5c8b0dc83099",
+              "leftValue": "={{ $json.body.message_user_email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f71ac4db-d2d9-417a-8116-f582b7edd068",
+              "leftValue": "={{ $json.body.message_user_email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0b48e78a-ce21-49a9-b636-1e75255bb59e",
+              "leftValue": "={{ $json.body.message_user_email }}",
+              "rightValue": "cribl.io",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "b6056298-f67e-46d9-97bd-d8c73bb61222",
+      "name": "If",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $('Global Vars').item.json.toJsonString() }}\n\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        256
+      ],
+      "id": "b10008f1-07be-4e64-909d-35249cac31e4",
+      "name": "Return Output",
+      "notesInFlow": true,
+      "notes": "Returns Global Vars output without change"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select user_id from \"{{ $json.snowflake_tables.omni_users.snowflake_database }}\".\"{{ $json.snowflake_tables.omni_users.snowflake_schema }}\".\"{{ $json.snowflake_tables.omni_users.table_name }}\" where user_email = '{{ $('Global Vars').item.json.body.message_user_email }}'"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -96
+      ],
+      "id": "9d779891-797b-40a1-9b82-61b2069dbfed",
+      "name": "Get Omni User ID",
+      "credentials": {
+        "snowflake": {
+          "id": "C9vmzM7wtMKbWSDI",
+          "name": "Snowflake TRANSFORM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const omni_user_id_obj = $('Get Omni User ID').item.json;\nconst global_vars_obj = $('Global Vars').item.json;\nconst omni_api = global_vars_obj['omni_api'];\n\nomni_api['omni_user_id'] = omni_user_id_obj['USER_ID'];\n\nglobal_vars_obj['omni_api'] = omni_api;\n\nreturn global_vars_obj;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        -96
+      ],
+      "id": "1f4ecdd2-4390-4c13-a022-07ddabfc6200",
+      "name": "Insert Omni User ID into Omni API Obj"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "91081dca-29aa-47b4-b8f4-2ed40a3d7776",
+      "name": "Trigger"
+    }
+  ],
+  "connections": {
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Omni User ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Omni User ID": {
+      "main": [
+        [
+          {
+            "node": "Insert Omni User ID into Omni API Obj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Omni User ID into Omni API Obj": {
+      "main": [
+        []
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Return Output": [
+      {
+        "json": {
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1759194864.008200",
+            "event_timestamp": "2025-09-30T01:14:24.008Z",
+            "is_message_user_bot": "False",
+            "message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?",
+            "message_timestamp": "2025-09-30T01:14:21.395Z",
+            "message_ts": "1759194861.395459",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "omni",
+            "reaction_user_email": "nkwok@cribl.io",
+            "reaction_user_id": "U06PVBEK9T6",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26"
+          },
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_documents_search_service"
+          },
+          "omni_document_queries_query_table_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_table_search_service"
+          },
+          "omni_document_queries_query_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_name_search_service"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni_api": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
+          },
+          "snowflake_tables": {
+            "omni_users": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "OMNI_USERS"
+            },
+            "omni_documents": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENTS"
+            },
+            "omni_document_queries": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENT_QUERIES"
+            },
+            "dashboard_recommendations": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS"
+            },
+            "dashboard_recommendations_feedback": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS_FEEDBACK"
+            }
+          }
+        }
+      }
+    ],
+    "Insert Omni User ID into Omni API Obj": [
+      {
+        "json": {
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1759194864.008200",
+            "event_timestamp": "2025-09-30T01:14:24.008Z",
+            "is_message_user_bot": "False",
+            "message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?",
+            "message_timestamp": "2025-09-30T01:14:21.395Z",
+            "message_ts": "1759194861.395459",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "omni",
+            "reaction_user_email": "nkwok@cribl.io",
+            "reaction_user_id": "U06PVBEK9T6",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26"
+          },
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_documents_search_service"
+          },
+          "omni_document_queries_query_table_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_table_search_service"
+          },
+          "omni_document_queries_query_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_name_search_service"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni_api": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0",
+            "omni_user_id": "893ce348-0fb2-44ac-b0f8-06521a341580"
+          },
+          "snowflake_tables": {
+            "omni_users": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "OMNI_USERS"
+            },
+            "omni_documents": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENTS"
+            },
+            "omni_document_queries": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENT_QUERIES"
+            },
+            "dashboard_recommendations": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS"
+            },
+            "dashboard_recommendations_feedback": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS_FEEDBACK"
+            }
+          }
+        }
+      }
+    ],
+    "Get Omni User ID": [
+      {
+        "json": {
+          "USER_ID": "893ce348-0fb2-44ac-b0f8-06521a341580"
+        }
+      }
+    ],
+    "Trigger": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-relayer-1.app.n8n.cloud",
+            "user-agent": "PostmanRuntime/7.47.1",
+            "content-length": "948",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "172.56.42.92",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "986fe3e933d24b1f-LAX",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.56.42.92, 104.23.251.97",
+            "x-forwarded-host": "n8n-relayer-1.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-ndz7z",
+            "x-is-trusted": "yes",
+            "x-real-ip": "172.56.42.92"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1759194864.008200",
+            "event_timestamp": "2025-09-30T01:14:24.008Z",
+            "is_message_user_bot": "False",
+            "message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?",
+            "message_timestamp": "2025-09-30T01:14:21.395Z",
+            "message_ts": "1759194861.395459",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "omni",
+            "reaction_user_email": "nkwok@cribl.io",
+            "reaction_user_id": "U06PVBEK9T6",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26"
+          },
+          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook-test/8394a134-6af3-4ec0-b605-3270129037cc",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Global Vars": [
+      {
+        "json": {
+          "body": {
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1759194864.008200",
+            "event_timestamp": "2025-09-30T01:14:24.008Z",
+            "is_message_user_bot": "False",
+            "message_text": "Hi team - Is there a dashboard in Omni to see free cribl cloud users, and associated email addresses within accounts I own similar to https://cribl.cloud.looker.com/explore/Product/cloud_orgs?qid=6AczKnvfgAdLscURN8AKDq&amp;toggle=filthis one> I used in looker?",
+            "message_timestamp": "2025-09-30T01:14:21.395Z",
+            "message_ts": "1759194861.395459",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "omni",
+            "reaction_user_email": "nkwok@cribl.io",
+            "reaction_user_id": "U06PVBEK9T6",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26"
+          },
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_documents_search_service"
+          },
+          "omni_document_queries_query_table_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_document_queries_query_table_search_service"
+          },
+          "omni_document_queries_query_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_document_queries_query_name_search_service"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "omni_document_query_filters_field_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_document_query_filters_field_name_search_service"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "alerts-data-eng_channel_id": "C06QXJR6V7T",
+            "ask-data_channel_id": "C02GRDZS7QF",
+            "data-eng-test-ai-channel_channel_id": "C0912AANW1L",
+            "zapier_bot_id": "B01304K3N6S",
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni_api": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
+          },
+          "snowflake_tables": {
+            "omni_users": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "OMNI_USERS"
+            },
+            "omni_documents": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENTS"
+            },
+            "omni_document_queries": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENT_QUERIES"
+            },
+            "dashboard_recommendations": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS"
+            },
+            "dashboard_recommendations_feedback": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS_FEEDBACK"
+            },
+            "n8n_workflow_executions": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "N8N_WORKFLOW_EXECUTIONS"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "f021d84c-4231-4a58-9972-2cfb663648f0",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-29T05:57:26.917Z",
+      "createdAt": "2025-09-29T05:57:26.917Z",
+      "role": "workflow:owner",
+      "workflowId": "OFpD7aepKHcHCvqz",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-09-29T05:57:24.200Z",
+      "createdAt": "2025-09-29T05:57:24.200Z",
+      "id": "JC97st4iY7gpPYhF",
+      "name": "subworkflow"
+    }
+  ]
+}
