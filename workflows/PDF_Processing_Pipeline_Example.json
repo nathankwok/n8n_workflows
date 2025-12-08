@@ -1,1 +1,1018 @@
-{"updatedAt":"2025-11-16T01:36:34.000Z","createdAt":"2025-11-15T23:12:16.417Z","id":"ic1TT0rqorM2Zp9w","name":"PDF_Processing_Pipeline_Example","active":false,"isArchived":false,"nodes":[{"parameters":{"rule":{"interval":[{"field":"minutes"}]}},"id":"1","name":"Schedule Trigger","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1.2,"position":[240,304]},{"parameters":{"assignments":{"assignments":[{"id":"store_name","name":"file_search_store_name","value":"TODO: Set your Gemini File Search Store name here","type":"string"}]},"options":{}},"id":"2","name":"Set File Search Store Name","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[464,304],"notes":"TODO: Configure your Gemini File Search Store name"},{"parameters":{"url":"https://generativelanguage.googleapis.com/v1beta/corpora","authentication":"genericCredentialType","genericAuthType":"httpHeaderAuth","sendHeaders":true,"headerParameters":{"parameters":[{"name":"x-goog-api-key","value":"={{ $credentials.apiKey }}"}]},"options":{}},"id":"3","name":"Get Store ID from Gemini","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[688,304],"notes":"TODO: Configure Gemini API credentials in n8n"},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"conditions":[{"id":"store_id_exists","leftValue":"={{ $json.corpora && $json.corpora.length > 0 }}","rightValue":true,"operator":{"type":"boolean","operation":"equals"}}],"combinator":"and"},"options":{}},"id":"4","name":"Validate Store ID","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[912,304]},{"parameters":{"resource":"fileFolder","operation":"list"},"id":"5","name":"Search for PDFs","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[1120,288],"notes":"TODO: Add folder ID filter: and 'FOLDER_ID' in parents"},{"parameters":{"jsCode":"// Check if another execution is processing\nconst lock = await $execution.getStoreValue('gemini_import_lock');\n\nif (lock && lock.status === 'active') {\n  const lockAge = Date.now() - lock.timestamp;\n  const MAX_LOCK_AGE = 30 * 60 * 1000;\n  \n  if (lockAge < MAX_LOCK_AGE) {\n    throw new Error('Import in progress');\n  }\n}\n\nawait $execution.setStoreValue('gemini_import_lock', {\n  status: 'active',\n  timestamp: Date.now()\n});\n\nreturn $input.all();"},"id":"6","name":"Set Processing Lock","type":"n8n-nodes-base.code","typeVersion":2,"position":[1344,288]},{"parameters":{"options":{}},"id":"7","name":"Loop Over PDFs","type":"n8n-nodes-base.splitInBatches","typeVersion":3,"position":[1568,288]},{"parameters":{"operation":"download","fileId":{"mode":"id","value":"={{ $json.id }}"},"options":{}},"id":"8","name":"Download PDF","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[1792,288]},{"parameters":{"mode":"runOnceForEachItem","jsCode":"const crypto = require('crypto');\nconst item = $input.item;\n\n// Get binary buffer\nconst buffer = await this.helpers.getBinaryDataBuffer(0, 'data');\n\n// Generate SHA-256 hash\nconst contentHash = crypto\n  .createHash('sha256')\n  .update(buffer)\n  .digest('hex');\n\n// Create sanitized document ID\nconst fileName = item.json.name;\nconst documentId = fileName\n  .replace(/\\.pdf$/i, '')\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '_')\n  .replace(/^_+|_+$/g, '');\n\nreturn {\n  json: {\n    ...item.json,\n    document_id: documentId,\n    content_hash: contentHash,\n    file_name: fileName,\n    file_size: buffer.length\n  },\n  binary: item.binary\n};"},"id":"9","name":"Generate Hash","type":"n8n-nodes-base.code","typeVersion":2,"position":[2000,288],"notes":"Generates SHA-256 hash for duplicate detection"},{"parameters":{"operation":"executeQuery","query":"SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1","options":{}},"id":"10","name":"Search Record Manager","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[2224,288],"notes":"TODO: Configure Postgres credentials and ensure table exists"},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"conditions":[{"id":"doc_exists","leftValue":"={{ $('Search Record Manager').item.json.document_id }}","rightValue":"={{ $json.document_id }}","operator":{"type":"string","operation":"equals"}}]},"options":{}},"id":"11","name":"Check if Doc ID Exists","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[2448,208],"notes":"DocID Check - First layer of duplicate detection"},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"conditions":[{"id":"hash_exists","leftValue":"={{ $('Search Record Manager').item.json.content_hash }}","rightValue":"","operator":{"type":"string","operation":"notEmpty"}}]},"options":{}},"id":"12","name":"Check if Hash Exists","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[2448,400],"notes":"Hash Check - Second layer of duplicate detection"},{"parameters":{"conditions":{"options":{"version":2,"leftValue":"","caseSensitive":true,"typeValidation":"strict"},"conditions":[{"id":"content_changed","leftValue":"={{ $('Search Record Manager').item.json.content_hash }}","rightValue":"={{ $json.content_hash }}","operator":{"type":"string","operation":"notEquals"}}]},"options":{}},"id":"13","name":"Has Content Changed?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[2672,128],"notes":"Compare hashes to detect updates"},{"parameters":{},"id":"14","name":"Skip - No Changes","type":"n8n-nodes-base.noOp","typeVersion":1,"position":[2880,64]},{"parameters":{"operation":"move","fileId":{"mode":"id","value":"={{ $json.id }}"},"driveId":{"mode":"list","value":""},"folderId":{"mode":"id","value":"TODO_ARCHIVE_FOLDER_ID"}},"id":"15","name":"Archive Unchanged File","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[3104,64],"notes":"TODO: Set archive folder ID"},{"parameters":{"method":"DELETE","url":"=https://generativelanguage.googleapis.com/v1beta/{{ $('Search Record Manager').item.json.file_id }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"x-goog-api-key","value":"={{ $credentials.apiKey }}"}]},"options":{}},"id":"16","name":"Delete Old from Gemini","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[2880,192],"notes":"Delete outdated version from Gemini"},{"parameters":{"operation":"executeQuery","query":"DELETE FROM gemini_record_manager WHERE document_id = $1","options":{}},"id":"17","name":"Delete Old Record","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[3104,192]},{"parameters":{"mode":"runOnceForEachItem","jsCode":"// Reload binary from Google Drive (n8n limitation workaround)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"},"id":"18","name":"Reload Binary for PDF","type":"n8n-nodes-base.code","typeVersion":2,"position":[2672,512],"notes":"Binary reload required due to n8n limitation"},{"parameters":{"operation":"pdf","binaryPropertyName":"data","options":{"maxPages":5,"joinPages":true}},"id":"19","name":"Extract from PDF","type":"n8n-nodes-base.extractFromFile","typeVersion":1.1,"position":[2880,512],"notes":"Extract first 5 pages for metadata"},{"parameters":{"assignments":{"assignments":[{"id":"prompt","name":"metadata_prompt","value":"=`Analyze this document excerpt and extract structured metadata.\\n\\nReturn JSON with:\\n- document_type: (report, memo, analysis, etc.)\\n- period: Date/time period covered\\n- entities: List of key companies, bonds, or sectors\\n- summary: 2-3 sentence summary\\n- categories: List of relevant tags\\n\\nDocument text:\\n${$json.text}`","type":"string"}]},"options":{}},"id":"20","name":"Prepare Metadata Prompt","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[3104,512]},{"parameters":{"options":{"temperature":0.1}},"id":"21","name":"Extract Metadata (Gemini)","type":"@n8n/n8n-nodes-langchain.lmChatGoogleGemini","typeVersion":1,"position":[3328,512],"notes":"TODO: Configure Gemini credentials"},{"parameters":{"mode":"runOnceForEachItem","jsCode":"// Parse LLM output to extract JSON\nconst llmOutput = $json.response || $json.text || '';\n\n// Try to extract JSON from response\nconst jsonMatch = llmOutput.match(/\\{[\\s\\S]*\\}/);\nlet metadata = {};\n\nif (jsonMatch) {\n  try {\n    metadata = JSON.parse(jsonMatch[0]);\n  } catch (e) {\n    console.log('Failed to parse metadata JSON:', e);\n    metadata = {error: 'Parse failed'};\n  }\n}\n\nreturn {\n  json: {\n    ...$json,\n    metadata: metadata\n  }\n};"},"id":"22","name":"Parse Metadata JSON","type":"n8n-nodes-base.code","typeVersion":2,"position":[3552,512]},{"parameters":{"method":"POST","url":"https://generativelanguage.googleapis.com/upload/v1beta/files","sendHeaders":true,"headerParameters":{"parameters":[{"name":"X-Goog-Upload-Protocol","value":"resumable"},{"name":"X-Goog-Upload-Command","value":"start"},{"name":"X-Goog-Upload-Header-Content-Length","value":"={{ $json.file_size }}"},{"name":"X-Goog-Upload-Header-Content-Type","value":"application/pdf"},{"name":"x-goog-api-key","value":"={{ $credentials.apiKey }}"},{"name":"Content-Type","value":"application/json"}]},"sendBody":true,"bodyParameters":{"parameters":[{"name":"file","value":"={{ {display_name: $json.file_name, custom_metadata: $json.metadata} }}"}]},"options":{}},"id":"23","name":"Get Upload URL","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[3760,512],"notes":"Step 1 of two-step upload"},{"parameters":{"mode":"runOnceForEachItem","jsCode":"// Reload binary again for upload\nconst fileId = $json.id;\n\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"},"id":"24","name":"Reload Binary for Upload","type":"n8n-nodes-base.code","typeVersion":2,"position":[3984,512]},{"parameters":{"method":"POST","url":"={{ $json.file.uri }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"X-Goog-Upload-Offset","value":"0"},{"name":"X-Goog-Upload-Command","value":"upload, finalize"},{"name":"Content-Type","value":"application/pdf"}]},"sendBody":true,"contentType":"binaryData","options":{}},"id":"25","name":"Upload to Gemini","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[4208,512],"notes":"Step 2 of two-step upload"},{"parameters":{"url":"=https://generativelanguage.googleapis.com/v1beta/{{ $json.file.name }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"x-goog-api-key","value":"={{ $credentials.apiKey }}"}]},"options":{}},"id":"26","name":"Check if Processed","type":"n8n-nodes-base.httpRequest","typeVersion":4.3,"position":[4432,512],"notes":"Poll until status is ACTIVE"},{"parameters":{"operation":"executeQuery","query":"INSERT INTO gemini_record_manager (document_id, content_hash, file_id, file_name, file_size, upload_date, status) VALUES ($1, $2, $3, $4, $5, NOW(), 'READY') ON CONFLICT (document_id) DO UPDATE SET content_hash = $2, file_id = $3, upload_date = NOW(), status = 'READY'","options":{}},"id":"27","name":"Update Record Manager","type":"n8n-nodes-base.postgres","typeVersion":2.6,"position":[4640,512],"notes":"UPSERT record"},{"parameters":{"operation":"move","fileId":{"mode":"id","value":"={{ $json.id }}"},"driveId":{"mode":"list","value":""},"folderId":{"mode":"id","value":"TODO_PROCESSED_FOLDER_ID"}},"id":"28","name":"Archive Processed File","type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[4864,512],"notes":"TODO: Set processed folder ID"},{"parameters":{"jsCode":"// Clear the processing lock\nawait $execution.setStoreValue('gemini_import_lock', null);\nreturn $input.all();"},"id":"29","name":"Clear Processing Lock","type":"n8n-nodes-base.code","typeVersion":2,"position":[5088,512]}],"connections":{"Schedule Trigger":{"main":[[{"node":"Set File Search Store Name","type":"main","index":0}]]},"Set File Search Store Name":{"main":[[{"node":"Get Store ID from Gemini","type":"main","index":0}]]},"Get Store ID from Gemini":{"main":[[{"node":"Validate Store ID","type":"main","index":0}]]},"Validate Store ID":{"main":[[{"node":"Search for PDFs","type":"main","index":0}],[]]},"Search for PDFs":{"main":[[{"node":"Set Processing Lock","type":"main","index":0}]]},"Set Processing Lock":{"main":[[{"node":"Loop Over PDFs","type":"main","index":0}]]},"Loop Over PDFs":{"main":[[{"node":"Download PDF","type":"main","index":0}],[{"node":"Clear Processing Lock","type":"main","index":0}]]},"Download PDF":{"main":[[{"node":"Generate Hash","type":"main","index":0}]]},"Generate Hash":{"main":[[{"node":"Search Record Manager","type":"main","index":0}]]},"Search Record Manager":{"main":[[{"node":"Check if Doc ID Exists","type":"main","index":0},{"node":"Check if Hash Exists","type":"main","index":0}]]},"Check if Doc ID Exists":{"main":[[{"node":"Has Content Changed?","type":"main","index":0}],[{"node":"Check if Hash Exists","type":"main","index":0}]]},"Check if Hash Exists":{"main":[[{"node":"Skip - No Changes","type":"main","index":0}],[{"node":"Reload Binary for PDF","type":"main","index":0}]]},"Has Content Changed?":{"main":[[{"node":"Delete Old from Gemini","type":"main","index":0}],[{"node":"Skip - No Changes","type":"main","index":0}]]},"Skip - No Changes":{"main":[[{"node":"Archive Unchanged File","type":"main","index":0}]]},"Archive Unchanged File":{"main":[[{"node":"Loop Over PDFs","type":"main","index":0}]]},"Delete Old from Gemini":{"main":[[{"node":"Delete Old Record","type":"main","index":0}]]},"Delete Old Record":{"main":[[{"node":"Reload Binary for PDF","type":"main","index":0}]]},"Reload Binary for PDF":{"main":[[{"node":"Extract from PDF","type":"main","index":0}]]},"Extract from PDF":{"main":[[{"node":"Prepare Metadata Prompt","type":"main","index":0}]]},"Prepare Metadata Prompt":{"main":[[{"node":"Extract Metadata (Gemini)","type":"main","index":0}]]},"Extract Metadata (Gemini)":{"main":[[{"node":"Parse Metadata JSON","type":"main","index":0}]]},"Parse Metadata JSON":{"main":[[{"node":"Get Upload URL","type":"main","index":0}]]},"Get Upload URL":{"main":[[{"node":"Reload Binary for Upload","type":"main","index":0}]]},"Reload Binary for Upload":{"main":[[{"node":"Upload to Gemini","type":"main","index":0}]]},"Upload to Gemini":{"main":[[{"node":"Check if Processed","type":"main","index":0}]]},"Check if Processed":{"main":[[{"node":"Update Record Manager","type":"main","index":0}]]},"Update Record Manager":{"main":[[{"node":"Archive Processed File","type":"main","index":0}]]},"Archive Processed File":{"main":[[{"node":"Loop Over PDFs","type":"main","index":0}]]},"Clear Processing Lock":{"main":[[]]}},"settings":{"executionOrder":"v1","callerPolicy":"workflowsFromSameOwner","availableInMCP":false},"staticData":null,"meta":null,"pinData":{},"versionId":"ead6bde6-2e43-45c4-851f-2fbee248fdad","triggerCount":0,"shared":[{"updatedAt":"2025-11-15T23:12:16.421Z","createdAt":"2025-11-15T23:12:16.421Z","role":"workflow:owner","workflowId":"ic1TT0rqorM2Zp9w","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[]}
+{
+  "updatedAt": "2025-11-16T01:36:34.000Z",
+  "createdAt": "2025-11-15T23:12:16.417Z",
+  "id": "ic1TT0rqorM2Zp9w",
+  "name": "PDF_Processing_Pipeline_Example",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "store_name",
+              "name": "file_search_store_name",
+              "value": "TODO: Set your Gemini File Search Store name here",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Set File Search Store Name",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        304
+      ],
+      "notes": "TODO: Configure your Gemini File Search Store name"
+    },
+    {
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/corpora",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $credentials.apiKey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Get Store ID from Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        688,
+        304
+      ],
+      "notes": "TODO: Configure Gemini API credentials in n8n"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "store_id_exists",
+              "leftValue": "={{ $json.corpora && $json.corpora.length > 0 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Validate Store ID",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "list"
+      },
+      "id": "5",
+      "name": "Search for PDFs",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        288
+      ],
+      "notes": "TODO: Add folder ID filter: and 'FOLDER_ID' in parents"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check if another execution is processing\nconst lock = await $execution.getStoreValue('gemini_import_lock');\n\nif (lock && lock.status === 'active') {\n  const lockAge = Date.now() - lock.timestamp;\n  const MAX_LOCK_AGE = 30 * 60 * 1000;\n  \n  if (lockAge < MAX_LOCK_AGE) {\n    throw new Error('Import in progress');\n  }\n}\n\nawait $execution.setStoreValue('gemini_import_lock', {\n  status: 'active',\n  timestamp: Date.now()\n});\n\nreturn $input.all();"
+      },
+      "id": "6",
+      "name": "Set Processing Lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7",
+      "name": "Loop Over PDFs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {}
+      },
+      "id": "8",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1792,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const crypto = require('crypto');\nconst item = $input.item;\n\n// Get binary buffer\nconst buffer = await this.helpers.getBinaryDataBuffer(0, 'data');\n\n// Generate SHA-256 hash\nconst contentHash = crypto\n  .createHash('sha256')\n  .update(buffer)\n  .digest('hex');\n\n// Create sanitized document ID\nconst fileName = item.json.name;\nconst documentId = fileName\n  .replace(/\\.pdf$/i, '')\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '_')\n  .replace(/^_+|_+$/g, '');\n\nreturn {\n  json: {\n    ...item.json,\n    document_id: documentId,\n    content_hash: contentHash,\n    file_name: fileName,\n    file_size: buffer.length\n  },\n  binary: item.binary\n};"
+      },
+      "id": "9",
+      "name": "Generate Hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        288
+      ],
+      "notes": "Generates SHA-256 hash for duplicate detection"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT document_id, content_hash, file_id, status FROM gemini_record_manager WHERE document_id = $1 OR content_hash = $2 LIMIT 1",
+        "options": {}
+      },
+      "id": "10",
+      "name": "Search Record Manager",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2224,
+        288
+      ],
+      "notes": "TODO: Configure Postgres credentials and ensure table exists"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "doc_exists",
+              "leftValue": "={{ $('Search Record Manager').item.json.document_id }}",
+              "rightValue": "={{ $json.document_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "11",
+      "name": "Check if Doc ID Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2448,
+        208
+      ],
+      "notes": "DocID Check - First layer of duplicate detection"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "hash_exists",
+              "leftValue": "={{ $('Search Record Manager').item.json.content_hash }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12",
+      "name": "Check if Hash Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2448,
+        400
+      ],
+      "notes": "Hash Check - Second layer of duplicate detection"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "content_changed",
+              "leftValue": "={{ $('Search Record Manager').item.json.content_hash }}",
+              "rightValue": "={{ $json.content_hash }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "13",
+      "name": "Has Content Changed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2672,
+        128
+      ],
+      "notes": "Compare hashes to detect updates"
+    },
+    {
+      "parameters": {},
+      "id": "14",
+      "name": "Skip - No Changes",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "mode": "list",
+          "value": ""
+        },
+        "folderId": {
+          "mode": "id",
+          "value": "TODO_ARCHIVE_FOLDER_ID"
+        }
+      },
+      "id": "15",
+      "name": "Archive Unchanged File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3104,
+        64
+      ],
+      "notes": "TODO: Set archive folder ID"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/{{ $('Search Record Manager').item.json.file_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $credentials.apiKey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "16",
+      "name": "Delete Old from Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2880,
+        192
+      ],
+      "notes": "Delete outdated version from Gemini"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM gemini_record_manager WHERE document_id = $1",
+        "options": {}
+      },
+      "id": "17",
+      "name": "Delete Old Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3104,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Reload binary from Google Drive (n8n limitation workaround)\nconst fileId = $json.id;\n\n// Re-download file\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"
+      },
+      "id": "18",
+      "name": "Reload Binary for PDF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2672,
+        512
+      ],
+      "notes": "Binary reload required due to n8n limitation"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data",
+        "options": {
+          "maxPages": 5,
+          "joinPages": true
+        }
+      },
+      "id": "19",
+      "name": "Extract from PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        512
+      ],
+      "notes": "Extract first 5 pages for metadata"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "prompt",
+              "name": "metadata_prompt",
+              "value": "=`Analyze this document excerpt and extract structured metadata.\\n\\nReturn JSON with:\\n- document_type: (report, memo, analysis, etc.)\\n- period: Date/time period covered\\n- entities: List of key companies, bonds, or sectors\\n- summary: 2-3 sentence summary\\n- categories: List of relevant tags\\n\\nDocument text:\\n${$json.text}`",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "20",
+      "name": "Prepare Metadata Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3104,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "21",
+      "name": "Extract Metadata (Gemini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        512
+      ],
+      "notes": "TODO: Configure Gemini credentials"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse LLM output to extract JSON\nconst llmOutput = $json.response || $json.text || '';\n\n// Try to extract JSON from response\nconst jsonMatch = llmOutput.match(/\\{[\\s\\S]*\\}/);\nlet metadata = {};\n\nif (jsonMatch) {\n  try {\n    metadata = JSON.parse(jsonMatch[0]);\n  } catch (e) {\n    console.log('Failed to parse metadata JSON:', e);\n    metadata = {error: 'Parse failed'};\n  }\n}\n\nreturn {\n  json: {\n    ...$json,\n    metadata: metadata\n  }\n};"
+      },
+      "id": "22",
+      "name": "Parse Metadata JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3552,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/upload/v1beta/files",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Protocol",
+              "value": "resumable"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "start"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Length",
+              "value": "={{ $json.file_size }}"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Type",
+              "value": "application/pdf"
+            },
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $credentials.apiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "={{ {display_name: $json.file_name, custom_metadata: $json.metadata} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23",
+      "name": "Get Upload URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3760,
+        512
+      ],
+      "notes": "Step 1 of two-step upload"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Reload binary again for upload\nconst fileId = $json.id;\n\nconst requestOptions = {\n  method: 'GET',\n  url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,\n  encoding: null,\n  json: false\n};\n\nconst binaryData = await this.helpers.httpRequestWithAuthentication.call(\n  this,\n  'googleDriveOAuth2Api',\n  requestOptions\n);\n\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(binaryData),\n      $json.file_name\n    )\n  }\n};"
+      },
+      "id": "24",
+      "name": "Reload Binary for Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3984,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.file.uri }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Offset",
+              "value": "0"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "upload, finalize"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/pdf"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "options": {}
+      },
+      "id": "25",
+      "name": "Upload to Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4208,
+        512
+      ],
+      "notes": "Step 2 of two-step upload"
+    },
+    {
+      "parameters": {
+        "url": "=https://generativelanguage.googleapis.com/v1beta/{{ $json.file.name }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $credentials.apiKey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "26",
+      "name": "Check if Processed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4432,
+        512
+      ],
+      "notes": "Poll until status is ACTIVE"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO gemini_record_manager (document_id, content_hash, file_id, file_name, file_size, upload_date, status) VALUES ($1, $2, $3, $4, $5, NOW(), 'READY') ON CONFLICT (document_id) DO UPDATE SET content_hash = $2, file_id = $3, upload_date = NOW(), status = 'READY'",
+        "options": {}
+      },
+      "id": "27",
+      "name": "Update Record Manager",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4640,
+        512
+      ],
+      "notes": "UPSERT record"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "mode": "list",
+          "value": ""
+        },
+        "folderId": {
+          "mode": "id",
+          "value": "TODO_PROCESSED_FOLDER_ID"
+        }
+      },
+      "id": "28",
+      "name": "Archive Processed File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4864,
+        512
+      ],
+      "notes": "TODO: Set processed folder ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Clear the processing lock\nawait $execution.setStoreValue('gemini_import_lock', null);\nreturn $input.all();"
+      },
+      "id": "29",
+      "name": "Clear Processing Lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5088,
+        512
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set File Search Store Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Search Store Name": {
+      "main": [
+        [
+          {
+            "node": "Get Store ID from Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Store ID from Gemini": {
+      "main": [
+        [
+          {
+            "node": "Validate Store ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Store ID": {
+      "main": [
+        [
+          {
+            "node": "Search for PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Search for PDFs": {
+      "main": [
+        [
+          {
+            "node": "Set Processing Lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Processing Lock": {
+      "main": [
+        [
+          {
+            "node": "Loop Over PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over PDFs": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Clear Processing Lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Generate Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Hash": {
+      "main": [
+        [
+          {
+            "node": "Search Record Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Record Manager": {
+      "main": [
+        [
+          {
+            "node": "Check if Doc ID Exists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check if Hash Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Doc ID Exists": {
+      "main": [
+        [
+          {
+            "node": "Has Content Changed?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check if Hash Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Hash Exists": {
+      "main": [
+        [
+          {
+            "node": "Skip - No Changes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reload Binary for PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Content Changed?": {
+      "main": [
+        [
+          {
+            "node": "Delete Old from Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip - No Changes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip - No Changes": {
+      "main": [
+        [
+          {
+            "node": "Archive Unchanged File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Unchanged File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old from Gemini": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Record": {
+      "main": [
+        [
+          {
+            "node": "Reload Binary for PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Binary for PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Prepare Metadata Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Metadata Prompt": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata (Gemini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata (Gemini)": {
+      "main": [
+        [
+          {
+            "node": "Parse Metadata JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Metadata JSON": {
+      "main": [
+        [
+          {
+            "node": "Get Upload URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Upload URL": {
+      "main": [
+        [
+          {
+            "node": "Reload Binary for Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Binary for Upload": {
+      "main": [
+        [
+          {
+            "node": "Upload to Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Gemini": {
+      "main": [
+        [
+          {
+            "node": "Check if Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Processed": {
+      "main": [
+        [
+          {
+            "node": "Update Record Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Record Manager": {
+      "main": [
+        [
+          {
+            "node": "Archive Processed File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Processed File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Processing Lock": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "ead6bde6-2e43-45c4-851f-2fbee248fdad",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-15T23:12:16.421Z",
+      "createdAt": "2025-11-15T23:12:16.421Z",
+      "role": "workflow:owner",
+      "workflowId": "ic1TT0rqorM2Zp9w",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
