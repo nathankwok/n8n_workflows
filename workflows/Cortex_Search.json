@@ -1,1 +1,664 @@
-{"updatedAt":"2025-11-15T21:34:20.000Z","createdAt":"2025-10-01T02:47:36.644Z","id":"1pR9HTgBxYcoiL27","name":"Cortex_Search","active":false,"isArchived":false,"nodes":[{"parameters":{"method":"POST","url":"={{ $('Build Cortex URL').item.json.service_url }}","authentication":"genericCredentialType","genericAuthType":"httpBearerAuth","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={\n    \"query\": {{ $('Global Vars').item.json.query_string.toJsonString() }},\n    \"columns\": {{ $('Set Cortex Search Columns').item.json[$('Set Mode').item.json.mode].toJsonString() }},\n    \"filter\": {\n      \"@and\": [\n        { \n          \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n          }\n        },\n        { \n          \"@eq\": {\n              \"has_dashboard\": \"true\"\n          }\n        }\n      ]\n    },\n    \"limit\": {{ $('Global Vars').item.json.limit }}\n}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[144,-480],"id":"ff5b05f6-af15-4880-8f09-43c3524025f0","name":"Cortex Document Name Search1","credentials":{"httpBearerAuth":{"id":"i0PUEv19DdMNfJ5u","name":"Snowflake API data_team_bot"}},"onError":"continueRegularOutput"},{"parameters":{"method":"POST","url":"={{ $('Build Cortex URL').item.json.service_url }}","authentication":"genericCredentialType","genericAuthType":"httpBearerAuth","sendHeaders":true,"specifyHeaders":"json","jsonHeaders":"{\n  \"Content-Type\": \"application/json\"\n}","sendBody":true,"specifyBody":"json","jsonBody":"={\n    \"query\": {{ $('Global Vars').item.json.query_string.toJsonString() }},\n    \"columns\": {{ $('Set Cortex Search Columns').item.json[$('Set Mode').item.json.mode].toJsonString() }},\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"document_scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": {{ $('Global Vars').item.json.limit }}\n}","options":{}},"type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[144,-48],"id":"7ab6d8d9-e0a5-4307-aca1-c57e1d450670","name":"Cortex Document Query Name Search1","retryOnFail":false,"alwaysOutputData":false,"credentials":{"httpBearerAuth":{"id":"i0PUEv19DdMNfJ5u","name":"Snowflake API data_team_bot"}},"onError":"continueRegularOutput"},{"parameters":{"workflowId":{"__rl":true,"value":"OFpD7aepKHcHCvqz","mode":"list","cachedResultUrl":"/workflow/OFpD7aepKHcHCvqz","cachedResultName":"Global Vars"},"workflowInputs":{"mappingMode":"defineBelow","value":{}},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[-1232,-208],"id":"3b095529-5337-4926-8433-51664524a831","name":"Global Vars"},{"parameters":{"workflowInputs":{"values":[{"name":"query_string"},{"name":"service_name"},{"name":"limit","type":"number"}]}},"type":"n8n-nodes-base.executeWorkflowTrigger","typeVersion":1.1,"position":[-1472,-208],"id":"7a2e8eb8-758a-4105-af76-52f4969e4cff","name":"Trigger"},{"parameters":{"rules":{"values":[{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $('Set Mode').item.json.mode }}","rightValue":"documents","operator":{"type":"string","operation":"equals"},"id":"c3ef08c5-3261-4612-940a-496fdf709036"}],"combinator":"and"},"renameOutput":true,"outputKey":"documents"},{"conditions":{"options":{"caseSensitive":false,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"id":"6cc4932d-0218-4619-9b8b-86550e6b96c1","leftValue":"={{ $('Set Mode').item.json.mode }}","rightValue":"document_queries","operator":{"type":"string","operation":"equals"}}],"combinator":"and"},"renameOutput":true,"outputKey":"document_queries"}]},"options":{"ignoreCase":true}},"type":"n8n-nodes-base.switch","typeVersion":3.3,"position":[-224,-208],"id":"b216dc40-7084-43d4-89cc-0164823a8664","name":"Switch"},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"document_queries\": [\n    \"query_name\",\n    \"query_id\",\n    \"document_id\",\n    \"document_scope\",\n    \"query_table\"\n  ],\n  \"documents\": [\n    \"name\",\n    \"identifier\",\n    \"scope\",\n    \"has_dashboard\",\n    \"owner_name\",\n    \"owner_id\",\n    \"folder_name\",\n    \"folder_id\",\n    \"folder_path\"\n  ]\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-464,-208],"id":"9afdb660-0810-4f35-8d4a-bfc640bca83a","name":"Set Cortex Search Columns"},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"mode\": \"{{ $('Global Vars').first().json.service_name.includes('queries') ? \"document_queries\" : \"documents\" }}\"\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[-736,-208],"id":"0d6c5d0e-1ceb-46c8-9724-766d81ffad84","name":"Set Mode"},{"parameters":{"workflowId":{"__rl":true,"value":"0ZK5dvO3WYtsza47","mode":"list","cachedResultUrl":"/workflow/0ZK5dvO3WYtsza47","cachedResultName":"Rename Document Keys"},"workflowInputs":{"mappingMode":"defineBelow","value":{"documents":"={{ $json.output }}"},"matchingColumns":["documents"],"schema":[{"id":"documents","displayName":"documents","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"array","removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[784,-480],"id":"26944ba8-9b5c-4d66-889b-1d0ccad0fc60","name":"Rename Document Keys","onError":"continueRegularOutput"},{"parameters":{"workflowId":{"__rl":true,"value":"1AP3Bf5ELqJvYARR","mode":"list","cachedResultUrl":"/workflow/1AP3Bf5ELqJvYARR","cachedResultName":"Extract document_ids"},"workflowInputs":{"mappingMode":"defineBelow","value":{"objects":"={{ $json.output }}"},"matchingColumns":["objects"],"schema":[{"id":"objects","displayName":"objects","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"array","removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[1104,-480],"id":"beeab0c6-5b7e-460a-990b-1da8842f83a0","name":"Document Search Results","alwaysOutputData":true,"onError":"continueRegularOutput"},{"parameters":{"workflowId":{"__rl":true,"value":"1AP3Bf5ELqJvYARR","mode":"list","cachedResultUrl":"/workflow/1AP3Bf5ELqJvYARR","cachedResultName":"Extract document_ids"},"workflowInputs":{"mappingMode":"defineBelow","value":{"objects":"={{ $json.output }}"},"matchingColumns":["objects"],"schema":[{"id":"objects","displayName":"objects","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"array","removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":true},"options":{}},"type":"n8n-nodes-base.executeWorkflow","typeVersion":1.3,"position":[800,-48],"id":"164e30c3-40c1-4b87-b2d2-a6a32b3acd89","name":"Document Query Search Results","alwaysOutputData":true,"onError":"continueRegularOutput"},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"output\": {{ $json.results.toJsonString() }}\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[480,-48],"id":"4b219e75-82b6-413d-9914-c7cd6a241225","name":"Extract only results 1","alwaysOutputData":false,"onError":"continueRegularOutput"},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"output\": {{ $json.results.toJsonString() }}\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[464,-480],"id":"a648b0cf-53b5-4cb9-b52f-4860c5b15cad","name":"Extract only results","onError":"continueRegularOutput"},{"parameters":{"jsCode":"const global_vars_obj = $('Global Vars').first().json;\n\nconst service_name = global_vars_obj.service_name;\n\nconst global_vars_service_name_obj = global_vars_obj[service_name];\n\nreturn [\n  {\n    \"service_url\" : \n`${global_vars_obj.snowflake_base_url}/api/v2/databases/${global_vars_service_name_obj.snowflake_database}/schemas/${global_vars_service_name_obj.snowflake_schema}/cortex-search-services/${global_vars_service_name_obj.service_name}:query`\n  }\n];\n\n"},"type":"n8n-nodes-base.code","typeVersion":2,"position":[-992,-208],"id":"50806eaf-d238-409b-97e9-3cdcd8b4f067","name":"Build Cortex URL"}],"connections":{"Cortex Document Name Search1":{"main":[[{"node":"Extract only results","type":"main","index":0}]]},"Cortex Document Query Name Search1":{"main":[[{"node":"Extract only results 1","type":"main","index":0}]]},"Global Vars":{"main":[[{"node":"Build Cortex URL","type":"main","index":0}]]},"Trigger":{"main":[[{"node":"Global Vars","type":"main","index":0}]]},"Switch":{"main":[[{"node":"Cortex Document Name Search1","type":"main","index":0}],[{"node":"Cortex Document Query Name Search1","type":"main","index":0}]]},"Set Cortex Search Columns":{"main":[[{"node":"Switch","type":"main","index":0}]]},"Set Mode":{"main":[[{"node":"Set Cortex Search Columns","type":"main","index":0}]]},"Rename Document Keys":{"main":[[{"node":"Document Search Results","type":"main","index":0}]]},"Extract only results 1":{"main":[[{"node":"Document Query Search Results","type":"main","index":0}]]},"Extract only results":{"main":[[{"node":"Rename Document Keys","type":"main","index":0}]]},"Build Cortex URL":{"main":[[{"node":"Set Mode","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":null,"pinData":{"Trigger":[{"json":{"query_string":"free cribl cloud users, associated email addresses, accounts owned, cloud organization data, exploration query, product cloud organizations","service_name":"omni_documents_search_service","limit":3}}],"Global Vars":[{"json":{"query_string":"free cribl cloud users, associated email addresses, accounts owned, cloud organization data, exploration query, product cloud organizations","service_name":"omni_documents_search_service","limit":3,"snowflake_base_url":"https://ml16699-hya89079.snowflakecomputing.com","omni_documents_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","service_name":"omni_documents_search_service"},"omni_document_queries_query_table_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_table_search_service"},"omni_document_queries_query_name_search_service":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","agent_name":"omni_document_queries_query_name_search_service"},"omni_documents_analyst_agent":{"snowflake_database":"SNOWFLAKE_INTELLIGENCE","snowflake_schema":"AGENTS","agent_name":"OMNI_DOCUMENTS_ANALYST_AGENT"},"zapier_slack_response_webhook":{"webhook_url":"https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"},"slack":{"error_message":"The Omni agent could not find relevant dashboards :cry:"},"omni_api":{"omni_base_url":"https://cribl.omniapp.co","model_id":"4345b118-cbbe-4f7c-a705-ea0aa8da57c0"},"snowflake_tables":{"omni_users":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"OMNI_USERS"},"omni_documents":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENTS"},"omni_document_queries":{"snowflake_database":"ANALYTICS","snowflake_schema":"OMNI","table_name":"DOCUMENT_QUERIES"},"dashboard_recommendations":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS"},"dashboard_recommendations_feedback":{"snowflake_database":"RAW","snowflake_schema":"OMNI","table_name":"DASHBOARD_RECOMMENDATIONS_FEEDBACK"}}}}],"Set Cortex Search Columns":[{"json":{"document_queries":["query_name","query_id","document_id","document_scope","query_table"],"documents":["name","identifier","scope","has_dashboard","owner_name","owner_id","folder_name","folder_id","folder_path"]}}],"Build Cortex URL":[{"json":{"service_url":"https://ml16699-hya89079.snowflakecomputing.com/api/v2/databases/ANALYTICS/schemas/OMNI/cortex-search-services/omni_documents_search_service:query"}}]},"versionId":"645301f9-71ee-4464-aae1-e825a0def6ff","triggerCount":0,"shared":[{"updatedAt":"2025-10-01T02:47:36.649Z","createdAt":"2025-10-01T02:47:36.649Z","role":"workflow:owner","workflowId":"1pR9HTgBxYcoiL27","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[{"updatedAt":"2025-09-29T05:57:24.200Z","createdAt":"2025-09-29T05:57:24.200Z","id":"JC97st4iY7gpPYhF","name":"subworkflow"}]}
+{
+  "updatedAt": "2025-11-15T21:34:20.000Z",
+  "createdAt": "2025-10-01T02:47:36.644Z",
+  "id": "1pR9HTgBxYcoiL27",
+  "name": "Cortex_Search",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Build Cortex URL').item.json.service_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": {{ $('Global Vars').item.json.query_string.toJsonString() }},\n    \"columns\": {{ $('Set Cortex Search Columns').item.json[$('Set Mode').item.json.mode].toJsonString() }},\n    \"filter\": {\n      \"@and\": [\n        { \n          \"@not\": {\n            \"@eq\": {\n                \"scope\": \"restricted\"\n            }\n          }\n        },\n        { \n          \"@eq\": {\n              \"has_dashboard\": \"true\"\n          }\n        }\n      ]\n    },\n    \"limit\": {{ $('Global Vars').item.json.limit }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        -480
+      ],
+      "id": "ff5b05f6-af15-4880-8f09-43c3524025f0",
+      "name": "Cortex Document Name Search1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "i0PUEv19DdMNfJ5u",
+          "name": "Snowflake API data_team_bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Build Cortex URL').item.json.service_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"query\": {{ $('Global Vars').item.json.query_string.toJsonString() }},\n    \"columns\": {{ $('Set Cortex Search Columns').item.json[$('Set Mode').item.json.mode].toJsonString() }},\n    \"filter\": {\n        \"@not\": {\n            \"@eq\": {\n                \"document_scope\": \"restricted\"\n            }\n        }\n    },\n    \"limit\": {{ $('Global Vars').item.json.limit }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        -48
+      ],
+      "id": "7ab6d8d9-e0a5-4307-aca1-c57e1d450670",
+      "name": "Cortex Document Query Name Search1",
+      "retryOnFail": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "i0PUEv19DdMNfJ5u",
+          "name": "Snowflake API data_team_bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OFpD7aepKHcHCvqz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OFpD7aepKHcHCvqz",
+          "cachedResultName": "Global Vars"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -1232,
+        -208
+      ],
+      "id": "3b095529-5337-4926-8433-51664524a831",
+      "name": "Global Vars"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query_string"
+            },
+            {
+              "name": "service_name"
+            },
+            {
+              "name": "limit",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1472,
+        -208
+      ],
+      "id": "7a2e8eb8-758a-4105-af76-52f4969e4cff",
+      "name": "Trigger"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Set Mode').item.json.mode }}",
+                    "rightValue": "documents",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c3ef08c5-3261-4612-940a-496fdf709036"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "documents"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6cc4932d-0218-4619-9b8b-86550e6b96c1",
+                    "leftValue": "={{ $('Set Mode').item.json.mode }}",
+                    "rightValue": "document_queries",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "document_queries"
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -224,
+        -208
+      ],
+      "id": "b216dc40-7084-43d4-89cc-0164823a8664",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"document_queries\": [\n    \"query_name\",\n    \"query_id\",\n    \"document_id\",\n    \"document_scope\",\n    \"query_table\"\n  ],\n  \"documents\": [\n    \"name\",\n    \"identifier\",\n    \"scope\",\n    \"has_dashboard\",\n    \"owner_name\",\n    \"owner_id\",\n    \"folder_name\",\n    \"folder_id\",\n    \"folder_path\"\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        -208
+      ],
+      "id": "9afdb660-0810-4f35-8d4a-bfc640bca83a",
+      "name": "Set Cortex Search Columns"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"mode\": \"{{ $('Global Vars').first().json.service_name.includes('queries') ? \"document_queries\" : \"documents\" }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        -208
+      ],
+      "id": "0d6c5d0e-1ceb-46c8-9724-766d81ffad84",
+      "name": "Set Mode"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "0ZK5dvO3WYtsza47",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/0ZK5dvO3WYtsza47",
+          "cachedResultName": "Rename Document Keys"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "documents": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "documents"
+          ],
+          "schema": [
+            {
+              "id": "documents",
+              "displayName": "documents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "array",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        784,
+        -480
+      ],
+      "id": "26944ba8-9b5c-4d66-889b-1d0ccad0fc60",
+      "name": "Rename Document Keys",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1AP3Bf5ELqJvYARR",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1AP3Bf5ELqJvYARR",
+          "cachedResultName": "Extract document_ids"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "objects": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "objects"
+          ],
+          "schema": [
+            {
+              "id": "objects",
+              "displayName": "objects",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "array",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        -480
+      ],
+      "id": "beeab0c6-5b7e-460a-990b-1da8842f83a0",
+      "name": "Document Search Results",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1AP3Bf5ELqJvYARR",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1AP3Bf5ELqJvYARR",
+          "cachedResultName": "Extract document_ids"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "objects": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "objects"
+          ],
+          "schema": [
+            {
+              "id": "objects",
+              "displayName": "objects",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "array",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        -48
+      ],
+      "id": "164e30c3-40c1-4b87-b2d2-a6a32b3acd89",
+      "name": "Document Query Search Results",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": {{ $json.results.toJsonString() }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -48
+      ],
+      "id": "4b219e75-82b6-413d-9914-c7cd6a241225",
+      "name": "Extract only results 1",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": {{ $json.results.toJsonString() }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -480
+      ],
+      "id": "a648b0cf-53b5-4cb9-b52f-4860c5b15cad",
+      "name": "Extract only results",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const global_vars_obj = $('Global Vars').first().json;\n\nconst service_name = global_vars_obj.service_name;\n\nconst global_vars_service_name_obj = global_vars_obj[service_name];\n\nreturn [\n  {\n    \"service_url\" : \n`${global_vars_obj.snowflake_base_url}/api/v2/databases/${global_vars_service_name_obj.snowflake_database}/schemas/${global_vars_service_name_obj.snowflake_schema}/cortex-search-services/${global_vars_service_name_obj.service_name}:query`\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -992,
+        -208
+      ],
+      "id": "50806eaf-d238-409b-97e9-3cdcd8b4f067",
+      "name": "Build Cortex URL"
+    }
+  ],
+  "connections": {
+    "Cortex Document Name Search1": {
+      "main": [
+        [
+          {
+            "node": "Extract only results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cortex Document Query Name Search1": {
+      "main": [
+        [
+          {
+            "node": "Extract only results 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "Build Cortex URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Cortex Document Name Search1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cortex Document Query Name Search1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Cortex Search Columns": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Mode": {
+      "main": [
+        [
+          {
+            "node": "Set Cortex Search Columns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename Document Keys": {
+      "main": [
+        [
+          {
+            "node": "Document Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract only results 1": {
+      "main": [
+        [
+          {
+            "node": "Document Query Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract only results": {
+      "main": [
+        [
+          {
+            "node": "Rename Document Keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Cortex URL": {
+      "main": [
+        [
+          {
+            "node": "Set Mode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "query_string": "free cribl cloud users, associated email addresses, accounts owned, cloud organization data, exploration query, product cloud organizations",
+          "service_name": "omni_documents_search_service",
+          "limit": 3
+        }
+      }
+    ],
+    "Global Vars": [
+      {
+        "json": {
+          "query_string": "free cribl cloud users, associated email addresses, accounts owned, cloud organization data, exploration query, product cloud organizations",
+          "service_name": "omni_documents_search_service",
+          "limit": 3,
+          "snowflake_base_url": "https://ml16699-hya89079.snowflakecomputing.com",
+          "omni_documents_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "service_name": "omni_documents_search_service"
+          },
+          "omni_document_queries_query_table_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_table_search_service"
+          },
+          "omni_document_queries_query_name_search_service": {
+            "snowflake_database": "ANALYTICS",
+            "snowflake_schema": "OMNI",
+            "agent_name": "omni_document_queries_query_name_search_service"
+          },
+          "omni_documents_analyst_agent": {
+            "snowflake_database": "SNOWFLAKE_INTELLIGENCE",
+            "snowflake_schema": "AGENTS",
+            "agent_name": "OMNI_DOCUMENTS_ANALYST_AGENT"
+          },
+          "zapier_slack_response_webhook": {
+            "webhook_url": "https://hooks.zapier.com/hooks/catch/23046078/u1mp0gx/"
+          },
+          "slack": {
+            "error_message": "The Omni agent could not find relevant dashboards :cry:"
+          },
+          "omni_api": {
+            "omni_base_url": "https://cribl.omniapp.co",
+            "model_id": "4345b118-cbbe-4f7c-a705-ea0aa8da57c0"
+          },
+          "snowflake_tables": {
+            "omni_users": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "OMNI_USERS"
+            },
+            "omni_documents": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENTS"
+            },
+            "omni_document_queries": {
+              "snowflake_database": "ANALYTICS",
+              "snowflake_schema": "OMNI",
+              "table_name": "DOCUMENT_QUERIES"
+            },
+            "dashboard_recommendations": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS"
+            },
+            "dashboard_recommendations_feedback": {
+              "snowflake_database": "RAW",
+              "snowflake_schema": "OMNI",
+              "table_name": "DASHBOARD_RECOMMENDATIONS_FEEDBACK"
+            }
+          }
+        }
+      }
+    ],
+    "Set Cortex Search Columns": [
+      {
+        "json": {
+          "document_queries": [
+            "query_name",
+            "query_id",
+            "document_id",
+            "document_scope",
+            "query_table"
+          ],
+          "documents": [
+            "name",
+            "identifier",
+            "scope",
+            "has_dashboard",
+            "owner_name",
+            "owner_id",
+            "folder_name",
+            "folder_id",
+            "folder_path"
+          ]
+        }
+      }
+    ],
+    "Build Cortex URL": [
+      {
+        "json": {
+          "service_url": "https://ml16699-hya89079.snowflakecomputing.com/api/v2/databases/ANALYTICS/schemas/OMNI/cortex-search-services/omni_documents_search_service:query"
+        }
+      }
+    ]
+  },
+  "versionId": "645301f9-71ee-4464-aae1-e825a0def6ff",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-10-01T02:47:36.649Z",
+      "createdAt": "2025-10-01T02:47:36.649Z",
+      "role": "workflow:owner",
+      "workflowId": "1pR9HTgBxYcoiL27",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-09-29T05:57:24.200Z",
+      "createdAt": "2025-09-29T05:57:24.200Z",
+      "id": "JC97st4iY7gpPYhF",
+      "name": "subworkflow"
+    }
+  ]
+}
