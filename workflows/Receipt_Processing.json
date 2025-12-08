@@ -1,1 +1,401 @@
-{"updatedAt":"2025-11-15T20:47:46.000Z","createdAt":"2025-11-15T20:46:11.811Z","id":"QVhtHxPyNNQqwq71","name":"Receipt_Processing","active":false,"isArchived":false,"nodes":[{"parameters":{"content":"## Receipt Processing Workflow\n1. **Input**: User sends receipt image via WhatsApp\n2. **Image Processing**: System downloads and extracts receipt data using AI\n3. **Data Structure**: Converts receipt information to structured JSON format including:\n   - Item details (name, price)\n   - Store information (name, address, phone)\n   - Payment details and total amount\n   - Date/time and tax information\n4. **Response**: Sends confirmation message with processed receipt data back to user\n5. **Ready for Bill Splitting**: Structured data is now available for bill splitting functionality","height":796,"width":1740},"type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[304,0],"id":"bd9d3f6b-ec1c-4760-b088-3a89ff47a73e","name":"Sticky Note"},{"parameters":{"updates":["messages"],"options":{"messageStatusUpdates":["sent"]}},"type":"n8n-nodes-base.whatsAppTrigger","typeVersion":1,"position":[352,384],"id":"d8ae364b-0720-41ba-b36f-a5b4ab2b22d2","name":"WhatsApp Trigger","webhookId":"3eb5ace5-876f-469a-b1c0-f4f5bea472f3"},{"parameters":{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"id":"bef6cf1d-0097-4b2b-823c-ea8be56f869c","leftValue":"={{ $json.statuses[0].status }}","rightValue":"sent","operator":{"type":"string","operation":"equals","name":"filter.operator.equals"}},{"id":"881833f2-6a50-410d-a365-fd79972c7945","leftValue":"={{ $json.messages[0].type }}","rightValue":"image","operator":{"type":"string","operation":"equals","name":"filter.operator.equals"}}],"combinator":"or"},"options":{}},"type":"n8n-nodes-base.if","typeVersion":2.2,"position":[560,384],"id":"014c44b5-aa5e-4313-a0a9-89130e4d51f1","name":"If1"},{"parameters":{"resource":"media","operation":"mediaUrlGet","mediaGetId":"={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"},"id":"3355bad0-408a-4a52-b18f-b3af966952bc","name":"Get Image Url","type":"n8n-nodes-base.whatsApp","position":[1008,288],"webhookId":"003cdeee-68bc-4ef8-9e9c-ef736c58efbc","typeVersion":1},{"parameters":{"url":"={{ $json.url }}","authentication":"predefinedCredentialType","nodeCredentialType":"whatsAppApi","options":{}},"id":"896df608-44fc-4b06-9c35-6f29621297dc","name":"Download Image","type":"n8n-nodes-base.httpRequest","position":[1216,288],"typeVersion":4.2},{"parameters":{"promptType":"define","text":"=Analyze the information from the provided image.","hasOutputParser":true,"options":{"systemMessage":"=# Receipt Information Extraction and Structuring Prompt\n\nPlease strictly follow the rules below to extract and structure information from receipt images:\n\n## **IMPORTANT: Currency Conversion Rule**\n**ALL monetary values (prices, amounts, tax, balance) MUST be converted from Japanese Yen (JPY) to USD using the exchange rate: 1 JPY = 0.0068 USD**\n- Convert ALL numbers with ¥ symbol or Japanese currency\n- Format ALL converted amounts to exactly 2 decimal places\n- Example: ¥100 → $0.68\n\n## Output Format Requirements\n\nPlease return in JSON format, including the following fields:\n\n### 1. **items** (Array)\n- Extract all items from the receipt, each item includes:\n  - `name`: Item name translated to English\n  - `raw_name`: Original item name from the receipt (keep original text)\n  - `price`: **CONVERTED to USD** using 1 JPY = 0.0068 USD, formatted to two decimal places\n\n### 2. **amount** (Number)\n- Total receipt amount (final amount including tax)\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 3. **tax** (Number, Optional)\n- Tax amount, if displayed on receipt\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 4. **payment** (String, Optional)\n- Payment method (translate to English: e.g., \"交通系マネー\" → \"Transit IC Card\")\n\n### 5. **balance_after** (Number, Optional)\n- Balance after payment\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 6. **datetime** (String)\n- Format: `yyyy-MM-dd HH:mm:ss`\n- Convert Japanese date format to ISO format\n\n### 7. **store** (Object)\nContains store-related information:\n- `name`: Store name (keep brand names like LAWSON, translate location)\n- `address`: Complete address (translate to English)\n- `phone`: Phone number (optional)\n- `store_code`: Store code (optional)\n- `register`: Register number (optional)\n- `receipt_no`: Receipt number (optional)\n- `cashier`: Cashier name (optional)\n- `tax_id`: Tax ID or business registration number (optional)\n\n### 8. **raw_data** (String)\n- Complete original text extracted from the image\n\n## **Conversion Example:**\nIf receipt shows: ¥33 → convert to $0.22 (33 × 0.0068)\nIf receipt shows: ¥129 → convert to $0.88 (129 × 0.0068)\n\n## Return Format Example\n```json\n{\n  \"items\": [\n    {\n      \"name\": \"Butter-Flavored Croissant\",\n      \"raw_name\": \"LW バター香るクイニアマン\",\n      \"price\": 0.22\n    }\n  ],\n  \"amount\": 0.88,\n  \"tax\": 0.06,\n  \"payment\": \"Transit IC Card\",\n  \"balance_after\": 4.41,\n  \"datetime\": \"2025-04-04 10:48:00\",\n  \"store\": {\n    \"name\": \"LAWSON Nakamura Noritake 1-chome Store\",\n    \"address\": \"Aichi Prefecture, Nagoya City, Nakamura Ward, Noritake 1-6-3\"\n  }\n}\n```\n\n## **CRITICAL REMINDERS:**\n1. **ALWAYS convert JPY to USD using 1 JPY = 0.0068 USD**\n2. **ALL price fields must show USD amounts with 2 decimal places**\n3. **Double-check your math: multiply JPY amount by 0.0068**\n4. **Do not include ¥ or $ symbols in numeric fields**","passthroughBinaryImages":true}},"type":"@n8n/n8n-nodes-langchain.agent","typeVersion":1.8,"position":[1456,288],"id":"353c7d4c-5f44-497f-990f-eeb675c28859","name":"AI Agent","onError":"continueErrorOutput"},{"parameters":{"jsonSchemaExample":"{\n  \"items\": [\n    {\n      \"name\": \"Butter-Flavored Croissant\",\n      \"raw_name\": \"LW バター香るクイニアマン\",\n      \"price\": 0.22\n    }\n  ],\n  \"amount\": 0.88,\n  \"tax\": 0.06,\n  \"payment\": \"Transit IC Card\",\n  \"balance_after\": 4.41,\n  \"datetime\": \"2025-04-04 10:48:00\",\n  \"store\": {\n    \"name\": \"LAWSON Nakamura Noritake 1-chome Store\",\n    \"address\": \"Aichi Prefecture, Nagoya City, Nakamura Ward, Noritake 1-6-3\"\n  }\n}","autoFix":true},"type":"@n8n/n8n-nodes-langchain.outputParserStructured","typeVersion":1.3,"position":[1600,496],"id":"0fd548c4-ee77-462b-a19a-5f4f73e29ac9","name":"Structured Output Parser"},{"parameters":{"model":{"__rl":true,"value":"gpt-5-nano","mode":"list","cachedResultName":"gpt-5-nano"},"options":{}},"type":"@n8n/n8n-nodes-langchain.lmChatOpenAi","typeVersion":1.2,"position":[1456,640],"id":"cb5901ed-e95c-4e29-800c-6976c61c9970","name":"OpenAI Chat Model2"},{"parameters":{"operation":"send","phoneNumberId":"713065688559926","recipientPhoneNumber":"+886927195358","textBody":"=Recording successful!\n\n{{ $json.output.items.map(item => {return item.name +\", \"+ item.price}).join(\"\\n\") }}\n\nTotal Amount: {{ $json.output.amount }}\nPayment Method: {{ $json.output.payment }}","additionalFields":{"previewUrl":false}},"type":"n8n-nodes-base.whatsApp","typeVersion":1,"position":[1888,208],"id":"bff6a67b-47b0-46ed-bfc6-fbc69968824d","name":"Send message","webhookId":"c2d8622f-b7b1-4986-9e97-95a6ddffc4cb"},{"parameters":{"rules":{"values":[{"conditions":{"options":{"caseSensitive":true,"leftValue":"","typeValidation":"strict","version":2},"conditions":[{"leftValue":"={{ $json.messages[0].type }}","rightValue":"image","operator":{"type":"string","operation":"equals"},"id":"798545a8-a7d3-42c8-8071-070291b34adb"}],"combinator":"and"},"renameOutput":true,"outputKey":"image"}]},"options":{}},"type":"n8n-nodes-base.switch","typeVersion":3.2,"position":[800,288],"id":"5aed77c3-01e0-4c4b-b84a-96c2eeb4ec2d","name":"Switch"},{"parameters":{"content":"## Created by darrell_tw_ \n\n### contact me with following:\n[Website](https://www.darrelltw.com/)\n[X](https://x.com/darrell_tw_)\n[Threads](https://www.threads.net/@darrell_tw_)\n[Instagram](https://www.instagram.com/darrell_tw_/)\n![](https://pub-c093258f61a1463ea03e1a40c141968a.r2.dev/darrell-icon-128.svg)","height":340,"width":296,"color":7},"type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[0,0],"id":"5f847534-69ef-428f-ad0f-3c8697edf92e","name":"Sticky Note4"}],"connections":{"WhatsApp Trigger":{"main":[[{"node":"If1","type":"main","index":0}]]},"If1":{"main":[[{"node":"Switch","type":"main","index":0}]]},"Get Image Url":{"main":[[{"node":"Download Image","type":"main","index":0}]]},"Download Image":{"main":[[{"node":"AI Agent","type":"main","index":0}]]},"Structured Output Parser":{"ai_outputParser":[[{"node":"AI Agent","type":"ai_outputParser","index":0}]]},"OpenAI Chat Model2":{"ai_languageModel":[[{"node":"AI Agent","type":"ai_languageModel","index":0},{"node":"Structured Output Parser","type":"ai_languageModel","index":0}]]},"AI Agent":{"main":[[{"node":"Send message","type":"main","index":0}]]},"Switch":{"main":[[{"node":"Get Image Url","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":null,"pinData":{"WhatsApp Trigger":[{"json":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556658527","phone_number_id":"713065688559926"},"contacts":[{"profile":{"name":"Darrelltw"},"wa_id":"886927195358"}],"messages":[{"from":"886927195358","id":"wamid.HBgMODg2OTI3MTk1MzU4FQIAEhgUM0JFRDM1RjNEN0NEQzczOEJENDgA","timestamp":"1758004912","type":"image","image":{"mime_type":"image/jpeg","sha256":"EJMR4q8mQj26VTtQrQK35y7W+Rk9+BkQI4dEqjAxGHk=","id":"4166600993623200"}}],"field":"messages"}}]},"versionId":"e16df360-5b35-4878-a5d1-73897bd300be","triggerCount":0,"shared":[{"updatedAt":"2025-11-15T20:46:11.817Z","createdAt":"2025-11-15T20:46:11.817Z","role":"workflow:owner","workflowId":"QVhtHxPyNNQqwq71","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[]}
+{
+  "updatedAt": "2025-11-15T20:47:46.000Z",
+  "createdAt": "2025-11-15T20:46:11.811Z",
+  "id": "QVhtHxPyNNQqwq71",
+  "name": "Receipt_Processing",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Receipt Processing Workflow\n1. **Input**: User sends receipt image via WhatsApp\n2. **Image Processing**: System downloads and extracts receipt data using AI\n3. **Data Structure**: Converts receipt information to structured JSON format including:\n   - Item details (name, price)\n   - Store information (name, address, phone)\n   - Payment details and total amount\n   - Date/time and tax information\n4. **Response**: Sends confirmation message with processed receipt data back to user\n5. **Ready for Bill Splitting**: Structured data is now available for bill splitting functionality",
+        "height": 796,
+        "width": 1740
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        0
+      ],
+      "id": "bd9d3f6b-ec1c-4760-b088-3a89ff47a73e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "sent"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        352,
+        384
+      ],
+      "id": "d8ae364b-0720-41ba-b36f-a5b4ab2b22d2",
+      "name": "WhatsApp Trigger",
+      "webhookId": "3eb5ace5-876f-469a-b1c0-f4f5bea472f3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bef6cf1d-0097-4b2b-823c-ea8be56f869c",
+              "leftValue": "={{ $json.statuses[0].status }}",
+              "rightValue": "sent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "881833f2-6a50-410d-a365-fd79972c7945",
+              "leftValue": "={{ $json.messages[0].type }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        384
+      ],
+      "id": "014c44b5-aa5e-4313-a0a9-89130e4d51f1",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"
+      },
+      "id": "3355bad0-408a-4a52-b18f-b3af966952bc",
+      "name": "Get Image Url",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1008,
+        288
+      ],
+      "webhookId": "003cdeee-68bc-4ef8-9e9c-ef736c58efbc",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "id": "896df608-44fc-4b06-9c35-6f29621297dc",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1216,
+        288
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the information from the provided image.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Receipt Information Extraction and Structuring Prompt\n\nPlease strictly follow the rules below to extract and structure information from receipt images:\n\n## **IMPORTANT: Currency Conversion Rule**\n**ALL monetary values (prices, amounts, tax, balance) MUST be converted from Japanese Yen (JPY) to USD using the exchange rate: 1 JPY = 0.0068 USD**\n- Convert ALL numbers with ¥ symbol or Japanese currency\n- Format ALL converted amounts to exactly 2 decimal places\n- Example: ¥100 → $0.68\n\n## Output Format Requirements\n\nPlease return in JSON format, including the following fields:\n\n### 1. **items** (Array)\n- Extract all items from the receipt, each item includes:\n  - `name`: Item name translated to English\n  - `raw_name`: Original item name from the receipt (keep original text)\n  - `price`: **CONVERTED to USD** using 1 JPY = 0.0068 USD, formatted to two decimal places\n\n### 2. **amount** (Number)\n- Total receipt amount (final amount including tax)\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 3. **tax** (Number, Optional)\n- Tax amount, if displayed on receipt\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 4. **payment** (String, Optional)\n- Payment method (translate to English: e.g., \"交通系マネー\" → \"Transit IC Card\")\n\n### 5. **balance_after** (Number, Optional)\n- Balance after payment\n- **MUST be converted to USD** using 1 JPY = 0.0068 USD\n\n### 6. **datetime** (String)\n- Format: `yyyy-MM-dd HH:mm:ss`\n- Convert Japanese date format to ISO format\n\n### 7. **store** (Object)\nContains store-related information:\n- `name`: Store name (keep brand names like LAWSON, translate location)\n- `address`: Complete address (translate to English)\n- `phone`: Phone number (optional)\n- `store_code`: Store code (optional)\n- `register`: Register number (optional)\n- `receipt_no`: Receipt number (optional)\n- `cashier`: Cashier name (optional)\n- `tax_id`: Tax ID or business registration number (optional)\n\n### 8. **raw_data** (String)\n- Complete original text extracted from the image\n\n## **Conversion Example:**\nIf receipt shows: ¥33 → convert to $0.22 (33 × 0.0068)\nIf receipt shows: ¥129 → convert to $0.88 (129 × 0.0068)\n\n## Return Format Example\n```json\n{\n  \"items\": [\n    {\n      \"name\": \"Butter-Flavored Croissant\",\n      \"raw_name\": \"LW バター香るクイニアマン\",\n      \"price\": 0.22\n    }\n  ],\n  \"amount\": 0.88,\n  \"tax\": 0.06,\n  \"payment\": \"Transit IC Card\",\n  \"balance_after\": 4.41,\n  \"datetime\": \"2025-04-04 10:48:00\",\n  \"store\": {\n    \"name\": \"LAWSON Nakamura Noritake 1-chome Store\",\n    \"address\": \"Aichi Prefecture, Nagoya City, Nakamura Ward, Noritake 1-6-3\"\n  }\n}\n```\n\n## **CRITICAL REMINDERS:**\n1. **ALWAYS convert JPY to USD using 1 JPY = 0.0068 USD**\n2. **ALL price fields must show USD amounts with 2 decimal places**\n3. **Double-check your math: multiply JPY amount by 0.0068**\n4. **Do not include ¥ or $ symbols in numeric fields**",
+          "passthroughBinaryImages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1456,
+        288
+      ],
+      "id": "353c7d4c-5f44-497f-990f-eeb675c28859",
+      "name": "AI Agent",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"items\": [\n    {\n      \"name\": \"Butter-Flavored Croissant\",\n      \"raw_name\": \"LW バター香るクイニアマン\",\n      \"price\": 0.22\n    }\n  ],\n  \"amount\": 0.88,\n  \"tax\": 0.06,\n  \"payment\": \"Transit IC Card\",\n  \"balance_after\": 4.41,\n  \"datetime\": \"2025-04-04 10:48:00\",\n  \"store\": {\n    \"name\": \"LAWSON Nakamura Noritake 1-chome Store\",\n    \"address\": \"Aichi Prefecture, Nagoya City, Nakamura Ward, Noritake 1-6-3\"\n  }\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1600,
+        496
+      ],
+      "id": "0fd548c4-ee77-462b-a19a-5f4f73e29ac9",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1456,
+        640
+      ],
+      "id": "cb5901ed-e95c-4e29-800c-6976c61c9970",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "713065688559926",
+        "recipientPhoneNumber": "+886927195358",
+        "textBody": "=Recording successful!\n\n{{ $json.output.items.map(item => {return item.name +\", \"+ item.price}).join(\"\\n\") }}\n\nTotal Amount: {{ $json.output.amount }}\nPayment Method: {{ $json.output.payment }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        208
+      ],
+      "id": "bff6a67b-47b0-46ed-bfc6-fbc69968824d",
+      "name": "Send message",
+      "webhookId": "c2d8622f-b7b1-4986-9e97-95a6ddffc4cb"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "798545a8-a7d3-42c8-8071-070291b34adb"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        288
+      ],
+      "id": "5aed77c3-01e0-4c4b-b84a-96c2eeb4ec2d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "## Created by darrell_tw_ \n\n### contact me with following:\n[Website](https://www.darrelltw.com/)\n[X](https://x.com/darrell_tw_)\n[Threads](https://www.threads.net/@darrell_tw_)\n[Instagram](https://www.instagram.com/darrell_tw_/)\n![](https://pub-c093258f61a1463ea03e1a40c141968a.r2.dev/darrell-icon-128.svg)",
+        "height": 340,
+        "width": 296,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5f847534-69ef-428f-ad0f-3c8697edf92e",
+      "name": "Sticky Note4"
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image Url": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get Image Url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15556658527",
+            "phone_number_id": "713065688559926"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Darrelltw"
+              },
+              "wa_id": "886927195358"
+            }
+          ],
+          "messages": [
+            {
+              "from": "886927195358",
+              "id": "wamid.HBgMODg2OTI3MTk1MzU4FQIAEhgUM0JFRDM1RjNEN0NEQzczOEJENDgA",
+              "timestamp": "1758004912",
+              "type": "image",
+              "image": {
+                "mime_type": "image/jpeg",
+                "sha256": "EJMR4q8mQj26VTtQrQK35y7W+Rk9+BkQI4dEqjAxGHk=",
+                "id": "4166600993623200"
+              }
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "versionId": "e16df360-5b35-4878-a5d1-73897bd300be",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-15T20:46:11.817Z",
+      "createdAt": "2025-11-15T20:46:11.817Z",
+      "role": "workflow:owner",
+      "workflowId": "QVhtHxPyNNQqwq71",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
