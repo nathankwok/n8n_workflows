@@ -1,1 +1,388 @@
-{"updatedAt":"2025-11-15T21:34:59.000Z","createdAt":"2025-09-29T05:59:15.341Z","id":"1FIjhol9ZJiAEbBm","name":"Get_Documents_from_Snowflake","active":false,"isArchived":false,"nodes":[{"parameters":{"workflowInputs":{"values":[{"name":"document_ids","type":"array"}]}},"type":"n8n-nodes-base.executeWorkflowTrigger","typeVersion":1.1,"position":[-320,288],"id":"3abb87e5-cddd-4274-802b-7f416718ac15","name":"When Executed by Another Workflow"},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"output\": {{ $json.OUTPUT.toJsonString() }}\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[256,528],"id":"31ac184a-b983-4bbd-9f9f-8a74fb1c0548","name":"Edit Fields","disabled":true},{"parameters":{"mode":"raw","jsonOutput":"={\n  \"document_id\": \"{{ $json.DOCUMENT_ID }}\",\n  \"document_name\": \"{{ $json.DOCUMENT_NAME }}\",\n  \"folder_id\": \"{{ $json.FOLDER_ID }}\",\n  \"folder_name\": \"{{ $json.FOLDER_NAME }}\",\n  \"document_scope\": \"{{ $json.DOCUMENT_SCOPE }}\",\n  \"owner_name\": \"{{ $json.OWNER_NAME }}\",\n  \"owner_id\": \"{{ $json.OWNER_ID }}\",\n  \"has_dashboard\": \"{{ $json.HAS_DASHBOARD }}\"\n}\n","options":{}},"type":"n8n-nodes-base.set","typeVersion":3.4,"position":[240,288],"id":"1b6e43a4-1266-4cbe-af36-e5acba3218cb","name":"Edit Fields1"},{"parameters":{"aggregate":"aggregateAllItemData","destinationFieldName":"asdf","options":{}},"type":"n8n-nodes-base.aggregate","typeVersion":1,"position":[464,288],"id":"c4b68a5d-1692-475b-9e86-7be959e3ce96","name":"Aggregate","disabled":true},{"parameters":{"operation":"executeQuery","query":"WITH ids AS (\n  SELECT\n    f.index AS ord,\n    f.value::VARCHAR AS doc_id\n  FROM LATERAL FLATTEN(\n    input => ARRAY_CONSTRUCT({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})  -- duplicates allowed\n  ) f\n),\ndocuments_renamed as (\n  SELECT\n    identifier as document_id,\n    name as document_name,\n    folder_id,\n    folder_name,\n    scope as document_scope,\n    owner_name,\n    owner_id,\n    has_dashboard\n  from DOCUMENTS\n  where identifier in ({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})\n)\nSELECT \n  ARRAY_AGG(OBJECT_CONSTRUCT_KEEP_NULL(\n    d.*\n  )) AS output\nFROM ids i\nJOIN documents_renamed d\n  ON d.document_id = i.doc_id"},"type":"n8n-nodes-base.snowflake","typeVersion":1,"position":[0,528],"id":"e60beb9c-1436-4714-8328-3e6f2491a32b","name":"Get Documents with Duplicates (single output)","credentials":{"snowflake":{"id":"C9vmzM7wtMKbWSDI","name":"Snowflake TRANSFORM"}},"disabled":true},{"parameters":{"operation":"executeQuery","query":"SELECT\n  identifier as document_id,\n  name as document_name,\n  folder_id,\n  folder_name,\n  scope as document_scope,\n  owner_name,\n  owner_id,\n  has_dashboard\nFROM DOCUMENTS\nWHERE identifier in ({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})\nAND scope != 'restricted'\nAND has_dashboard = TRUE"},"type":"n8n-nodes-base.snowflake","typeVersion":1,"position":[0,0],"id":"2edd9e50-2c50-435f-a7ad-ec803798cc2b","name":"Get Documents (no duplicates)","credentials":{"snowflake":{"id":"C9vmzM7wtMKbWSDI","name":"Snowflake TRANSFORM"}},"disabled":true},{"parameters":{"operation":"executeQuery","query":"WITH ids AS (\n  SELECT\n    f.index AS ord,\n    f.value::VARCHAR AS doc_id\n  FROM LATERAL FLATTEN(\n    input => ARRAY_CONSTRUCT({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})  -- duplicates allowed\n  ) f\n)\nSELECT \n\n  identifier as document_id,\n  name as document_name,\n  folder_id,\n  folder_name,\n  scope as document_scope,\n  owner_name,\n  owner_id,\n  has_dashboard\nfrom ids i\nJOIN DOCUMENTS d\n  ON d.identifier = i.doc_id"},"type":"n8n-nodes-base.snowflake","typeVersion":1,"position":[0,288],"id":"8d1d6c52-4fc5-4710-806b-3780723c6b7c","name":"Get Documents with Duplicates (multiple output)","credentials":{"snowflake":{"id":"C9vmzM7wtMKbWSDI","name":"Snowflake TRANSFORM"}}}],"connections":{"When Executed by Another Workflow":{"main":[[{"node":"Get Documents with Duplicates (single output)","type":"main","index":0},{"node":"Get Documents with Duplicates (multiple output)","type":"main","index":0},{"node":"Get Documents (no duplicates)","type":"main","index":0}]]},"Edit Fields1":{"main":[[{"node":"Aggregate","type":"main","index":0}]]},"Get Documents with Duplicates (single output)":{"main":[[{"node":"Edit Fields","type":"main","index":0}]]},"Get Documents with Duplicates (multiple output)":{"main":[[{"node":"Edit Fields1","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{"When Executed by Another Workflow":[{"json":{"document_ids":["621d0118","0e7bb883","credit-consumption","dadcdf3e","47d94e3c","e445af06","f69718ea","2e6e4ce7","de229002","credit-consumption","47d94e3c","goals","estaff-scorecard","51be784d","7e2736f9","7e2736f9","7e2736f9","5a0ffdaf","45d06a29","f36024ab","de229002","e445af06","e445af06","e445af06","621d0118","959cb1c9","1decf0ae"]}}],"Get Documents with Duplicates (single output)":[{"json":{"OUTPUT":[{"DOCUMENT_ID":"de229002","DOCUMENT_NAME":"Customer: Customer Breakdown","DOCUMENT_SCOPE":"organization","FOLDER_ID":"3d5676c9-be8d-47fd-b268-8beae0430608","FOLDER_NAME":"Customer Experience","HAS_DASHBOARD":"true","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","OWNER_NAME":"Chuck Morris"},{"DOCUMENT_ID":"45d06a29","DOCUMENT_NAME":"Overview: Azure Cost Metrics","DOCUMENT_SCOPE":"organization","FOLDER_ID":"101dfb9d-da13-470b-8726-d17ca5adb53f","FOLDER_NAME":"Engineering","HAS_DASHBOARD":"true","OWNER_ID":"86a545a6-5958-43e5-8f16-68eb9f148744","OWNER_NAME":"Matthew Lim"},{"DOCUMENT_ID":"f36024ab","DOCUMENT_NAME":"Overview: Deal Pricing Summary ","DOCUMENT_SCOPE":"organization","FOLDER_ID":"a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21","FOLDER_NAME":"GTM Leads","HAS_DASHBOARD":"true","OWNER_ID":"ebf8342f-9b5f-4efc-92b7-b1210c34cfaf","OWNER_NAME":"Laura Knipe"},{"DOCUMENT_ID":"e445af06","DOCUMENT_NAME":"Product: Cribl Suite - Software","DOCUMENT_SCOPE":"organization","FOLDER_ID":"b69a8af3-5d04-4a3e-b610-9a74f4807de0","FOLDER_NAME":"Product","HAS_DASHBOARD":"true","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","OWNER_NAME":"Chuck Morris"},{"DOCUMENT_ID":"e445af06","DOCUMENT_NAME":"Product: Cribl Suite - Software","DOCUMENT_SCOPE":"organization","FOLDER_ID":"b69a8af3-5d04-4a3e-b610-9a74f4807de0","FOLDER_NAME":"Product","HAS_DASHBOARD":"true","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","OWNER_NAME":"Chuck Morris"},{"DOCUMENT_ID":"e445af06","DOCUMENT_NAME":"Product: Cribl Suite - Software","DOCUMENT_SCOPE":"organization","FOLDER_ID":"b69a8af3-5d04-4a3e-b610-9a74f4807de0","FOLDER_NAME":"Product","HAS_DASHBOARD":"true","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","OWNER_NAME":"Chuck Morris"},{"DOCUMENT_ID":"e445af06","DOCUMENT_NAME":"Product: Cribl Suite - Software","DOCUMENT_SCOPE":"organization","FOLDER_ID":"b69a8af3-5d04-4a3e-b610-9a74f4807de0","FOLDER_NAME":"Product","HAS_DASHBOARD":"true","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","OWNER_NAME":"Chuck Morris"}]}}],"Get Documents (no duplicates)":[{"json":{"DOCUMENT_ID":"de229002","DOCUMENT_NAME":"Customer: Customer Breakdown","FOLDER_ID":"3d5676c9-be8d-47fd-b268-8beae0430608","FOLDER_NAME":"Customer Experience","DOCUMENT_SCOPE":"organization","OWNER_NAME":"Chuck Morris","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","HAS_DASHBOARD":"true"}},{"json":{"DOCUMENT_ID":"45d06a29","DOCUMENT_NAME":"Overview: Azure Cost Metrics","FOLDER_ID":"101dfb9d-da13-470b-8726-d17ca5adb53f","FOLDER_NAME":"Engineering","DOCUMENT_SCOPE":"organization","OWNER_NAME":"Matthew Lim","OWNER_ID":"86a545a6-5958-43e5-8f16-68eb9f148744","HAS_DASHBOARD":"true"}},{"json":{"DOCUMENT_ID":"f36024ab","DOCUMENT_NAME":"Overview: Deal Pricing Summary ","FOLDER_ID":"a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21","FOLDER_NAME":"GTM Leads","DOCUMENT_SCOPE":"organization","OWNER_NAME":"Laura Knipe","OWNER_ID":"ebf8342f-9b5f-4efc-92b7-b1210c34cfaf","HAS_DASHBOARD":"true"}},{"json":{"DOCUMENT_ID":"e445af06","DOCUMENT_NAME":"Product: Cribl Suite - Software","FOLDER_ID":"b69a8af3-5d04-4a3e-b610-9a74f4807de0","FOLDER_NAME":"Product","DOCUMENT_SCOPE":"organization","OWNER_NAME":"Chuck Morris","OWNER_ID":"113ba39e-d2f3-44ff-9225-da17783348a3","HAS_DASHBOARD":"true"}}]},"versionId":"67a6e565-4a4e-4fbe-b749-96fd2bfdf12d","triggerCount":0,"shared":[{"updatedAt":"2025-09-29T05:59:15.346Z","createdAt":"2025-09-29T05:59:15.346Z","role":"workflow:owner","workflowId":"1FIjhol9ZJiAEbBm","projectId":"2vHf2VxAoKk0WgJE"}],"tags":[{"updatedAt":"2025-09-29T05:57:24.200Z","createdAt":"2025-09-29T05:57:24.200Z","id":"JC97st4iY7gpPYhF","name":"subworkflow"}]}
+{
+  "updatedAt": "2025-11-15T21:34:59.000Z",
+  "createdAt": "2025-09-29T05:59:15.341Z",
+  "id": "1FIjhol9ZJiAEbBm",
+  "name": "Get_Documents_from_Snowflake",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "document_ids",
+              "type": "array"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -320,
+        288
+      ],
+      "id": "3abb87e5-cddd-4274-802b-7f416718ac15",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": {{ $json.OUTPUT.toJsonString() }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        528
+      ],
+      "id": "31ac184a-b983-4bbd-9f9f-8a74fb1c0548",
+      "name": "Edit Fields",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"document_id\": \"{{ $json.DOCUMENT_ID }}\",\n  \"document_name\": \"{{ $json.DOCUMENT_NAME }}\",\n  \"folder_id\": \"{{ $json.FOLDER_ID }}\",\n  \"folder_name\": \"{{ $json.FOLDER_NAME }}\",\n  \"document_scope\": \"{{ $json.DOCUMENT_SCOPE }}\",\n  \"owner_name\": \"{{ $json.OWNER_NAME }}\",\n  \"owner_id\": \"{{ $json.OWNER_ID }}\",\n  \"has_dashboard\": \"{{ $json.HAS_DASHBOARD }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        288
+      ],
+      "id": "1b6e43a4-1266-4cbe-af36-e5acba3218cb",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "asdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        464,
+        288
+      ],
+      "id": "c4b68a5d-1692-475b-9e86-7be959e3ce96",
+      "name": "Aggregate",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH ids AS (\n  SELECT\n    f.index AS ord,\n    f.value::VARCHAR AS doc_id\n  FROM LATERAL FLATTEN(\n    input => ARRAY_CONSTRUCT({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})  -- duplicates allowed\n  ) f\n),\ndocuments_renamed as (\n  SELECT\n    identifier as document_id,\n    name as document_name,\n    folder_id,\n    folder_name,\n    scope as document_scope,\n    owner_name,\n    owner_id,\n    has_dashboard\n  from DOCUMENTS\n  where identifier in ({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})\n)\nSELECT \n  ARRAY_AGG(OBJECT_CONSTRUCT_KEEP_NULL(\n    d.*\n  )) AS output\nFROM ids i\nJOIN documents_renamed d\n  ON d.document_id = i.doc_id"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        0,
+        528
+      ],
+      "id": "e60beb9c-1436-4714-8328-3e6f2491a32b",
+      "name": "Get Documents with Duplicates (single output)",
+      "credentials": {
+        "snowflake": {
+          "id": "C9vmzM7wtMKbWSDI",
+          "name": "Snowflake TRANSFORM"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  identifier as document_id,\n  name as document_name,\n  folder_id,\n  folder_name,\n  scope as document_scope,\n  owner_name,\n  owner_id,\n  has_dashboard\nFROM DOCUMENTS\nWHERE identifier in ({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})\nAND scope != 'restricted'\nAND has_dashboard = TRUE"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2edd9e50-2c50-435f-a7ad-ec803798cc2b",
+      "name": "Get Documents (no duplicates)",
+      "credentials": {
+        "snowflake": {
+          "id": "C9vmzM7wtMKbWSDI",
+          "name": "Snowflake TRANSFORM"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH ids AS (\n  SELECT\n    f.index AS ord,\n    f.value::VARCHAR AS doc_id\n  FROM LATERAL FLATTEN(\n    input => ARRAY_CONSTRUCT({{ $json.document_ids.map(item => `'${item}'`).join(', ') }})  -- duplicates allowed\n  ) f\n)\nSELECT \n\n  identifier as document_id,\n  name as document_name,\n  folder_id,\n  folder_name,\n  scope as document_scope,\n  owner_name,\n  owner_id,\n  has_dashboard\nfrom ids i\nJOIN DOCUMENTS d\n  ON d.identifier = i.doc_id"
+      },
+      "type": "n8n-nodes-base.snowflake",
+      "typeVersion": 1,
+      "position": [
+        0,
+        288
+      ],
+      "id": "8d1d6c52-4fc5-4710-806b-3780723c6b7c",
+      "name": "Get Documents with Duplicates (multiple output)",
+      "credentials": {
+        "snowflake": {
+          "id": "C9vmzM7wtMKbWSDI",
+          "name": "Snowflake TRANSFORM"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Documents with Duplicates (single output)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Documents with Duplicates (multiple output)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Documents (no duplicates)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Documents with Duplicates (single output)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Documents with Duplicates (multiple output)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "document_ids": [
+            "621d0118",
+            "0e7bb883",
+            "credit-consumption",
+            "dadcdf3e",
+            "47d94e3c",
+            "e445af06",
+            "f69718ea",
+            "2e6e4ce7",
+            "de229002",
+            "credit-consumption",
+            "47d94e3c",
+            "goals",
+            "estaff-scorecard",
+            "51be784d",
+            "7e2736f9",
+            "7e2736f9",
+            "7e2736f9",
+            "5a0ffdaf",
+            "45d06a29",
+            "f36024ab",
+            "de229002",
+            "e445af06",
+            "e445af06",
+            "e445af06",
+            "621d0118",
+            "959cb1c9",
+            "1decf0ae"
+          ]
+        }
+      }
+    ],
+    "Get Documents with Duplicates (single output)": [
+      {
+        "json": {
+          "OUTPUT": [
+            {
+              "DOCUMENT_ID": "de229002",
+              "DOCUMENT_NAME": "Customer: Customer Breakdown",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "3d5676c9-be8d-47fd-b268-8beae0430608",
+              "FOLDER_NAME": "Customer Experience",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "OWNER_NAME": "Chuck Morris"
+            },
+            {
+              "DOCUMENT_ID": "45d06a29",
+              "DOCUMENT_NAME": "Overview: Azure Cost Metrics",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+              "FOLDER_NAME": "Engineering",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "86a545a6-5958-43e5-8f16-68eb9f148744",
+              "OWNER_NAME": "Matthew Lim"
+            },
+            {
+              "DOCUMENT_ID": "f36024ab",
+              "DOCUMENT_NAME": "Overview: Deal Pricing Summary ",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21",
+              "FOLDER_NAME": "GTM Leads",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
+              "OWNER_NAME": "Laura Knipe"
+            },
+            {
+              "DOCUMENT_ID": "e445af06",
+              "DOCUMENT_NAME": "Product: Cribl Suite - Software",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "FOLDER_NAME": "Product",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "OWNER_NAME": "Chuck Morris"
+            },
+            {
+              "DOCUMENT_ID": "e445af06",
+              "DOCUMENT_NAME": "Product: Cribl Suite - Software",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "FOLDER_NAME": "Product",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "OWNER_NAME": "Chuck Morris"
+            },
+            {
+              "DOCUMENT_ID": "e445af06",
+              "DOCUMENT_NAME": "Product: Cribl Suite - Software",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "FOLDER_NAME": "Product",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "OWNER_NAME": "Chuck Morris"
+            },
+            {
+              "DOCUMENT_ID": "e445af06",
+              "DOCUMENT_NAME": "Product: Cribl Suite - Software",
+              "DOCUMENT_SCOPE": "organization",
+              "FOLDER_ID": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+              "FOLDER_NAME": "Product",
+              "HAS_DASHBOARD": "true",
+              "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+              "OWNER_NAME": "Chuck Morris"
+            }
+          ]
+        }
+      }
+    ],
+    "Get Documents (no duplicates)": [
+      {
+        "json": {
+          "DOCUMENT_ID": "de229002",
+          "DOCUMENT_NAME": "Customer: Customer Breakdown",
+          "FOLDER_ID": "3d5676c9-be8d-47fd-b268-8beae0430608",
+          "FOLDER_NAME": "Customer Experience",
+          "DOCUMENT_SCOPE": "organization",
+          "OWNER_NAME": "Chuck Morris",
+          "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+          "HAS_DASHBOARD": "true"
+        }
+      },
+      {
+        "json": {
+          "DOCUMENT_ID": "45d06a29",
+          "DOCUMENT_NAME": "Overview: Azure Cost Metrics",
+          "FOLDER_ID": "101dfb9d-da13-470b-8726-d17ca5adb53f",
+          "FOLDER_NAME": "Engineering",
+          "DOCUMENT_SCOPE": "organization",
+          "OWNER_NAME": "Matthew Lim",
+          "OWNER_ID": "86a545a6-5958-43e5-8f16-68eb9f148744",
+          "HAS_DASHBOARD": "true"
+        }
+      },
+      {
+        "json": {
+          "DOCUMENT_ID": "f36024ab",
+          "DOCUMENT_NAME": "Overview: Deal Pricing Summary ",
+          "FOLDER_ID": "a8dc9c56-16f8-4b91-97fe-0e9f82ec3f21",
+          "FOLDER_NAME": "GTM Leads",
+          "DOCUMENT_SCOPE": "organization",
+          "OWNER_NAME": "Laura Knipe",
+          "OWNER_ID": "ebf8342f-9b5f-4efc-92b7-b1210c34cfaf",
+          "HAS_DASHBOARD": "true"
+        }
+      },
+      {
+        "json": {
+          "DOCUMENT_ID": "e445af06",
+          "DOCUMENT_NAME": "Product: Cribl Suite - Software",
+          "FOLDER_ID": "b69a8af3-5d04-4a3e-b610-9a74f4807de0",
+          "FOLDER_NAME": "Product",
+          "DOCUMENT_SCOPE": "organization",
+          "OWNER_NAME": "Chuck Morris",
+          "OWNER_ID": "113ba39e-d2f3-44ff-9225-da17783348a3",
+          "HAS_DASHBOARD": "true"
+        }
+      }
+    ]
+  },
+  "versionId": "67a6e565-4a4e-4fbe-b749-96fd2bfdf12d",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-29T05:59:15.346Z",
+      "createdAt": "2025-09-29T05:59:15.346Z",
+      "role": "workflow:owner",
+      "workflowId": "1FIjhol9ZJiAEbBm",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-09-29T05:57:24.200Z",
+      "createdAt": "2025-09-29T05:57:24.200Z",
+      "id": "JC97st4iY7gpPYhF",
+      "name": "subworkflow"
+    }
+  ]
+}
