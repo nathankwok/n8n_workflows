@@ -210,6 +210,7 @@
   "meta": null,
   "pinData": {},
   "versionId": "4aff8738-4147-4fea-9008-2874d7b79b15",
+  "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
     {
@@ -220,5 +221,6 @@
       "projectId": "2vHf2VxAoKk0WgJE"
     }
   ],
+  "activeVersion": null,
   "tags": []
 }
