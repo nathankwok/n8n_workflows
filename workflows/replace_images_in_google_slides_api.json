@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-10T09:45:35.534Z",
+  "updatedAt": "2025-12-10T19:44:50.789Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
@@ -448,7 +448,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        4496,
+        4704,
         1280
       ],
       "id": "2ed5f6c4-5ef5-4add-b521-2ae2f228d849",
@@ -459,6 +459,20 @@
           "name": "Google Drive Cribl"
         }
       }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4496,
+        1280
+      ],
+      "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
+      "name": "Wait",
+      "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d"
     }
   ],
   "connections": {
@@ -606,7 +620,7 @@
       "main": [
         [
           {
-            "node": "Delete a file",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
@@ -629,6 +643,17 @@
         [
           {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Delete a file",
             "type": "main",
             "index": 0
           }
@@ -22330,7 +22355,7 @@
       }
     ]
   },
-  "versionId": "a71b3191-c2a2-48cf-b280-61524aa74774",
+  "versionId": "f5bcfb46-fe13-4690-8f8b-8c0bcb03ff33",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
