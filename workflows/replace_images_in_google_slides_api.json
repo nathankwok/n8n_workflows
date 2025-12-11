@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-10T23:58:58.506Z",
+  "updatedAt": "2025-12-11T02:42:57.542Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
@@ -503,14 +503,14 @@
     },
     {
       "parameters": {
-        "model": "gpt-5-chat",
+        "model": "gpt-5-mini",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        2528,
-        1856
+        2544,
+        1888
       ],
       "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
       "name": "Azure OpenAI Chat Model",
@@ -22424,7 +22424,7 @@
       }
     ]
   },
-  "versionId": "7187ff5d-e916-4503-b1f7-ea1335e4c67f",
+  "versionId": "399baf01-8abe-4966-9e8a-8e419aa79e36",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
