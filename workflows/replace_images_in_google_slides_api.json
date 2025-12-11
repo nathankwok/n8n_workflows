@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-10T19:44:50.789Z",
+  "updatedAt": "2025-12-10T23:58:58.506Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
@@ -473,6 +473,53 @@
       "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
       "name": "Wait",
       "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        2448,
+        1648
+      ],
+      "id": "07f1d7af-1a30-47bb-987e-04787b85bfdb",
+      "name": "When chat message received",
+      "webhookId": "4f030263-a8de-4b2f-aee3-a5550e279c65"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2656,
+        1648
+      ],
+      "id": "b54e8065-361f-4978-8ec4-1343feff12bf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-chat",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2528,
+        1856
+      ],
+      "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "ljEp6Un527XmKGRN",
+          "name": "Azure OpenAI gpt-5-mini"
+        }
+      }
     }
   ],
   "connections": {
@@ -655,6 +702,28 @@
           {
             "node": "Delete a file",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -22355,7 +22424,7 @@
       }
     ]
   },
-  "versionId": "f5bcfb46-fe13-4690-8f8b-8c0bcb03ff33",
+  "versionId": "7187ff5d-e916-4503-b1f7-ea1335e4c67f",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
