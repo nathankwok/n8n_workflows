@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-11T02:42:57.542Z",
+  "updatedAt": "2025-12-12T19:38:22.575Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
@@ -272,7 +272,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"presentation_id\": \"1dfyQWt8lle1girN60-CAPfhnTYJ_2BJKDTafDiMiM1o\"\n}\n",
+        "jsonOutput": "{\n  \"presentation_id\": \"1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU\"\n}\n",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -300,14 +300,13 @@
     },
     {
       "parameters": {
-        "maxItems": 3,
-        "keep": "lastItems"
+        "maxItems": 3
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
         3184,
-        1024
+        784
       ],
       "id": "5cea9f1f-17ee-4cbb-addc-577fc682d92c",
       "name": "Limit"
@@ -476,33 +475,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
-      "typeVersion": 1.4,
-      "position": [
-        2448,
-        1648
-      ],
-      "id": "07f1d7af-1a30-47bb-987e-04787b85bfdb",
-      "name": "When chat message received",
-      "webhookId": "4f030263-a8de-4b2f-aee3-a5550e279c65"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3,
-      "position": [
-        2656,
-        1648
-      ],
-      "id": "b54e8065-361f-4978-8ec4-1343feff12bf",
-      "name": "AI Agent"
-    },
-    {
-      "parameters": {
         "model": "gpt-5-mini",
         "options": {}
       },
@@ -518,6 +490,69 @@
         "azureOpenAiApi": {
           "id": "ljEp6Un527XmKGRN",
           "name": "Azure OpenAI gpt-5-mini"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2656,
+        1648
+      ],
+      "id": "b54e8065-361f-4978-8ec4-1343feff12bf",
+      "name": "AI Agent",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        2448,
+        1648
+      ],
+      "id": "07f1d7af-1a30-47bb-987e-04787b85bfdb",
+      "name": "When chat message received",
+      "webhookId": "4f030263-a8de-4b2f-aee3-a5550e279c65",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "princess-diaries",
+        "authentication": "basicAuth",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        2272,
+        784
+      ],
+      "id": "82e5bdc1-68ad-4c2b-a3e7-2826b718ea90",
+      "name": "Trigger",
+      "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "3AVUqEU99hkVKUOW",
+          "name": "Zapier Inbound Basic Auth Webhook"
         }
       }
     }
@@ -707,6 +742,17 @@
         ]
       ]
     },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "When chat message received": {
       "main": [
         [
@@ -718,12 +764,12 @@
         ]
       ]
     },
-    "Azure OpenAI Chat Model": {
-      "ai_languageModel": [
+    "Trigger": {
+      "main": [
         [
           {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
+            "node": "MCP Client",
+            "type": "main",
             "index": 0
           }
         ]
@@ -22299,132 +22345,73 @@
         }
       }
     ],
-    "MCP Client": [
+    "Trigger": [
       {
         "json": {
-          "content": [
-            {
-              "type": "text",
-              "text": [
-                {
-                  "id": "g3a609d39db0_0_0",
-                  "title": "AI Trends & You",
-                  "text": ""
-                },
-                {
-                  "id": "g3a609d39db0_0_4",
-                  "title": "The Count is Right",
-                  "text": "Closest to the count without going over wins"
-                },
-                {
-                  "id": "g3a609d39db0_0_9",
-                  "title": "AI & Human Relationship",
-                  "text": "AI works for you\nWhen executing a technical task, guide AI to do it\nWhen repeating a process, equip an agent with tools\nAI works with you\nWhen brainstorming, let AI explore where you can’t\nWhen making a judgement, let AI inform you"
-                },
-                {
-                  "id": "g3a609d39db0_0_14",
-                  "title": "Data Analysts",
-                  "text": "Goal: \nFind and deliver proactive insights at scale\nStrengthening trust with business stakeholders"
-                },
-                {
-                  "id": "g3a609d39db0_0_19",
-                  "title": "Data Analysts",
-                  "text": "What to do to get to the goal: \nUnderstand the business\nInvest in the semantic layer"
-                },
-                {
-                  "id": "g3a609d39db0_0_24",
-                  "title": "Data Analysts",
-                  "text": "How you can use AI: \nUse AI to explore data, find insights, and achieve scale for proactive analysis, \nPositive feedback loop between AI insights, semantic layer, and stakeholder trust"
-                },
-                {
-                  "id": "g3a609d39db0_0_29",
-                  "title": "Data Enablement",
-                  "text": "Goal: \nGive more and better context to AI\nEnable and equip the AI, not just humans\nAgents work on behalf of humans"
-                },
-                {
-                  "id": "g3a609d39db0_0_34",
-                  "title": "Data Enablement",
-                  "text": "What to do to get to the goal: \nEnrichment from sources we were unable to before\nGovernance policies encompassing agents"
-                },
-                {
-                  "id": "g3a609d39db0_0_39",
-                  "title": "Data Enablement",
-                  "text": "How you can use AI: \nExplore and discover/profile data using AI\nBrainstorm algorithms, suggest features, and help judge/gain insights on the best algorithms for the task"
-                },
-                {
-                  "id": "g3a609d39db0_0_44",
-                  "title": "Data Scientists",
-                  "text": "Goal: \nExperimentation and infra at scale (Jevon’s paradox)\nGenerating stories and intuition for stakeholders "
-                },
-                {
-                  "id": "g3a609d39db0_0_49",
-                  "title": "Data Scientists",
-                  "text": "What to do to get to the goal: \nOffload code writing to AI (<20% manual)\nLLM operations, fine tuning & retraining\nEmphasizing stories over just technical skills"
-                },
-                {
-                  "id": "g3a609d39db0_0_54",
-                  "title": "Data Scientists",
-                  "text": "How you can use AI: \nCode generation agents\nEnable context for and monitoring via agents. Start small\nBuild trust in AI and for stakeholders"
-                },
-                {
-                  "id": "g3a609d39db0_0_59",
-                  "title": "Data Engineers",
-                  "text": "Goal: \nAchieve consistency at scale \nMonitoring and pipeline management using agents\nEnable other roles for impact at scale"
-                },
-                {
-                  "id": "g3a609d39db0_0_64",
-                  "title": "Data Engineers",
-                  "text": "What to do to get to the goal: \nFocus on labeling, creating, and storing metadata\nImplement multiple retrieval patterns like hybrid retrieval\nsemantic + lexical + full text = hybrid retrieval\nmore retrieval patterns, more storage patterns, more complexity\nStandardize communication protocols for higher consistency"
-                },
-                {
-                  "id": "g3a609d39db0_0_69",
-                  "title": "Data Engineers",
-                  "text": "How you can use AI: \nUse AI to enrich structured data with unstructured data and join data from multiple sources\nMake sense and monitor policies at scale"
-                }
-              ],
-              "traceId": "8e6c59f4-bb44-4955-ba8c-4eb40abd6a29"
-            }
-          ]
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Limit": [
-      {
-        "json": {
-          "id": "g3a609d39db0_0_59",
-          "title": "Data Engineers",
-          "text": "Goal: \nAchieve consistency at scale \nMonitoring and pipeline management using agents\nEnable other roles for impact at scale"
-        },
-        "pairedItem": {
-          "item": 12
-        }
-      },
-      {
-        "json": {
-          "id": "g3a609d39db0_0_64",
-          "title": "Data Engineers",
-          "text": "What to do to get to the goal: \nFocus on labeling, creating, and storing metadata\nImplement multiple retrieval patterns like hybrid retrieval\nsemantic + lexical + full text = hybrid retrieval\nmore retrieval patterns, more storage patterns, more complexity\nStandardize communication protocols for higher consistency"
-        },
-        "pairedItem": {
-          "item": 13
-        }
-      },
-      {
-        "json": {
-          "id": "g3a609d39db0_0_69",
-          "title": "Data Engineers",
-          "text": "How you can use AI: \nUse AI to enrich structured data with unstructured data and join data from multiple sources\nMake sense and monitor policies at scale"
-        },
-        "pairedItem": {
-          "item": 14
+          "headers": {
+            "host": "n8n-relayer-1.app.n8n.cloud",
+            "user-agent": "Zapier",
+            "content-length": "1869",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "34.230.29.176",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "9965fe4da6840626-IAD",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "34.230.29.176, 172.71.194.142",
+            "x-forwarded-host": "n8n-relayer-1.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-kn8mt",
+            "x-is-trusted": "yes",
+            "x-real-ip": "34.230.29.176"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "ts": "1761775710.350779",
+            "user_name": "priya_gupta",
+            "user_real_name": "Priya Gupta",
+            "channel_id": "C02GRDZS7QF",
+            "permalink": "https://cribl.slack.com/archives/C02GRDZS7QF/p1761775710350779?thread_ts=1761775573.179029&cid=C02GRDZS7QF",
+            "user_profile_first_name": "Priya",
+            "ts_time": "2025-10-29T22:08:30.000Z",
+            "user_profile_last_name": "Gupta",
+            "raw_text": "<@U08DHKDMR8C> my bad, it looks like we do not have a dashboard with this info. Will create it myself instead!",
+            "thread_ts": "1761775573.179029",
+            "user_id": "U02CBV3GSM9",
+            "user_profile_email": "pgupta@cribl.io",
+            "team_name": "Cribl",
+            "user_is_bot": "False",
+            "team_domain": "cribl",
+            "team_id": "T3XQYAF26",
+            "text": "@omni my bad, it looks like we do not have a dashboard with this info. Will create it myself instead!",
+            "channel_name": "ask-data",
+            "user_email": "pgupta@cribl.io",
+            "feedback_medium": "text",
+            "omni_message_text": "<@U02CBV3GSM9> I found a few dashboards related to pipeline insights that might help you visualize pipeline trends over time:\n• [Growth: Pipeline Xray](<https://cribl.omniapp.co/dashboards/2e7a63d6>) in the [Revenue](<https://cribl.omniapp.co/f/Revenue>) folder\n• [Growth: Pipeline Generation by Deal Generated Source](<https://cribl.omniapp.co/dashboards/bba09253>) in the [Revenue](<https://cribl.omniapp.co/f/Revenue>) folder\n• [Goals: FY26 Estaff Scorecard](<https://cribl.omniapp.co/dashboards/estaff-scorecard>) in the [BizOps](<https://cribl.omniapp.co/f/BizOps>) folder",
+            "omni_message_subtype": "bot_message",
+            "omni_message_bot_id": "B01304K3N6S",
+            "omni_message_bot_username": "Data Team Bot",
+            "omni_message_ts": "1761775683.612449",
+            "original_message_ts": "1761775573.179029",
+            "original_message_text": "Hi Omni, can you show me fedramp pipeline over time?",
+            "original_message_user_id": "U02CBV3GSM9",
+            "original_message_thread_ts": "1761775573.179029",
+            "original_message_thread_ts_time": "2025-10-29T22:06:13.000Z"
+          },
+          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook/ask-data-feedback-f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
+          "executionMode": "production"
         }
       }
     ]
   },
-  "versionId": "399baf01-8abe-4966-9e8a-8e419aa79e36",
+  "versionId": "eda3416f-2422-4dcc-a220-3230c3e55426",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
