@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-12-12T19:38:22.575Z",
+  "updatedAt": "2025-12-14T07:26:09.045Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -188,7 +188,7 @@
     },
     {
       "parameters": {
-        "url": "=https://slides.googleapis.com/v1/presentations/1qU45cwfps1MZxwO_gol6iGKJCz3vMfESE_v48rlAwHw",
+        "url": "=https://slides.googleapis.com/v1/presentations/1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleSlidesOAuth2Api",
         "options": {}
@@ -206,8 +206,7 @@
           "id": "RxgddaQUFZfhaDhu",
           "name": "Google Slides Cribl"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -222,7 +221,7 @@
         "parameters": {
           "mappingMode": "defineBelow",
           "value": {
-            "instruction": "=Find all slides in presentation id {{ $json.presentation_id }}. For each slide, get the all the title and text content and the slide id. Use structured output in JSON format in this format:\n[\n  {\n    \"id\": \"slide_id_1\",\n    \"title\": \"Title of slide 1\",\n    \"text\": \"Text of slide 1\"\n  },\n  {\n    \"id\": \"slide_id_2\",\n    \"title\": \"Title of slide 2\",\n    \"text\": \"Text of slide 2\"\n  }\n]\n"
+            "instruction": "=Find all slides in presentation id {{ $json.output.presentation_id }}. For each slide, get the all text content and the slide id, which is the objectId in each object in the slides array, but do **NOT** get the objectId's from the pageElements. Use structured output in JSON format in this format:\n[\n  {\n    \"id\": \"slide_id_1\",\n    \"text\": \"Text of slide 1\"\n  },\n  {\n    \"id\": \"slide_id_2\",\n    \"text\": \"Text of slide 2\"\n  }\n]\n"
           },
           "matchingColumns": [
             "instruction"
@@ -246,7 +245,7 @@
       "type": "@n8n/n8n-nodes-langchain.mcpClient",
       "typeVersion": 1,
       "position": [
-        2768,
+        3120,
         1024
       ],
       "id": "7cf470e5-aea1-4bba-bbb7-77c3ab706137",
@@ -263,26 +262,12 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        2288,
-        1024
+        1984,
+        528
       ],
       "id": "90810473-b45f-44be-af2c-28be01b56b83",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"presentation_id\": \"1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU\"\n}\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2496,
-        1024
-      ],
-      "id": "69247740-0277-4795-8a95-e69a8b9bf6a3",
-      "name": "Edit Fields"
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
     },
     {
       "parameters": {
@@ -292,7 +277,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        2976,
+        3440,
         1024
       ],
       "id": "42804e38-555d-4cf5-8ea4-6dd44a26b7dd",
@@ -300,16 +285,17 @@
     },
     {
       "parameters": {
-        "maxItems": 3
+        "maxItems": 8
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        3184,
-        784
+        4560,
+        816
       ],
       "id": "5cea9f1f-17ee-4cbb-addc-577fc682d92c",
-      "name": "Limit"
+      "name": "Limit",
+      "disabled": true
     },
     {
       "parameters": {
@@ -320,14 +306,14 @@
           "mode": "list",
           "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
         },
-        "prompt": "=generate an infographic for a slide using the title and text as context.\n\n<title>\n{{ $json.title }}\n</title>\n\n<text>\n{{ $json.text }}\n</text>",
+        "prompt": "=Generate a storyboard infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.text }}\n</text>",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        3760,
-        1280
+        4064,
+        1632
       ],
       "id": "ea219822-bae7-49d9-a9e1-c69fd6d62356",
       "name": "Generate an image",
@@ -336,7 +322,8 @@
           "id": "LKQbGwmroZKBfciU",
           "name": "Gemini - Cribl"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -351,7 +338,7 @@
         "parameters": {
           "mappingMode": "defineBelow",
           "value": {
-            "instruction": "=Now put this image into the center of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Edit Fields').item.json.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Limit').item.json.id }}\n</slide>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
+            "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Global Vars').item.json.output.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Loop Over Items').item.json.id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
           },
           "matchingColumns": [
             "instruction"
@@ -375,8 +362,8 @@
       "type": "@n8n/n8n-nodes-langchain.mcpClient",
       "typeVersion": 1,
       "position": [
-        4288,
-        1280
+        4592,
+        1632
       ],
       "id": "7d25344d-03bc-4828-8aa3-c970f1209a1a",
       "name": "MCP Client1",
@@ -385,7 +372,8 @@
           "id": "8vChXUnWfr2CNGyD",
           "name": "Pipedream OAuth"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -394,7 +382,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        3392,
+        4992,
         1024
       ],
       "id": "3674d635-efc5-43ef-82ce-c9c302c1cd22",
@@ -402,7 +390,7 @@
     },
     {
       "parameters": {
-        "name": "={{ $('Edit Fields').item.json.presentation_id }}__{{ $('Loop Over Items').item.json.id }}.png",
+        "name": "={{ $('Global Vars').item.json.output.presentation_id }}__{{ $('Loop Over Items').item.json.id }}.png",
         "driveId": {
           "__rl": true,
           "value": "0AMo0z91EPlT1Uk9PVA",
@@ -422,8 +410,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        4048,
-        1280
+        4352,
+        1632
       ],
       "id": "982f0f75-14e3-4ca5-8e9f-9321d8a4e44d",
       "name": "Upload file",
@@ -432,7 +420,8 @@
           "id": "SgST8lxFUWMslYat",
           "name": "Google Drive Cribl"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -447,8 +436,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        4704,
-        1280
+        5008,
+        1632
       ],
       "id": "2ed5f6c4-5ef5-4add-b521-2ae2f228d849",
       "name": "Delete a file",
@@ -457,7 +446,8 @@
           "id": "SgST8lxFUWMslYat",
           "name": "Google Drive Cribl"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -466,12 +456,13 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        4496,
-        1280
+        4800,
+        1632
       ],
       "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
       "name": "Wait",
-      "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d"
+      "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d",
+      "disabled": true
     },
     {
       "parameters": {
@@ -481,8 +472,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        2544,
-        1888
+        2192,
+        1248
       ],
       "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
       "name": "Azure OpenAI Chat Model",
@@ -491,42 +482,12 @@
           "id": "ljEp6Un527XmKGRN",
           "name": "Azure OpenAI gpt-5-mini"
         }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3,
-      "position": [
-        2656,
-        1648
-      ],
-      "id": "b54e8065-361f-4978-8ec4-1343feff12bf",
-      "name": "AI Agent",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
-      "typeVersion": 1.4,
-      "position": [
-        2448,
-        1648
-      ],
-      "id": "07f1d7af-1a30-47bb-987e-04787b85bfdb",
-      "name": "When chat message received",
-      "webhookId": "4f030263-a8de-4b2f-aee3-a5550e279c65",
-      "disabled": true
+      }
     },
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "princess-diaries",
+        "path": "beautiful-princess",
         "authentication": "basicAuth",
         "options": {
           "responseHeaders": {
@@ -542,8 +503,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        2272,
-        784
+        1968,
+        1024
       ],
       "id": "82e5bdc1-68ad-4c2b-a3e7-2826b718ea90",
       "name": "Trigger",
@@ -555,6 +516,144 @@
           "name": "Zapier Inbound Basic Auth Webhook"
         }
       }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You extract a Google Slides presentation ID from free-form messages, and optionally extract target slide indexes.\n\nWhat a Google Slides presentation ID is\n- It is the Google Drive file ID for a Slides presentation.\n- It is opaque and uses only these characters: A–Z, a–z, 0–9, hyphen (-), underscore (_).\n- Length: 25 to 120 characters.\n\nWhat target_slide_indexes are\n- They are slide index numbers referenced in the message. They may be 0-based or 1-based. Do not assume which base.\n- They may be absent.\n- They may appear as:\n  - A range like \"2-5\" meaning indexes 2 through 5 inclusive, expanded to [2,3,4,5].\n  - A comma-separated list like \"2,3,7,8,15\" meaning [2,3,7,8,15] with no further expansion.\n\nGoal\n- Return a single Slides presentation_id from the message.\n- The message is guaranteed to contain exactly one valid Slides presentation_id.\n- If target_slide_indexes are present, return them as an array of integers.\n- If target_slide_indexes are not present, omit the field.\n\nHigh-confidence extraction (Slides-only)\nA) Primary Slides URL pattern\n- https://docs.google.com/presentation/d/<presentation_id>/...\nRules:\n- Extract the token between \"/d/\" and the next \"/\" or \"?\" or \"#\" or end-of-string.\n- Confidence: high\n- match_type: \"slides_url_d_segment\"\n\nB) Slides publish/embed patterns (also high)\n- https://docs.google.com/presentation/d/<presentation_id>/edit\n- https://docs.google.com/presentation/d/<presentation_id>/present\n- https://docs.google.com/presentation/d/<presentation_id>/preview\n- https://docs.google.com/presentation/d/<presentation_id>/embed\n- https://docs.google.com/presentation/d/<presentation_id>/pub\nRules:\n- Same extraction as A.\n- Confidence: high\n\nMedium-confidence extraction (Slides-labeled IDs)\nUse this only if the message explicitly claims it is Slides:\n- Labels like: \"slides id\", \"presentation id\", \"presentation_id\", \"deck id\", \"google slides id\", \"slides link id\"\nRules:\n- If a token immediately follows such a label, accept it if it matches charset and length.\n\nDo not accept generic Drive patterns\nIgnore these even if they contain id=<...> unless you also see Slides-specific evidence:\n- drive.google.com/open?id=<...>\n- drive.google.com/file/d/<...>\n- drive.google.com/uc?id=<...>\n- drive.google.com/drive/folders/<...>\n\nCandidate validation rules for presentation_id\nA candidate presentation_id must satisfy:\n- Character set: only [A-Za-z0-9_-]\n- Length: 25 to 120 characters\n- Boundary checks:\n  - Token is delimited by start/end, whitespace, punctuation, or URL separators.\n  - Strip trailing punctuation like \".\", \",\", \")\", \"]\", \"}\".\n- URL decoding:\n  - If percent-encoded, URL-decode before validation.\n\nFalse-positive filters for presentation_id\nReject candidates if any apply:\n- UUID format (8-4-4-4-12 with hyphens).\n- Hex-only strings of length 32/40/64.\n- Any token not tied to the Slides URL pattern or Slides label context.\n\nExtraction rules for target_slide_indexes (optional)\n1) Require slide intent near numbers\nExtract indexes only when nearby text signals slides, such as:\n- \"slide\", \"slides\", \"slide index\", \"slide indexes\", \"slide indices\", \"target slides\", \"target_slide_indexes\", \"slides:\"\nIf there is no slide intent keyword near the numbers, do not extract target_slide_indexes.\n\n2) Supported formats\nA) Range format\n- Pattern: <start>-<end> where start and end are integers\n- Accept optional spaces: \"2 - 5\"\n- Expand inclusively:\n  - \"2-5\" => [2,3,4,5]\n- Validate:\n  - start <= end\n  - If start > end, treat as absent.\n\nB) Comma-separated list\n- Pattern: integer list separated by commas, optional spaces\n- Example: \"2,3,7,8,15\" or \"2, 3, 7\"\n- Do not expand.\n- Parse into integers.\n- Preserve order as written.\n\n3) Avoid false positives\nDo not extract target_slide_indexes from:\n- Dates (e.g., 12-13-2025), times, version numbers, phone numbers.\n- Hyphenated words or IDs.\n- Any number pattern not clearly tied to slide intent keywords.\n\n4) If both formats appear\n- Combine them in order of appearance.\n- Expand ranges, then append list values.\n- Return a single flattened array.\n\nSelection rule for presentation_id\n- If multiple candidates appear (should not happen), choose the one tied to a Slides URL first.\n- Else choose the labeled one.\n- Else choose the highest-scoring standalone candidate (only if Slides intent words exist in the message).\n\n<output_format>\n{\n  \"presentation_id\": \"<presentation_id>\",\n  \"target_slide_indexes\": [<int>, <int>, ...]\n}\n</output_format>\n\n<examples>\n<example_1_input>\n\"Deck: https://docs.google.com/presentation/d/1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789/edit#slide=id.p\"\n</example_1_input>\n\n<example_1_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": []\n}\n</example_1_output>\n\n<example_2_input>\n\"presentation_id: 1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789 slides 4-7\"\n</example_2_input>\n\n<example_2_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [4,5,6,7]\n}\n</example_2_output>\n\n<example_3_input>\n\"Deck: https://docs.google.com/presentation/d/1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789/edit. Target slides 2-5.\"\n</example_3_input>\n\n<example_3_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [2,3,4,5]\n}\n</example_3_output>\n\n<example_4_input>\n\"presentation_id: 1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789 slides: 2,3,7,8,15\"\n</example_4_input>\n\n<example_4_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [2,3,7,8,15]\n}\n</example_4_output>\n</examples>\n\n<message>\n{{ $json.body.message_text }}\n</message>\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2272,
+        1024
+      ],
+      "id": "d289a725-551d-4d67-8d0a-9915ccd39954",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [1,2,3]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2448,
+        1248
+      ],
+      "id": "2b3332df-eb48-4e2f-9649-01ea8bd9a267",
+      "name": "Presentation ID Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \n}\n",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2768,
+        1024
+      ],
+      "id": "81fabde8-a551-42ce-b0f2-8cfec267bce9",
+      "name": "Global Vars"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"presentation_id\": \"1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2192,
+        528
+      ],
+      "id": "69247740-0277-4795-8a95-e69a8b9bf6a3",
+      "name": "Set Presentation ID",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-relayer-1.app.n8n.cloud/webhook/generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": {{ $json.text.toJsonString() }},\n  \"presentation_id\": {{ $('Global Vars').item.json.output.presentation_id.toJsonString() }},\n  \"slide_id\": {{ $json.id.toJsonString() }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5360,
+        1232
+      ],
+      "id": "a4559953-7677-4912-90de-26311950d3b2",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5712,
+        1232
+      ],
+      "id": "25cd1e8e-7b71-41e5-8bde-eaf04feb651a",
+      "name": "Wait1",
+      "webhookId": "8ce5ff2d-f394-4ca9-bf95-8b5c8cf27e2a"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "28c5f8bc-24f0-463f-a8f1-27f22fe9e3a6",
+              "leftValue": "={{ $('Global Vars').item.json.output.target_slide_indexes }}",
+              "rightValue": "={{ $json.slide_index }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        4144,
+        1024
+      ],
+      "id": "3f13f540-2a1d-48d8-b09f-f071f1248250",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst indexIdMapping = items.map((item, slide_index) => {\n  slide_index += 1;\n  return { slide_index, id: item?.json?.id, text: item?.json?.text };\n});\nreturn indexIdMapping;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3776,
+        1024
+      ],
+      "id": "ac5c7573-d076-4ff9-bbba-46968adf0112",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -624,18 +723,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "MCP Client",
+            "node": "Set Presentation ID",
             "type": "main",
             "index": 0
           }
@@ -657,7 +745,7 @@
       "main": [
         [
           {
-            "node": "Limit",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -691,7 +779,7 @@
         [],
         [
           {
-            "node": "Generate an image",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -722,13 +810,7 @@
     },
     "Delete a file": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Wait": {
@@ -746,19 +828,8 @@
       "ai_languageModel": [
         [
           {
-            "node": "AI Agent",
+            "node": "AI Agent1",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When chat message received": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
             "index": 0
           }
         ]
@@ -768,7 +839,100 @@
       "main": [
         [
           {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Presentation ID Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
             "node": "MCP Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Presentation ID": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Filter",
             "type": "main",
             "index": 0
           }
@@ -22351,69 +22515,155 @@
           "headers": {
             "host": "n8n-relayer-1.app.n8n.cloud",
             "user-agent": "Zapier",
-            "content-length": "1869",
+            "content-length": "745",
             "accept": "*/*",
             "accept-encoding": "gzip, br",
             "authorization": "Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=",
             "cdn-loop": "cloudflare; loops=1; subreqs=1",
-            "cf-connecting-ip": "34.230.29.176",
+            "cf-connecting-ip": "98.92.247.50",
             "cf-ew-via": "15",
             "cf-ipcountry": "US",
-            "cf-ray": "9965fe4da6840626-IAD",
+            "cf-ray": "9adb700cb6c8d6d1-IAD",
             "cf-visitor": "{\"scheme\":\"https\"}",
             "cf-worker": "n8n.cloud",
             "content-type": "application/json; charset=utf-8",
-            "x-forwarded-for": "34.230.29.176, 172.71.194.142",
+            "x-forwarded-for": "98.92.247.50, 172.71.194.143",
             "x-forwarded-host": "n8n-relayer-1.app.n8n.cloud",
             "x-forwarded-port": "443",
             "x-forwarded-proto": "https",
-            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-kn8mt",
+            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-kgpvq",
             "x-is-trusted": "yes",
-            "x-real-ip": "34.230.29.176"
+            "x-real-ip": "98.92.247.50"
           },
           "params": {},
           "query": {},
           "body": {
-            "ts": "1761775710.350779",
-            "user_name": "priya_gupta",
-            "user_real_name": "Priya Gupta",
-            "channel_id": "C02GRDZS7QF",
-            "permalink": "https://cribl.slack.com/archives/C02GRDZS7QF/p1761775710350779?thread_ts=1761775573.179029&cid=C02GRDZS7QF",
-            "user_profile_first_name": "Priya",
-            "ts_time": "2025-10-29T22:08:30.000Z",
-            "user_profile_last_name": "Gupta",
-            "raw_text": "<@U08DHKDMR8C> my bad, it looks like we do not have a dashboard with this info. Will create it myself instead!",
-            "thread_ts": "1761775573.179029",
-            "user_id": "U02CBV3GSM9",
-            "user_profile_email": "pgupta@cribl.io",
-            "team_name": "Cribl",
-            "user_is_bot": "False",
+            "channel_id": "C0912AANW1L",
+            "channel_name": "data-eng-test-ai-channel",
+            "conversation_id": "C0912AANW1L",
+            "event_id": "1765691537.000553",
+            "event_timestamp": "2025-12-14T05:52:17.000Z",
+            "is_message_user_bot": "False",
+            "message_text": "beautify these slides: https://docs.google.com/presentation/d/1dfyQWt8lle1girN60-CAPfhnTYJ_2BJKDTafDiMiM1o/edit slides 2-8",
+            "message_timestamp": "2025-12-14T05:52:02.986Z",
+            "message_ts": "1765691522.986719",
+            "message_user_email": "nkwok@cribl.io",
+            "message_user_first_name": "Nathan",
+            "message_user_id": "U06PVBEK9T6",
+            "message_user_last_name": "Kwok",
+            "message_user_name": "nathan_kwok",
+            "reaction": "princess",
+            "reaction_user_id": "U06PVBEK9T6",
             "team_domain": "cribl",
-            "team_id": "T3XQYAF26",
-            "text": "@omni my bad, it looks like we do not have a dashboard with this info. Will create it myself instead!",
-            "channel_name": "ask-data",
-            "user_email": "pgupta@cribl.io",
-            "feedback_medium": "text",
-            "omni_message_text": "<@U02CBV3GSM9> I found a few dashboards related to pipeline insights that might help you visualize pipeline trends over time:\n• [Growth: Pipeline Xray](<https://cribl.omniapp.co/dashboards/2e7a63d6>) in the [Revenue](<https://cribl.omniapp.co/f/Revenue>) folder\n• [Growth: Pipeline Generation by Deal Generated Source](<https://cribl.omniapp.co/dashboards/bba09253>) in the [Revenue](<https://cribl.omniapp.co/f/Revenue>) folder\n• [Goals: FY26 Estaff Scorecard](<https://cribl.omniapp.co/dashboards/estaff-scorecard>) in the [BizOps](<https://cribl.omniapp.co/f/BizOps>) folder",
-            "omni_message_subtype": "bot_message",
-            "omni_message_bot_id": "B01304K3N6S",
-            "omni_message_bot_username": "Data Team Bot",
-            "omni_message_ts": "1761775683.612449",
-            "original_message_ts": "1761775573.179029",
-            "original_message_text": "Hi Omni, can you show me fedramp pipeline over time?",
-            "original_message_user_id": "U02CBV3GSM9",
-            "original_message_thread_ts": "1761775573.179029",
-            "original_message_thread_ts_time": "2025-10-29T22:06:13.000Z"
+            "team_id": "T3XQYAF26"
           },
-          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook/ask-data-feedback-f2cbcffc-c539-4be3-a636-cf5e0b5d7db0",
-          "executionMode": "production"
+          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook-test/beautiful-princess",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "AI Agent1": [
+      {
+        "json": {
+          "output": {
+            "presentation_id": "1dfyQWt8lle1girN60-CAPfhnTYJ_2BJKDTafDiMiM1o",
+            "target_slide_indexes": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "MCP Client": [
+      {
+        "json": {
+          "content": [
+            {
+              "type": "text",
+              "text": [
+                {
+                  "id": "g3a609d39db0_0_0",
+                  "text": "AI Trends & You\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_4",
+                  "text": "The Count is Right\nClosest to the count without going over wins\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_9",
+                  "text": "AI & Human Relationship\nAI works for you\nWhen executing a technical task, guide AI to do it\nWhen repeating a process, equip an agent with tools\nAI works with you\nWhen brainstorming, let AI explore where you can’t\nWhen making a judgement, let AI inform you \n"
+                },
+                {
+                  "id": "g3a609d39db0_0_14",
+                  "text": "Data Analysts\nGoal: \nFind and deliver proactive insights at scale\nStrengthening trust with business stakeholders\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_19",
+                  "text": "Data Analysts\nWhat to do to get to the goal: \nUnderstand the business\nInvest in the semantic layer\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_24",
+                  "text": "Data Analysts\nHow you can use AI: \nUse AI to explore data, find insights, and achieve scale for proactive analysis, \nPositive feedback loop between AI insights, semantic layer, and stakeholder trust\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_29",
+                  "text": "Data Enablement\nGoal: \nGive more and better context to AI\nEnable and equip the AI, not just humans\nAgents work on behalf of humans\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_34",
+                  "text": "Data Enablement\nWhat to do to get to the goal: \nEnrichment from sources we were unable to before\nGovernance policies encompassing agents\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_39",
+                  "text": "Data Enablement\nHow you can use AI: \nUse AI to enrich structured data with unstructured data and join data from multiple sources\nMake sense and monitor policies at scale\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_44",
+                  "text": "Data Scientists\nGoal: \nExperimentation and infra at scale (Jevon’s paradox)\nGenerating stories and intuition for stakeholders \n"
+                },
+                {
+                  "id": "g3a609d39db0_0_49",
+                  "text": "Data Scientists\nWhat to do to get to the goal: \nOffload code writing to AI (<20% manual)\nLLM operations, fine tuning & retraining\nEmphasizing stories over just technical skills\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_54",
+                  "text": "Data Scientists\nHow you can use AI: \nExplore and discover/profile data using AI\nBrainstorm algorithms, suggest features, and help judge/gain insights on the best algorithms for the task\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_59",
+                  "text": "Data Engineers\nGoal: \nAchieve consistency at scale \nMonitoring and pipeline management using agents\nEnable other roles for impact at scale\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_64",
+                  "text": "Data Engineers\nWhat to do to get to the goal: \nFocus on labeling, creating, and storing metadata\nImplement multiple retrieval patterns like hybrid retrieval\nstandardize communication protocols for higher consistency\n"
+                },
+                {
+                  "id": "g3a609d39db0_0_69",
+                  "text": "Data Engineers\nHow you can use AI: \nCode generation agents\nEnable context for and monitoring via agents. Start small\nBuild trust in AI and for stakeholders\n"
+                }
+              ],
+              "traceId": "50ff0976-8ddd-4553-a58d-db0dbe958c57"
+            }
+          ]
+        },
+        "pairedItem": {
+          "item": 0
         }
       }
     ]
   },
-  "versionId": "eda3416f-2422-4dcc-a220-3230c3e55426",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "versionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
+  "activeVersionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
+  "triggerCount": 1,
   "shared": [
     {
       "updatedAt": "2025-12-07T07:44:07.623Z",
@@ -22423,6 +22673,949 @@
       "projectId": "2vHf2VxAoKk0WgJE"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-14T07:26:09.047Z",
+    "createdAt": "2025-12-14T07:26:09.047Z",
+    "versionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
+    "workflowId": "GwmMQJB2b2VzlsKc",
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://slides.googleapis.com/v1/presentations/{{ $('Webhook').item.json[\"body\"][\"presentation_id\"] }}:batchUpdate ",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSlidesOAuth2Api",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"requests\": [\n    {\n        \"replaceImage\": {\n          \"imageObjectId\": \"{{ $json.objectId }}\",\n          \"url\": \"{{ $('Webhook').item.json[\"body\"][\"image_url\"] }}\",\n          \"imageReplaceMethod\": \"CENTER_CROP\"\n        }\n    },\n    {\n      \"updatePageElementAltText\": {\n        \"objectId\": \"{{ $json.objectId }}\",\n        \"description\": \"{{ $('Webhook').item.json[\"body\"][\"image_key\"] }}\"\n      }\n    }\n  ]\n}  \n   ",
+          "options": {}
+        },
+        "id": "aea55995-2c2c-4f59-8b68-43fa1871bb4c",
+        "name": "Replace Images",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          1168,
+          928
+        ],
+        "typeVersion": 4.2,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"error\": \"Missing fields.\"\n}",
+          "options": {
+            "responseCode": 500
+          }
+        },
+        "id": "92eeca3a-47b2-4daa-ac51-5b957c8d7d56",
+        "name": "Error Missing Fields",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "position": [
+          848,
+          1424
+        ],
+        "typeVersion": 1.1,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"message\": \"Image replaced.\"\n}",
+          "options": {}
+        },
+        "id": "14878542-6a42-4fe4-8dd6-328450a883eb",
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "position": [
+          1360,
+          928
+        ],
+        "typeVersion": 1.1,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "content": "## Dynamically Replace Images in Google Slides\nThis workflow exposes an API endpoint that lets you dynamically replace an image in Google Slides, perfect for automating deck presentations like updating backgrounds or client logos.\n\n### Step 1: Set Up a Key Identifier in Google Slides\nAdd a unique key identifier to the images you want to replace.\n1. Click on the image.\n2. Go to **Format Options** and then **Alt Text**.\n3. Enter your unique identifier, like `client_logo` or `background`.\n\n### Step 2: Use a POST Request to Update the Image\nSend a POST request to the workflow endpoint with the following parameters in the body:\n- `presentation_id`: The ID of your Google Slides presentation.\nYou can find it in the URL of your Google presentation : `https://docs.google.com/presentation/d/{this-part}/edit#slide=id.p`)\n- `image_key`: The unique identifier you created.\n- `image_url`: The URL of the new image.\n\nThat's it! The specified image in your Google Slides presentation will be replaced with the new one from the provided URL.\n\nThis workflow is designed to be flexible, allowing you to use the same identifier across multiple slides and presentations. I hope it streamlines your slide automation process!\n\nHappy automating!\nThe n8Ninja",
+          "height": 654.4370838798395,
+          "width": 596.8395976509729
+        },
+        "id": "ac42249b-3c7d-4ba1-be7d-ba6e1ae652cd",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          368,
+          240
+        ],
+        "typeVersion": 1,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "replace-image-in-slide",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "735c5c4e-df8f-47ad-b0d7-ed57453a84d0",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "position": [
+          368,
+          944
+        ],
+        "webhookId": "df3b8b83-fd6d-40f8-be13-42bae85dcf63",
+        "typeVersion": 2,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const key = $('Webhook').item.json.body.image_key;\n\nconst pageElements = $input\n  .all()\n  .flatMap(item => item.json.slides)\n  .flatMap(slide => slide.pageElements.filter(el => el.image && el.description === key));\n\nconst objectIds = pageElements.map(el => ({ objectId: el.objectId }));\n\nreturn objectIds"
+        },
+        "id": "22d1dd70-0716-4407-8e25-703355969e95",
+        "name": "Retrieve matching Images ObjectIds",
+        "type": "n8n-nodes-base.code",
+        "position": [
+          992,
+          928
+        ],
+        "typeVersion": 2,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "url": "=https://slides.googleapis.com/v1/presentations/1FTesdm8yBn5lUviC5OJQM8wFwV4RXVIj2I02LEvapks",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSlidesOAuth2Api",
+          "options": {}
+        },
+        "id": "f942a8de-9fa8-4855-9be1-4247bae887e5",
+        "name": "Retrieve All Slide Elements",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          816,
+          928
+        ],
+        "typeVersion": 4.2,
+        "credentials": {
+          "googleSlidesOAuth2Api": {
+            "id": "9Rokn0goI42yy1SK",
+            "name": "Google Slides"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "3272f7e8-4bc2-44bd-9760-437b2992e6e7",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                },
+                "leftValue": "={{ $json.body.presentation_id }}",
+                "rightValue": ""
+              },
+              {
+                "id": "9e8abf56-622d-4704-95ea-c0f5f31683dd",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                },
+                "leftValue": "={{ $json.body.image_key }}",
+                "rightValue": ""
+              },
+              {
+                "id": "d2cec4c9-2a90-4a24-ab6c-628689419698",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                },
+                "leftValue": "={{ $json.body.image_url }}",
+                "rightValue": ""
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ddcbe7ed-9abc-49ac-98e5-4d5222a641d4",
+        "name": "Check if all params are provided",
+        "type": "n8n-nodes-base.if",
+        "position": [
+          576,
+          944
+        ],
+        "typeVersion": 2,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "url": "=https://slides.googleapis.com/v1/presentations/1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSlidesOAuth2Api",
+          "options": {}
+        },
+        "id": "6c480a4e-78a0-45ee-b6bf-824d999abf14",
+        "name": "Retrieve All Slide Elements1",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          1376,
+          544
+        ],
+        "typeVersion": 4.2,
+        "credentials": {
+          "googleSlidesOAuth2Api": {
+            "id": "RxgddaQUFZfhaDhu",
+            "name": "Google Slides Cribl"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "endpointUrl": "https://mcp.pipedream.net/v2",
+          "authentication": "mcpOAuth2Api",
+          "tool": {
+            "__rl": true,
+            "value": "google_slides-find-presentation",
+            "mode": "list",
+            "cachedResultName": "google_slides-find-presentation"
+          },
+          "parameters": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "instruction": "=Find all slides in presentation id {{ $json.output.presentation_id }}. For each slide, get the all text content and the slide id, which is the objectId in each object in the slides array, but do **NOT** get the objectId's from the pageElements. Use structured output in JSON format in this format:\n[\n  {\n    \"id\": \"slide_id_1\",\n    \"text\": \"Text of slide 1\"\n  },\n  {\n    \"id\": \"slide_id_2\",\n    \"text\": \"Text of slide 2\"\n  }\n]\n"
+            },
+            "matchingColumns": [
+              "instruction"
+            ],
+            "schema": [
+              {
+                "id": "instruction",
+                "displayName": "instruction",
+                "defaultMatch": false,
+                "required": true,
+                "display": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClient",
+        "typeVersion": 1,
+        "position": [
+          3120,
+          1024
+        ],
+        "id": "7cf470e5-aea1-4bba-bbb7-77c3ab706137",
+        "name": "MCP Client",
+        "credentials": {
+          "mcpOAuth2Api": {
+            "id": "8vChXUnWfr2CNGyD",
+            "name": "Pipedream OAuth"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          1984,
+          528
+        ],
+        "id": "90810473-b45f-44be-af2c-28be01b56b83",
+        "name": "When clicking ‘Execute workflow’",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "content[0].text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          3440,
+          1024
+        ],
+        "id": "42804e38-555d-4cf5-8ea4-6dd44a26b7dd",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "maxItems": 8
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          4560,
+          816
+        ],
+        "id": "5cea9f1f-17ee-4cbb-addc-577fc682d92c",
+        "name": "Limit",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "modelId": {
+            "__rl": true,
+            "value": "models/gemini-3-pro-image-preview",
+            "mode": "list",
+            "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+          },
+          "prompt": "=Generate a storyboard infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.text }}\n</text>",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.googleGemini",
+        "typeVersion": 1,
+        "position": [
+          4064,
+          1632
+        ],
+        "id": "ea219822-bae7-49d9-a9e1-c69fd6d62356",
+        "name": "Generate an image",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "LKQbGwmroZKBfciU",
+            "name": "Gemini - Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "endpointUrl": "https://mcp.pipedream.net/v2",
+          "authentication": "mcpOAuth2Api",
+          "tool": {
+            "__rl": true,
+            "value": "google_slides-create-image",
+            "mode": "list",
+            "cachedResultName": "google_slides-create-image"
+          },
+          "parameters": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Global Vars').item.json.output.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Loop Over Items').item.json.id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
+            },
+            "matchingColumns": [
+              "instruction"
+            ],
+            "schema": [
+              {
+                "id": "instruction",
+                "displayName": "instruction",
+                "defaultMatch": false,
+                "required": true,
+                "display": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClient",
+        "typeVersion": 1,
+        "position": [
+          4592,
+          1632
+        ],
+        "id": "7d25344d-03bc-4828-8aa3-c970f1209a1a",
+        "name": "MCP Client1",
+        "credentials": {
+          "mcpOAuth2Api": {
+            "id": "8vChXUnWfr2CNGyD",
+            "name": "Pipedream OAuth"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          4992,
+          1024
+        ],
+        "id": "3674d635-efc5-43ef-82ce-c9c302c1cd22",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "name": "={{ $('Global Vars').item.json.output.presentation_id }}__{{ $('Loop Over Items').item.json.id }}.png",
+          "driveId": {
+            "__rl": true,
+            "value": "0AMo0z91EPlT1Uk9PVA",
+            "mode": "list",
+            "cachedResultName": "BizOps",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ",
+            "mode": "list",
+            "cachedResultName": "AI Workflow - Google Slides",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          4352,
+          1632
+        ],
+        "id": "982f0f75-14e3-4ca5-8e9f-9321d8a4e44d",
+        "name": "Upload file",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "SgST8lxFUWMslYat",
+            "name": "Google Drive Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "operation": "deleteFile",
+          "fileId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $('Upload file').item.json.id }}"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          5008,
+          1632
+        ],
+        "id": "2ed5f6c4-5ef5-4add-b521-2ae2f228d849",
+        "name": "Delete a file",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "SgST8lxFUWMslYat",
+            "name": "Google Drive Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "amount": 30
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          4800,
+          1632
+        ],
+        "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
+        "name": "Wait",
+        "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "model": "gpt-5-mini",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2192,
+          1248
+        ],
+        "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
+        "name": "Azure OpenAI Chat Model",
+        "credentials": {
+          "azureOpenAiApi": {
+            "id": "ljEp6Un527XmKGRN",
+            "name": "Azure OpenAI gpt-5-mini"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "beautiful-princess",
+          "authentication": "basicAuth",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          1968,
+          1024
+        ],
+        "id": "82e5bdc1-68ad-4c2b-a3e7-2826b718ea90",
+        "name": "Trigger",
+        "webhookId": "1298ec1c-5d6c-4010-9b21-b40fada0aa39",
+        "alwaysOutputData": true,
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "3AVUqEU99hkVKUOW",
+            "name": "Zapier Inbound Basic Auth Webhook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=You extract a Google Slides presentation ID from free-form messages, and optionally extract target slide indexes.\n\nWhat a Google Slides presentation ID is\n- It is the Google Drive file ID for a Slides presentation.\n- It is opaque and uses only these characters: A–Z, a–z, 0–9, hyphen (-), underscore (_).\n- Length: 25 to 120 characters.\n\nWhat target_slide_indexes are\n- They are slide index numbers referenced in the message. They may be 0-based or 1-based. Do not assume which base.\n- They may be absent.\n- They may appear as:\n  - A range like \"2-5\" meaning indexes 2 through 5 inclusive, expanded to [2,3,4,5].\n  - A comma-separated list like \"2,3,7,8,15\" meaning [2,3,7,8,15] with no further expansion.\n\nGoal\n- Return a single Slides presentation_id from the message.\n- The message is guaranteed to contain exactly one valid Slides presentation_id.\n- If target_slide_indexes are present, return them as an array of integers.\n- If target_slide_indexes are not present, omit the field.\n\nHigh-confidence extraction (Slides-only)\nA) Primary Slides URL pattern\n- https://docs.google.com/presentation/d/<presentation_id>/...\nRules:\n- Extract the token between \"/d/\" and the next \"/\" or \"?\" or \"#\" or end-of-string.\n- Confidence: high\n- match_type: \"slides_url_d_segment\"\n\nB) Slides publish/embed patterns (also high)\n- https://docs.google.com/presentation/d/<presentation_id>/edit\n- https://docs.google.com/presentation/d/<presentation_id>/present\n- https://docs.google.com/presentation/d/<presentation_id>/preview\n- https://docs.google.com/presentation/d/<presentation_id>/embed\n- https://docs.google.com/presentation/d/<presentation_id>/pub\nRules:\n- Same extraction as A.\n- Confidence: high\n\nMedium-confidence extraction (Slides-labeled IDs)\nUse this only if the message explicitly claims it is Slides:\n- Labels like: \"slides id\", \"presentation id\", \"presentation_id\", \"deck id\", \"google slides id\", \"slides link id\"\nRules:\n- If a token immediately follows such a label, accept it if it matches charset and length.\n\nDo not accept generic Drive patterns\nIgnore these even if they contain id=<...> unless you also see Slides-specific evidence:\n- drive.google.com/open?id=<...>\n- drive.google.com/file/d/<...>\n- drive.google.com/uc?id=<...>\n- drive.google.com/drive/folders/<...>\n\nCandidate validation rules for presentation_id\nA candidate presentation_id must satisfy:\n- Character set: only [A-Za-z0-9_-]\n- Length: 25 to 120 characters\n- Boundary checks:\n  - Token is delimited by start/end, whitespace, punctuation, or URL separators.\n  - Strip trailing punctuation like \".\", \",\", \")\", \"]\", \"}\".\n- URL decoding:\n  - If percent-encoded, URL-decode before validation.\n\nFalse-positive filters for presentation_id\nReject candidates if any apply:\n- UUID format (8-4-4-4-12 with hyphens).\n- Hex-only strings of length 32/40/64.\n- Any token not tied to the Slides URL pattern or Slides label context.\n\nExtraction rules for target_slide_indexes (optional)\n1) Require slide intent near numbers\nExtract indexes only when nearby text signals slides, such as:\n- \"slide\", \"slides\", \"slide index\", \"slide indexes\", \"slide indices\", \"target slides\", \"target_slide_indexes\", \"slides:\"\nIf there is no slide intent keyword near the numbers, do not extract target_slide_indexes.\n\n2) Supported formats\nA) Range format\n- Pattern: <start>-<end> where start and end are integers\n- Accept optional spaces: \"2 - 5\"\n- Expand inclusively:\n  - \"2-5\" => [2,3,4,5]\n- Validate:\n  - start <= end\n  - If start > end, treat as absent.\n\nB) Comma-separated list\n- Pattern: integer list separated by commas, optional spaces\n- Example: \"2,3,7,8,15\" or \"2, 3, 7\"\n- Do not expand.\n- Parse into integers.\n- Preserve order as written.\n\n3) Avoid false positives\nDo not extract target_slide_indexes from:\n- Dates (e.g., 12-13-2025), times, version numbers, phone numbers.\n- Hyphenated words or IDs.\n- Any number pattern not clearly tied to slide intent keywords.\n\n4) If both formats appear\n- Combine them in order of appearance.\n- Expand ranges, then append list values.\n- Return a single flattened array.\n\nSelection rule for presentation_id\n- If multiple candidates appear (should not happen), choose the one tied to a Slides URL first.\n- Else choose the labeled one.\n- Else choose the highest-scoring standalone candidate (only if Slides intent words exist in the message).\n\n<output_format>\n{\n  \"presentation_id\": \"<presentation_id>\",\n  \"target_slide_indexes\": [<int>, <int>, ...]\n}\n</output_format>\n\n<examples>\n<example_1_input>\n\"Deck: https://docs.google.com/presentation/d/1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789/edit#slide=id.p\"\n</example_1_input>\n\n<example_1_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": []\n}\n</example_1_output>\n\n<example_2_input>\n\"presentation_id: 1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789 slides 4-7\"\n</example_2_input>\n\n<example_2_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [4,5,6,7]\n}\n</example_2_output>\n\n<example_3_input>\n\"Deck: https://docs.google.com/presentation/d/1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789/edit. Target slides 2-5.\"\n</example_3_input>\n\n<example_3_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [2,3,4,5]\n}\n</example_3_output>\n\n<example_4_input>\n\"presentation_id: 1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789 slides: 2,3,7,8,15\"\n</example_4_input>\n\n<example_4_output>\n{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [2,3,7,8,15]\n}\n</example_4_output>\n</examples>\n\n<message>\n{{ $json.body.message_text }}\n</message>\n",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3,
+        "position": [
+          2272,
+          1024
+        ],
+        "id": "d289a725-551d-4d67-8d0a-9915ccd39954",
+        "name": "AI Agent1"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"presentation_id\": \"1abcDEFghiJKlmnOP_qrST-uvWxYZ0123456789\",\n  \"target_slide_indexes\": [1,2,3]\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          2448,
+          1248
+        ],
+        "id": "2b3332df-eb48-4e2f-9649-01ea8bd9a267",
+        "name": "Presentation ID Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "{\n  \n}\n",
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2768,
+          1024
+        ],
+        "id": "81fabde8-a551-42ce-b0f2-8cfec267bce9",
+        "name": "Global Vars"
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "{\n  \"presentation_id\": \"1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU\"\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2192,
+          528
+        ],
+        "id": "69247740-0277-4795-8a95-e69a8b9bf6a3",
+        "name": "Set Presentation ID",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n-relayer-1.app.n8n.cloud/webhook/generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"text\": {{ $json.text.toJsonString() }},\n  \"presentation_id\": {{ $('Global Vars').item.json.output.presentation_id.toJsonString() }},\n  \"slide_id\": {{ $json.id.toJsonString() }}\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          5360,
+          1232
+        ],
+        "id": "a4559953-7677-4912-90de-26311950d3b2",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          5712,
+          1232
+        ],
+        "id": "25cd1e8e-7b71-41e5-8bde-eaf04feb651a",
+        "name": "Wait1",
+        "webhookId": "8ce5ff2d-f394-4ca9-bf95-8b5c8cf27e2a"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "28c5f8bc-24f0-463f-a8f1-27f22fe9e3a6",
+                "leftValue": "={{ $('Global Vars').item.json.output.target_slide_indexes }}",
+                "rightValue": "={{ $json.slide_index }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          4144,
+          1024
+        ],
+        "id": "3f13f540-2a1d-48d8-b09f-f071f1248250",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst indexIdMapping = items.map((item, slide_index) => {\n  slide_index += 1;\n  return { slide_index, id: item?.json?.id, text: item?.json?.text };\n});\nreturn indexIdMapping;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3776,
+          1024
+        ],
+        "id": "ac5c7573-d076-4ff9-bbba-46968adf0112",
+        "name": "Code in JavaScript"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Check if all params are provided",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Images": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve All Slide Elements": {
+        "main": [
+          [
+            {
+              "node": "Retrieve matching Images ObjectIds",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check if all params are provided": {
+        "main": [
+          [
+            {
+              "node": "Retrieve All Slide Elements",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Error Missing Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Retrieve matching Images ObjectIds": {
+        "main": [
+          [
+            {
+              "node": "Replace Images",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Set Presentation ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MCP Client": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate an image": {
+        "main": [
+          [
+            {
+              "node": "Upload file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MCP Client1": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload file": {
+        "main": [
+          [
+            {
+              "node": "MCP Client1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Delete a file": {
+        "main": [
+          []
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Delete a file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Azure OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent1": {
+        "main": [
+          [
+            {
+              "node": "Global Vars",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Presentation ID Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Global Vars": {
+        "main": [
+          [
+            {
+              "node": "MCP Client",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Presentation ID": {
+        "main": [
+          [
+            {
+              "node": "Global Vars",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Wait1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nathan K",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
