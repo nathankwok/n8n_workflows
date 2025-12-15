@@ -1,1 +1,595 @@
-{"updatedAt":"2025-12-14T08:36:25.407Z","createdAt":"2025-12-14T06:42:46.463Z","id":"mLsfMwWBnPljO9Sj","name":"generate_slide_image","active":true,"isArchived":false,"nodes":[{"parameters":{"resource":"image","modelId":{"__rl":true,"value":"models/gemini-3-pro-image-preview","mode":"list","cachedResultName":"models/gemini-3-pro-image-preview (Nano Banana Pro)"},"prompt":"=Generate a handdrawn infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.body.text }}\n</text>","options":{}},"type":"@n8n/n8n-nodes-langchain.googleGemini","typeVersion":1,"position":[256,-96],"id":"4356e18f-b6b2-45fd-b54e-b7cafe6b38bb","name":"Generate an image","credentials":{"googlePalmApi":{"id":"LKQbGwmroZKBfciU","name":"Gemini - Cribl"}}},{"parameters":{"endpointUrl":"https://mcp.pipedream.net/v2","authentication":"mcpOAuth2Api","tool":{"__rl":true,"value":"google_slides-create-image","mode":"list","cachedResultName":"google_slides-create-image"},"parameters":{"mappingMode":"defineBelow","value":{"instruction":"=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Webhook').item.json.body.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Webhook').item.json.body.slide_id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"},"matchingColumns":["instruction"],"schema":[{"id":"instruction","displayName":"instruction","defaultMatch":false,"required":true,"display":true,"type":"string","removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":false},"options":{}},"type":"@n8n/n8n-nodes-langchain.mcpClient","typeVersion":1,"position":[784,-96],"id":"017f437d-5e00-4778-a820-139d8df34b01","name":"MCP Client1","credentials":{"mcpOAuth2Api":{"id":"8vChXUnWfr2CNGyD","name":"Pipedream OAuth"}}},{"parameters":{"name":"={{ $('Webhook').item.json.body.presentation_id }}__{{ $('Webhook').item.json.body.slide_id }}.png","driveId":{"__rl":true,"value":"0AMo0z91EPlT1Uk9PVA","mode":"list","cachedResultName":"BizOps","cachedResultUrl":"https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"},"folderId":{"__rl":true,"value":"1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ","mode":"list","cachedResultName":"AI Workflow - Google Slides","cachedResultUrl":"https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"},"options":{}},"type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[544,-96],"id":"9eeb883a-3b66-4b10-9ae3-e089fc3683b6","name":"Upload file","credentials":{"googleDriveOAuth2Api":{"id":"SgST8lxFUWMslYat","name":"Google Drive Cribl"}}},{"parameters":{"operation":"deleteFile","fileId":{"__rl":true,"mode":"id","value":"={{ $('Upload file').item.json.id }}"},"options":{}},"type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[1200,-96],"id":"3384bf60-242e-44b9-85f6-f2af3d1dc03f","name":"Delete a file","credentials":{"googleDriveOAuth2Api":{"id":"SgST8lxFUWMslYat","name":"Google Drive Cribl"}}},{"parameters":{"amount":3.5},"type":"n8n-nodes-base.wait","typeVersion":1.1,"position":[992,-96],"id":"6283cb38-1d53-4c74-ab05-acef08937232","name":"Wait","webhookId":"d70e97a4-2b4d-49bc-8706-b2614784b43d"},{"parameters":{"httpMethod":"POST","path":"generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89","options":{}},"type":"n8n-nodes-base.webhook","typeVersion":2.1,"position":[-48,-96],"id":"065f2457-348b-4716-9794-1f299e9e871d","name":"Webhook","webhookId":"13582348-0f00-441b-a50a-b28fb63c1a89"}],"connections":{"Generate an image":{"main":[[{"node":"Upload file","type":"main","index":0}]]},"MCP Client1":{"main":[[{"node":"Wait","type":"main","index":0}]]},"Upload file":{"main":[[{"node":"MCP Client1","type":"main","index":0}]]},"Wait":{"main":[[{"node":"Delete a file","type":"main","index":0}]]},"Webhook":{"main":[[{"node":"Generate an image","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":null,"pinData":{"Webhook":[{"json":{"headers":{"host":"n8n-relayer-1.app.n8n.cloud","user-agent":"axios/1.12.0","content-length":"1353","accept":"application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7","accept-encoding":"gzip, br","cdn-loop":"cloudflare; loops=1; subreqs=1","cf-connecting-ip":"20.218.174.12","cf-ew-via":"15","cf-ipcountry":"DE","cf-ray":"9adbc5cf60dedbcb-FRA","cf-visitor":"{\"scheme\":\"https\"}","cf-worker":"n8n.cloud","content-type":"application/json","x-forwarded-for":"20.218.174.12, 172.71.144.172","x-forwarded-host":"n8n-relayer-1.app.n8n.cloud","x-forwarded-port":"443","x-forwarded-proto":"https","x-forwarded-server":"traefik-prod-users-gwc-72-585f59b6c7-klq84","x-is-trusted":"yes","x-real-ip":"20.218.174.12"},"params":{},"query":{},"body":{"text":"Executive Summary | Corporate Marketing\nAreas to Improve \nBuild and execute agentic telemetry brand campaign\nEvolve measurement and build framework\u000b\nIncrease Tier 1 media coverage\nBalance volume and higher impact storytelling with reach, message, pull-through, influence\nCriblCon Pass Management: Need more scalable solution with registration system and SFDC\nExec program engagement (EBC & Black Hat):\n Improve engagement for Q4 shows (esp. re:Invent); rationalize exec engagement programs for FY27\nScale creative: Balance creative excellence with growing demand through agency bench buildout, resource planning, and partnership with stakeholders\nDoing Well\nLinkedIn New Follower Growth \n+12.5k new followers in Q3; 94% to FY26 goal (100k); highest growth rate (67%) among competitors we track\u000b\nProactive PR: 469 PR Score on 300 Q3 goal\nQ3 was top performing quarter ever\n90% to FY26 goal (1000)\u000b\nCriblCon ‘25: Exceeded reg goals — standout execution, strong attendance, and extremely positive feedback.\nTradeshow Performance: BlackHat and Fal.Con surpassed lead goals by 2x; strong ROI and booth engagement.\nCreative excellence: 7.6 brand audit score and 6 GDUSA awards (top 10% of teams)\nQ3’26 Lookback\n","presentation_id":"1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU","slide_id":"g3af5991fbff_0_33"},"webhookUrl":"https://n8n-relayer-1.app.n8n.cloud/webhook-test/generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89","executionMode":"test"},"pairedItem":{"item":0}}]},"versionId":"35a3835d-2d9d-49d0-883c-db5100fdc76b","activeVersionId":"35a3835d-2d9d-49d0-883c-db5100fdc76b","triggerCount":1,"shared":[{"updatedAt":"2025-12-14T06:42:46.468Z","createdAt":"2025-12-14T06:42:46.468Z","role":"workflow:owner","workflowId":"mLsfMwWBnPljO9Sj","projectId":"2vHf2VxAoKk0WgJE"}],"activeVersion":{"updatedAt":"2025-12-14T08:36:25.409Z","createdAt":"2025-12-14T08:36:25.409Z","versionId":"35a3835d-2d9d-49d0-883c-db5100fdc76b","workflowId":"mLsfMwWBnPljO9Sj","nodes":[{"parameters":{"resource":"image","modelId":{"__rl":true,"value":"models/gemini-3-pro-image-preview","mode":"list","cachedResultName":"models/gemini-3-pro-image-preview (Nano Banana Pro)"},"prompt":"=Generate a handdrawn infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.body.text }}\n</text>","options":{}},"type":"@n8n/n8n-nodes-langchain.googleGemini","typeVersion":1,"position":[256,-96],"id":"4356e18f-b6b2-45fd-b54e-b7cafe6b38bb","name":"Generate an image","credentials":{"googlePalmApi":{"id":"LKQbGwmroZKBfciU","name":"Gemini - Cribl"}}},{"parameters":{"endpointUrl":"https://mcp.pipedream.net/v2","authentication":"mcpOAuth2Api","tool":{"__rl":true,"value":"google_slides-create-image","mode":"list","cachedResultName":"google_slides-create-image"},"parameters":{"mappingMode":"defineBelow","value":{"instruction":"=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Webhook').item.json.body.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Webhook').item.json.body.slide_id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"},"matchingColumns":["instruction"],"schema":[{"id":"instruction","displayName":"instruction","defaultMatch":false,"required":true,"display":true,"type":"string","removed":false}],"attemptToConvertTypes":false,"convertFieldsToString":false},"options":{}},"type":"@n8n/n8n-nodes-langchain.mcpClient","typeVersion":1,"position":[784,-96],"id":"017f437d-5e00-4778-a820-139d8df34b01","name":"MCP Client1","credentials":{"mcpOAuth2Api":{"id":"8vChXUnWfr2CNGyD","name":"Pipedream OAuth"}}},{"parameters":{"name":"={{ $('Webhook').item.json.body.presentation_id }}__{{ $('Webhook').item.json.body.slide_id }}.png","driveId":{"__rl":true,"value":"0AMo0z91EPlT1Uk9PVA","mode":"list","cachedResultName":"BizOps","cachedResultUrl":"https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"},"folderId":{"__rl":true,"value":"1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ","mode":"list","cachedResultName":"AI Workflow - Google Slides","cachedResultUrl":"https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"},"options":{}},"type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[544,-96],"id":"9eeb883a-3b66-4b10-9ae3-e089fc3683b6","name":"Upload file","credentials":{"googleDriveOAuth2Api":{"id":"SgST8lxFUWMslYat","name":"Google Drive Cribl"}}},{"parameters":{"operation":"deleteFile","fileId":{"__rl":true,"mode":"id","value":"={{ $('Upload file').item.json.id }}"},"options":{}},"type":"n8n-nodes-base.googleDrive","typeVersion":3,"position":[1200,-96],"id":"3384bf60-242e-44b9-85f6-f2af3d1dc03f","name":"Delete a file","credentials":{"googleDriveOAuth2Api":{"id":"SgST8lxFUWMslYat","name":"Google Drive Cribl"}}},{"parameters":{"amount":3.5},"type":"n8n-nodes-base.wait","typeVersion":1.1,"position":[992,-96],"id":"6283cb38-1d53-4c74-ab05-acef08937232","name":"Wait","webhookId":"d70e97a4-2b4d-49bc-8706-b2614784b43d"},{"parameters":{"httpMethod":"POST","path":"generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89","options":{}},"type":"n8n-nodes-base.webhook","typeVersion":2.1,"position":[-48,-96],"id":"065f2457-348b-4716-9794-1f299e9e871d","name":"Webhook","webhookId":"13582348-0f00-441b-a50a-b28fb63c1a89"}],"connections":{"Generate an image":{"main":[[{"node":"Upload file","type":"main","index":0}]]},"MCP Client1":{"main":[[{"node":"Wait","type":"main","index":0}]]},"Upload file":{"main":[[{"node":"MCP Client1","type":"main","index":0}]]},"Wait":{"main":[[{"node":"Delete a file","type":"main","index":0}]]},"Webhook":{"main":[[{"node":"Generate an image","type":"main","index":0}]]}},"authors":"Nathan K","name":null,"description":null},"tags":[{"updatedAt":"2025-09-29T05:57:24.200Z","createdAt":"2025-09-29T05:57:24.200Z","id":"JC97st4iY7gpPYhF","name":"subworkflow"}]}
+{
+  "updatedAt": "2025-12-15T19:24:27.021Z",
+  "createdAt": "2025-12-14T06:42:46.463Z",
+  "id": "mLsfMwWBnPljO9Sj",
+  "name": "generate_slide_image",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "endpointUrl": "https://mcp.pipedream.net/v2",
+        "authentication": "mcpOAuth2Api",
+        "tool": {
+          "__rl": true,
+          "value": "google_slides-create-image",
+          "mode": "list",
+          "cachedResultName": "google_slides-create-image"
+        },
+        "parameters": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Webhook').item.json.body.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Webhook').item.json.body.slide_id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
+          },
+          "matchingColumns": [
+            "instruction"
+          ],
+          "schema": [
+            {
+              "id": "instruction",
+              "displayName": "instruction",
+              "defaultMatch": false,
+              "required": true,
+              "display": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClient",
+      "typeVersion": 1,
+      "position": [
+        784,
+        -96
+      ],
+      "id": "017f437d-5e00-4778-a820-139d8df34b01",
+      "name": "MCP Client1",
+      "credentials": {
+        "mcpOAuth2Api": {
+          "id": "8vChXUnWfr2CNGyD",
+          "name": "Pipedream OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Webhook').item.json.body.presentation_id }}__{{ $('Webhook').item.json.body.slide_id }}.png",
+        "driveId": {
+          "__rl": true,
+          "value": "0AMo0z91EPlT1Uk9PVA",
+          "mode": "list",
+          "cachedResultName": "BizOps",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ",
+          "mode": "list",
+          "cachedResultName": "AI Workflow - Google Slides",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        544,
+        -96
+      ],
+      "id": "9eeb883a-3b66-4b10-9ae3-e089fc3683b6",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SgST8lxFUWMslYat",
+          "name": "Google Drive Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Upload file').item.json.id }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -96
+      ],
+      "id": "3384bf60-242e-44b9-85f6-f2af3d1dc03f",
+      "name": "Delete a file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SgST8lxFUWMslYat",
+          "name": "Google Drive Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 3.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        -96
+      ],
+      "id": "6283cb38-1d53-4c74-ab05-acef08937232",
+      "name": "Wait",
+      "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "065f2457-348b-4716-9794-1f299e9e871d",
+      "name": "Webhook",
+      "webhookId": "13582348-0f00-441b-a50a-b28fb63c1a89"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-image-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+        },
+        "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, deep greens and light browns with occasional accent teal color. Compose slides with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion. \n\nConsistently use a single minimalist sans-serif font across all slides for both headings and body text, ensuring uniform style and weight throughout. Incorporate simple graphics or diagrams only when they reinforce the message, and keep them extremely minimal—especially when depicting humans or human-related features. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details, in the spirit of the provided slide images and the “good_image.png” example. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the image and image content must relate to the contents of the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        272,
+        -432
+      ],
+      "id": "c88322c2-da62-444b-84c1-ddfe9362eb49",
+      "name": "Generate an image3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-image-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+        },
+        "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, soft greens and browns with occasional accent colors. Compose images with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion.\n\nFor typography, set titles and headings in a refined serif font to convey elegance, while using a complementary sans-serif font for body text to ensure clarity. Keep fonts consistent in their respective roles across all slides.\n\nIncorporate simple abstract graphics or diagrams only when they reinforce the message, and keep them extremely minimal and abstract, especially when depicting humans or human-related features. Graphics and diagrams **MUST** use only simple geometric shapes and lines. There should only be a handful of shapes per image. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the contents of the slide should be derived from the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "da7f8688-b5c5-4e25-b326-ba642953efcf",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LKQbGwmroZKBfciU",
+          "name": "Gemini - Cribl"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "MCP Client1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "MCP Client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Delete a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image3": {
+      "main": [
+        []
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-relayer-1.app.n8n.cloud",
+            "user-agent": "axios/1.12.0",
+            "content-length": "1353",
+            "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "20.218.174.12",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "DE",
+            "cf-ray": "9adbc5cf60dedbcb-FRA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "20.218.174.12, 172.71.144.172",
+            "x-forwarded-host": "n8n-relayer-1.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-72-585f59b6c7-klq84",
+            "x-is-trusted": "yes",
+            "x-real-ip": "20.218.174.12"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "text": "Data Analysts\nHow you can use AI: \nUse AI to explore data, find insights, and achieve scale for proactive analysis, \nPositive feedback loop between AI insights, semantic layer, and stakeholder trust\n",
+            "presentation_id": "1pIcc9bt6jHLFUvNLms-STlA-CSMX5LPCxVZP7-29YtU",
+            "slide_id": "g3af5991fbff_0_33"
+          },
+          "webhookUrl": "https://n8n-relayer-1.app.n8n.cloud/webhook-test/generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "versionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
+  "activeVersionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-14T06:42:46.468Z",
+      "createdAt": "2025-12-14T06:42:46.468Z",
+      "role": "workflow:owner",
+      "workflowId": "mLsfMwWBnPljO9Sj",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-15T19:24:27.022Z",
+    "createdAt": "2025-12-15T19:24:27.022Z",
+    "versionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
+    "workflowId": "mLsfMwWBnPljO9Sj",
+    "nodes": [
+      {
+        "parameters": {
+          "endpointUrl": "https://mcp.pipedream.net/v2",
+          "authentication": "mcpOAuth2Api",
+          "tool": {
+            "__rl": true,
+            "value": "google_slides-create-image",
+            "mode": "list",
+            "cachedResultName": "google_slides-create-image"
+          },
+          "parameters": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Webhook').item.json.body.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Webhook').item.json.body.slide_id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
+            },
+            "matchingColumns": [
+              "instruction"
+            ],
+            "schema": [
+              {
+                "id": "instruction",
+                "displayName": "instruction",
+                "defaultMatch": false,
+                "required": true,
+                "display": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClient",
+        "typeVersion": 1,
+        "position": [
+          784,
+          -96
+        ],
+        "id": "017f437d-5e00-4778-a820-139d8df34b01",
+        "name": "MCP Client1",
+        "credentials": {
+          "mcpOAuth2Api": {
+            "id": "8vChXUnWfr2CNGyD",
+            "name": "Pipedream OAuth"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "name": "={{ $('Webhook').item.json.body.presentation_id }}__{{ $('Webhook').item.json.body.slide_id }}.png",
+          "driveId": {
+            "__rl": true,
+            "value": "0AMo0z91EPlT1Uk9PVA",
+            "mode": "list",
+            "cachedResultName": "BizOps",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ",
+            "mode": "list",
+            "cachedResultName": "AI Workflow - Google Slides",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          544,
+          -96
+        ],
+        "id": "9eeb883a-3b66-4b10-9ae3-e089fc3683b6",
+        "name": "Upload file",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "SgST8lxFUWMslYat",
+            "name": "Google Drive Cribl"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "deleteFile",
+          "fileId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $('Upload file').item.json.id }}"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          1200,
+          -96
+        ],
+        "id": "3384bf60-242e-44b9-85f6-f2af3d1dc03f",
+        "name": "Delete a file",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "SgST8lxFUWMslYat",
+            "name": "Google Drive Cribl"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 3.5
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          992,
+          -96
+        ],
+        "id": "6283cb38-1d53-4c74-ab05-acef08937232",
+        "name": "Wait",
+        "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "generate_slide_image-13582348-0f00-441b-a50a-b28fb63c1a89",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -48,
+          -96
+        ],
+        "id": "065f2457-348b-4716-9794-1f299e9e871d",
+        "name": "Webhook",
+        "webhookId": "13582348-0f00-441b-a50a-b28fb63c1a89"
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "modelId": {
+            "__rl": true,
+            "value": "models/gemini-3-pro-image-preview",
+            "mode": "list",
+            "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+          },
+          "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, deep greens and light browns with occasional accent teal color. Compose slides with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion. \n\nConsistently use a single minimalist sans-serif font across all slides for both headings and body text, ensuring uniform style and weight throughout. Incorporate simple graphics or diagrams only when they reinforce the message, and keep them extremely minimal—especially when depicting humans or human-related features. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details, in the spirit of the provided slide images and the “good_image.png” example. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the image and image content must relate to the contents of the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.googleGemini",
+        "typeVersion": 1,
+        "position": [
+          272,
+          -432
+        ],
+        "id": "c88322c2-da62-444b-84c1-ddfe9362eb49",
+        "name": "Generate an image3",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "LKQbGwmroZKBfciU",
+            "name": "Gemini - Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "modelId": {
+            "__rl": true,
+            "value": "models/gemini-3-pro-image-preview",
+            "mode": "list",
+            "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+          },
+          "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, soft greens and browns with occasional accent colors. Compose images with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion.\n\nFor typography, set titles and headings in a refined serif font to convey elegance, while using a complementary sans-serif font for body text to ensure clarity. Keep fonts consistent in their respective roles across all slides.\n\nIncorporate simple abstract graphics or diagrams only when they reinforce the message, and keep them extremely minimal and abstract, especially when depicting humans or human-related features. Graphics and diagrams **MUST** use only simple geometric shapes and lines. There should only be a handful of shapes per image. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the contents of the slide should be derived from the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.googleGemini",
+        "typeVersion": 1,
+        "position": [
+          240,
+          -96
+        ],
+        "id": "da7f8688-b5c5-4e25-b326-ba642953efcf",
+        "name": "Generate an image",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "LKQbGwmroZKBfciU",
+            "name": "Gemini - Cribl"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "MCP Client1": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload file": {
+        "main": [
+          [
+            {
+              "node": "MCP Client1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Delete a file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Generate an image",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate an image3": {
+        "main": [
+          []
+        ]
+      },
+      "Generate an image": {
+        "main": [
+          [
+            {
+              "node": "Upload file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nathan K",
+    "name": null,
+    "description": null
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-09-29T05:57:24.200Z",
+      "createdAt": "2025-09-29T05:57:24.200Z",
+      "id": "JC97st4iY7gpPYhF",
+      "name": "subworkflow"
+    }
+  ]
+}
