@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-14T07:26:09.045Z",
+  "updatedAt": "2025-12-15T19:50:32.263Z",
   "createdAt": "2025-12-07T07:44:07.618Z",
   "id": "GwmMQJB2b2VzlsKc",
   "name": "replace_images_in_google_slides_api",
@@ -21,8 +21,8 @@
       "name": "Replace Images",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1168,
-        928
+        -1104,
+        1008
       ],
       "typeVersion": 4.2,
       "disabled": true
@@ -39,8 +39,8 @@
       "name": "Error Missing Fields",
       "type": "n8n-nodes-base.respondToWebhook",
       "position": [
-        848,
-        1424
+        -1424,
+        1504
       ],
       "typeVersion": 1.1,
       "disabled": true
@@ -55,8 +55,8 @@
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "position": [
-        1360,
-        928
+        -912,
+        1008
       ],
       "typeVersion": 1.1,
       "disabled": true
@@ -71,8 +71,8 @@
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        368,
-        240
+        -1904,
+        320
       ],
       "typeVersion": 1,
       "disabled": true
@@ -88,8 +88,8 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "position": [
-        368,
-        944
+        -1904,
+        1024
       ],
       "webhookId": "df3b8b83-fd6d-40f8-be13-42bae85dcf63",
       "typeVersion": 2,
@@ -103,8 +103,8 @@
       "name": "Retrieve matching Images ObjectIds",
       "type": "n8n-nodes-base.code",
       "position": [
-        992,
-        928
+        -1280,
+        1008
       ],
       "typeVersion": 2,
       "disabled": true
@@ -120,8 +120,8 @@
       "name": "Retrieve All Slide Elements",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        816,
-        928
+        -1456,
+        1008
       ],
       "typeVersion": 4.2,
       "credentials": {
@@ -180,8 +180,8 @@
       "name": "Check if all params are provided",
       "type": "n8n-nodes-base.if",
       "position": [
-        576,
-        944
+        -1696,
+        1024
       ],
       "typeVersion": 2,
       "disabled": true
@@ -197,8 +197,8 @@
       "name": "Retrieve All Slide Elements1",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1376,
-        544
+        -896,
+        624
       ],
       "typeVersion": 4.2,
       "credentials": {
@@ -299,84 +299,6 @@
     },
     {
       "parameters": {
-        "resource": "image",
-        "modelId": {
-          "__rl": true,
-          "value": "models/gemini-3-pro-image-preview",
-          "mode": "list",
-          "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
-        },
-        "prompt": "=Generate a storyboard infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.text }}\n</text>",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        4064,
-        1632
-      ],
-      "id": "ea219822-bae7-49d9-a9e1-c69fd6d62356",
-      "name": "Generate an image",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "LKQbGwmroZKBfciU",
-          "name": "Gemini - Cribl"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "endpointUrl": "https://mcp.pipedream.net/v2",
-        "authentication": "mcpOAuth2Api",
-        "tool": {
-          "__rl": true,
-          "value": "google_slides-create-image",
-          "mode": "list",
-          "cachedResultName": "google_slides-create-image"
-        },
-        "parameters": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Global Vars').item.json.output.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Loop Over Items').item.json.id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
-          },
-          "matchingColumns": [
-            "instruction"
-          ],
-          "schema": [
-            {
-              "id": "instruction",
-              "displayName": "instruction",
-              "defaultMatch": false,
-              "required": true,
-              "display": true,
-              "type": "string",
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.mcpClient",
-      "typeVersion": 1,
-      "position": [
-        4592,
-        1632
-      ],
-      "id": "7d25344d-03bc-4828-8aa3-c970f1209a1a",
-      "name": "MCP Client1",
-      "credentials": {
-        "mcpOAuth2Api": {
-          "id": "8vChXUnWfr2CNGyD",
-          "name": "Pipedream OAuth"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
@@ -387,102 +309,6 @@
       ],
       "id": "3674d635-efc5-43ef-82ce-c9c302c1cd22",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "name": "={{ $('Global Vars').item.json.output.presentation_id }}__{{ $('Loop Over Items').item.json.id }}.png",
-        "driveId": {
-          "__rl": true,
-          "value": "0AMo0z91EPlT1Uk9PVA",
-          "mode": "list",
-          "cachedResultName": "BizOps",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ",
-          "mode": "list",
-          "cachedResultName": "AI Workflow - Google Slides",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        4352,
-        1632
-      ],
-      "id": "982f0f75-14e3-4ca5-8e9f-9321d8a4e44d",
-      "name": "Upload file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "SgST8lxFUWMslYat",
-          "name": "Google Drive Cribl"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteFile",
-        "fileId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "={{ $('Upload file').item.json.id }}"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        5008,
-        1632
-      ],
-      "id": "2ed5f6c4-5ef5-4add-b521-2ae2f228d849",
-      "name": "Delete a file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "SgST8lxFUWMslYat",
-          "name": "Google Drive Cribl"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "amount": 30
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        4800,
-        1632
-      ],
-      "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
-      "name": "Wait",
-      "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "model": "gpt-5-mini",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-      "typeVersion": 1,
-      "position": [
-        2192,
-        1248
-      ],
-      "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
-      "name": "Azure OpenAI Chat Model",
-      "credentials": {
-        "azureOpenAiApi": {
-          "id": "ljEp6Un527XmKGRN",
-          "name": "Azure OpenAI gpt-5-mini"
-        }
-      }
     },
     {
       "parameters": {
@@ -654,6 +480,26 @@
       ],
       "id": "ac5c7573-d076-4ff9-bbba-46968adf0112",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2192,
+        1248
+      ],
+      "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
+      "name": "Azure OpenAI gpt-5-mini",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "ljEp6Un527XmKGRN",
+          "name": "Azure OpenAI gpt-5-mini"
+        }
+      }
     }
   ],
   "connections": {
@@ -763,17 +609,6 @@
         ]
       ]
     },
-    "Generate an image": {
-      "main": [
-        [
-          {
-            "node": "Upload file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [],
@@ -781,55 +616,6 @@
           {
             "node": "HTTP Request",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client1": {
-      "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Upload file": {
-      "main": [
-        [
-          {
-            "node": "MCP Client1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Delete a file": {
-      "main": [
-        []
-      ]
-    },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Delete a file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Azure OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -934,6 +720,17 @@
           {
             "node": "Filter",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI gpt-5-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -22595,6 +22392,10 @@
                   "text": "AI Trends & You\n"
                 },
                 {
+                  "id": "g3a700ea1d3c_0_490",
+                  "text": "Workshop Goals\nReview & identify: review bizops scope, identify successful processes & practices beneficial to scale \nAlign & define: align on the top 3 practices to scale, define a minimal starter kit for each (definition of done, owner, pilot teams)\nPlan & implement: determine implementation plan and definition of success. Commit to a 30-60-90 day pilot plan with owners, dates, and adoption targets. \n"
+                },
+                {
                   "id": "g3a609d39db0_0_4",
                   "text": "The Count is Right\nClosest to the count without going over wins\n"
                 },
@@ -22620,11 +22421,11 @@
                 },
                 {
                   "id": "g3a609d39db0_0_34",
-                  "text": "Data Enablement\nWhat to do to get to the goal: \nEnrichment from sources we were unable to before\nGovernance policies encompassing agents\n"
+                  "text": "Data Enablement\nHow you can use AI: \nExplore and discover/profile data using AI\nBrainstorm algorithms, suggest features, and help judge/gain insights on the best algorithms for the task\n"
                 },
                 {
                   "id": "g3a609d39db0_0_39",
-                  "text": "Data Enablement\nHow you can use AI: \nUse AI to enrich structured data with unstructured data and join data from multiple sources\nMake sense and monitor policies at scale\n"
+                  "text": "Data Enablement\nGoal: \nExperimentation and infra at scale (Jevon’s paradox)\nGenerating stories and intuition for stakeholders \n"
                 },
                 {
                   "id": "g3a609d39db0_0_44",
@@ -22632,26 +22433,26 @@
                 },
                 {
                   "id": "g3a609d39db0_0_49",
-                  "text": "Data Scientists\nWhat to do to get to the goal: \nOffload code writing to AI (<20% manual)\nLLM operations, fine tuning & retraining\nEmphasizing stories over just technical skills\n"
+                  "text": "Data Scientists\nWhat to do to get to the goal: \nOffload code writing to AI (<20% manual)\nLLM operations, fine tuning & retraining\n"
                 },
                 {
                   "id": "g3a609d39db0_0_54",
-                  "text": "Data Scientists\nHow you can use AI: \nExplore and discover/profile data using AI\nBrainstorm algorithms, suggest features, and help judge/gain insights on the best algorithms for the task\n"
+                  "text": "Data Scientists\nHow you can use AI: \nCode generation agents\nEnable context for and monitoring via agents. Start small\nBuild trust in AI and for stakeholders\n"
                 },
                 {
                   "id": "g3a609d39db0_0_59",
-                  "text": "Data Engineers\nGoal: \nAchieve consistency at scale \nMonitoring and pipeline management using agents\nEnable other roles for impact at scale\n"
+                  "text": "Data Engineers\nGoal: \nAchieve consistency at scale\nMonitoring and pipeline management using agents\nEnable other roles for impact at scale\n"
                 },
                 {
                   "id": "g3a609d39db0_0_64",
-                  "text": "Data Engineers\nWhat to do to get to the goal: \nFocus on labeling, creating, and storing metadata\nImplement multiple retrieval patterns like hybrid retrieval\nstandardize communication protocols for higher consistency\n"
+                  "text": "Data Engineers\nHow you can use AI: \nExplore and discover/profile data using AI\nBrainstorm algorithms, suggest features, and help judge/gain insights on the best algorithms for the task\n"
                 },
                 {
                   "id": "g3a609d39db0_0_69",
-                  "text": "Data Engineers\nHow you can use AI: \nCode generation agents\nEnable context for and monitoring via agents. Start small\nBuild trust in AI and for stakeholders\n"
+                  "text": "The Data Engine.\nfor IT and Security\n"
                 }
               ],
-              "traceId": "50ff0976-8ddd-4553-a58d-db0dbe958c57"
+              "traceId": "aa04ecdc-f6f4-4269-95ff-0a97dd23db9b"
             }
           ]
         },
@@ -22661,8 +22462,8 @@
       }
     ]
   },
-  "versionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
-  "activeVersionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
+  "versionId": "54c49c81-22ca-4912-9d4c-82c60c443b5e",
+  "activeVersionId": "54c49c81-22ca-4912-9d4c-82c60c443b5e",
   "triggerCount": 1,
   "shared": [
     {
@@ -22674,9 +22475,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-14T07:26:09.047Z",
-    "createdAt": "2025-12-14T07:26:09.047Z",
-    "versionId": "fd1e23f9-f5e6-49a5-9959-c7c9f2e70743",
+    "updatedAt": "2025-12-15T19:50:32.264Z",
+    "createdAt": "2025-12-15T19:50:32.264Z",
+    "versionId": "54c49c81-22ca-4912-9d4c-82c60c443b5e",
     "workflowId": "GwmMQJB2b2VzlsKc",
     "nodes": [
       {
@@ -22694,8 +22495,8 @@
         "name": "Replace Images",
         "type": "n8n-nodes-base.httpRequest",
         "position": [
-          1168,
-          928
+          -1104,
+          1008
         ],
         "typeVersion": 4.2,
         "disabled": true
@@ -22712,8 +22513,8 @@
         "name": "Error Missing Fields",
         "type": "n8n-nodes-base.respondToWebhook",
         "position": [
-          848,
-          1424
+          -1424,
+          1504
         ],
         "typeVersion": 1.1,
         "disabled": true
@@ -22728,8 +22529,8 @@
         "name": "Respond to Webhook",
         "type": "n8n-nodes-base.respondToWebhook",
         "position": [
-          1360,
-          928
+          -912,
+          1008
         ],
         "typeVersion": 1.1,
         "disabled": true
@@ -22744,8 +22545,8 @@
         "name": "Sticky Note",
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          368,
-          240
+          -1904,
+          320
         ],
         "typeVersion": 1,
         "disabled": true
@@ -22761,8 +22562,8 @@
         "name": "Webhook",
         "type": "n8n-nodes-base.webhook",
         "position": [
-          368,
-          944
+          -1904,
+          1024
         ],
         "webhookId": "df3b8b83-fd6d-40f8-be13-42bae85dcf63",
         "typeVersion": 2,
@@ -22776,8 +22577,8 @@
         "name": "Retrieve matching Images ObjectIds",
         "type": "n8n-nodes-base.code",
         "position": [
-          992,
-          928
+          -1280,
+          1008
         ],
         "typeVersion": 2,
         "disabled": true
@@ -22793,8 +22594,8 @@
         "name": "Retrieve All Slide Elements",
         "type": "n8n-nodes-base.httpRequest",
         "position": [
-          816,
-          928
+          -1456,
+          1008
         ],
         "typeVersion": 4.2,
         "credentials": {
@@ -22853,8 +22654,8 @@
         "name": "Check if all params are provided",
         "type": "n8n-nodes-base.if",
         "position": [
-          576,
-          944
+          -1696,
+          1024
         ],
         "typeVersion": 2,
         "disabled": true
@@ -22870,8 +22671,8 @@
         "name": "Retrieve All Slide Elements1",
         "type": "n8n-nodes-base.httpRequest",
         "position": [
-          1376,
-          544
+          -896,
+          624
         ],
         "typeVersion": 4.2,
         "credentials": {
@@ -22972,84 +22773,6 @@
       },
       {
         "parameters": {
-          "resource": "image",
-          "modelId": {
-            "__rl": true,
-            "value": "models/gemini-3-pro-image-preview",
-            "mode": "list",
-            "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
-          },
-          "prompt": "=Generate a storyboard infographic visualizing the contents in a slide using the title and text as context. i want the overall theme to be teal.\n\n\n<text>\n{{ $json.text }}\n</text>",
-          "options": {}
-        },
-        "type": "@n8n/n8n-nodes-langchain.googleGemini",
-        "typeVersion": 1,
-        "position": [
-          4064,
-          1632
-        ],
-        "id": "ea219822-bae7-49d9-a9e1-c69fd6d62356",
-        "name": "Generate an image",
-        "credentials": {
-          "googlePalmApi": {
-            "id": "LKQbGwmroZKBfciU",
-            "name": "Gemini - Cribl"
-          }
-        },
-        "disabled": true
-      },
-      {
-        "parameters": {
-          "endpointUrl": "https://mcp.pipedream.net/v2",
-          "authentication": "mcpOAuth2Api",
-          "tool": {
-            "__rl": true,
-            "value": "google_slides-create-image",
-            "mode": "list",
-            "cachedResultName": "google_slides-create-image"
-          },
-          "parameters": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "instruction": "=Now put this image onto the slide at the top left corner of the slide, with the image scaled to fit 80% of the slide. it is guaranteed the slide_id is valid for the presentation_id; there is no need to validate further.\n\n<presentation_id>\n{{ $('Global Vars').item.json.output.presentation_id }}\n</presentation_id>\n\n<slide_id>\n{{ $('Loop Over Items').item.json.id }}\n</slide_id>\n\n<image_url>\n{{ $json.webContentLink.replace(\"&export=download\", \"\"); }}\n</image_url>"
-            },
-            "matchingColumns": [
-              "instruction"
-            ],
-            "schema": [
-              {
-                "id": "instruction",
-                "displayName": "instruction",
-                "defaultMatch": false,
-                "required": true,
-                "display": true,
-                "type": "string",
-                "removed": false
-              }
-            ],
-            "attemptToConvertTypes": false,
-            "convertFieldsToString": false
-          },
-          "options": {}
-        },
-        "type": "@n8n/n8n-nodes-langchain.mcpClient",
-        "typeVersion": 1,
-        "position": [
-          4592,
-          1632
-        ],
-        "id": "7d25344d-03bc-4828-8aa3-c970f1209a1a",
-        "name": "MCP Client1",
-        "credentials": {
-          "mcpOAuth2Api": {
-            "id": "8vChXUnWfr2CNGyD",
-            "name": "Pipedream OAuth"
-          }
-        },
-        "disabled": true
-      },
-      {
-        "parameters": {
           "options": {}
         },
         "type": "n8n-nodes-base.splitInBatches",
@@ -23060,102 +22783,6 @@
         ],
         "id": "3674d635-efc5-43ef-82ce-c9c302c1cd22",
         "name": "Loop Over Items"
-      },
-      {
-        "parameters": {
-          "name": "={{ $('Global Vars').item.json.output.presentation_id }}__{{ $('Loop Over Items').item.json.id }}.png",
-          "driveId": {
-            "__rl": true,
-            "value": "0AMo0z91EPlT1Uk9PVA",
-            "mode": "list",
-            "cachedResultName": "BizOps",
-            "cachedResultUrl": "https://drive.google.com/drive/folders/0AMo0z91EPlT1Uk9PVA"
-          },
-          "folderId": {
-            "__rl": true,
-            "value": "1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ",
-            "mode": "list",
-            "cachedResultName": "AI Workflow - Google Slides",
-            "cachedResultUrl": "https://drive.google.com/drive/folders/1kOQOQ1JFVvqrfQpt1X0aq5LrY4FzGBDQ"
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.googleDrive",
-        "typeVersion": 3,
-        "position": [
-          4352,
-          1632
-        ],
-        "id": "982f0f75-14e3-4ca5-8e9f-9321d8a4e44d",
-        "name": "Upload file",
-        "credentials": {
-          "googleDriveOAuth2Api": {
-            "id": "SgST8lxFUWMslYat",
-            "name": "Google Drive Cribl"
-          }
-        },
-        "disabled": true
-      },
-      {
-        "parameters": {
-          "operation": "deleteFile",
-          "fileId": {
-            "__rl": true,
-            "mode": "id",
-            "value": "={{ $('Upload file').item.json.id }}"
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.googleDrive",
-        "typeVersion": 3,
-        "position": [
-          5008,
-          1632
-        ],
-        "id": "2ed5f6c4-5ef5-4add-b521-2ae2f228d849",
-        "name": "Delete a file",
-        "credentials": {
-          "googleDriveOAuth2Api": {
-            "id": "SgST8lxFUWMslYat",
-            "name": "Google Drive Cribl"
-          }
-        },
-        "disabled": true
-      },
-      {
-        "parameters": {
-          "amount": 30
-        },
-        "type": "n8n-nodes-base.wait",
-        "typeVersion": 1.1,
-        "position": [
-          4800,
-          1632
-        ],
-        "id": "f39481ab-19cb-4d75-9e6a-3281bf578901",
-        "name": "Wait",
-        "webhookId": "d70e97a4-2b4d-49bc-8706-b2614784b43d",
-        "disabled": true
-      },
-      {
-        "parameters": {
-          "model": "gpt-5-mini",
-          "options": {}
-        },
-        "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-        "typeVersion": 1,
-        "position": [
-          2192,
-          1248
-        ],
-        "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
-        "name": "Azure OpenAI Chat Model",
-        "credentials": {
-          "azureOpenAiApi": {
-            "id": "ljEp6Un527XmKGRN",
-            "name": "Azure OpenAI gpt-5-mini"
-          }
-        }
       },
       {
         "parameters": {
@@ -23327,6 +22954,26 @@
         ],
         "id": "ac5c7573-d076-4ff9-bbba-46968adf0112",
         "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "model": "gpt-5-mini",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+        "typeVersion": 1,
+        "position": [
+          2192,
+          1248
+        ],
+        "id": "7123cc4e-6027-4377-a6ce-40c5bbf83f66",
+        "name": "Azure OpenAI gpt-5-mini",
+        "credentials": {
+          "azureOpenAiApi": {
+            "id": "ljEp6Un527XmKGRN",
+            "name": "Azure OpenAI gpt-5-mini"
+          }
+        }
       }
     ],
     "connections": {
@@ -23436,17 +23083,6 @@
           ]
         ]
       },
-      "Generate an image": {
-        "main": [
-          [
-            {
-              "node": "Upload file",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Loop Over Items": {
         "main": [
           [],
@@ -23454,55 +23090,6 @@
             {
               "node": "HTTP Request",
               "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "MCP Client1": {
-        "main": [
-          [
-            {
-              "node": "Wait",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Upload file": {
-        "main": [
-          [
-            {
-              "node": "MCP Client1",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Delete a file": {
-        "main": [
-          []
-        ]
-      },
-      "Wait": {
-        "main": [
-          [
-            {
-              "node": "Delete a file",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Azure OpenAI Chat Model": {
-        "ai_languageModel": [
-          [
-            {
-              "node": "AI Agent1",
-              "type": "ai_languageModel",
               "index": 0
             }
           ]
@@ -23607,6 +23194,17 @@
             {
               "node": "Filter",
               "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Azure OpenAI gpt-5-mini": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
               "index": 0
             }
           ]
