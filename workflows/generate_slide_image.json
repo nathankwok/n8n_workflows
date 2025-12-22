@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-15T19:24:27.021Z",
+  "updatedAt": "2025-12-22T22:06:10.251Z",
   "createdAt": "2025-12-14T06:42:46.463Z",
   "id": "mLsfMwWBnPljO9Sj",
   "name": "generate_slide_image",
@@ -159,8 +159,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        272,
-        -432
+        224,
+        -512
       ],
       "id": "c88322c2-da62-444b-84c1-ddfe9362eb49",
       "name": "Generate an image3",
@@ -187,8 +187,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        240,
-        -96
+        224,
+        -304
       ],
       "id": "da7f8688-b5c5-4e25-b326-ba642953efcf",
       "name": "Generate an image",
@@ -196,6 +196,34 @@
         "googlePalmApi": {
           "id": "LKQbGwmroZKBfciU",
           "name": "Gemini - Cribl"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-image-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+        },
+        "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, soft greens and browns with occasional accent colors. Compose images with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion.\n\nFor typography, set titles and headings in a refined serif font to convey elegance, while using a complementary sans-serif font for body text to ensure clarity. Keep fonts consistent in their respective roles across all slides.\n\nIncorporate simple abstract graphics or diagrams only when they reinforce the message, and keep them extremely minimal and abstract, especially when depicting humans or human-related features. Graphics and diagrams **MUST** use only simple geometric shapes and lines. There should only be a handful of shapes per image. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the contents of the slide should be derived from the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -96
+      ],
+      "id": "87f3f7f9-8ada-4b62-ab21-c48936c07150",
+      "name": "Generate an image1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AsZOn9pvCSS39mHQ",
+          "name": "Gemini - Cribl 2"
         }
       }
     }
@@ -238,7 +266,7 @@
       "main": [
         [
           {
-            "node": "Generate an image",
+            "node": "Generate an image1",
             "type": "main",
             "index": 0
           }
@@ -251,6 +279,11 @@
       ]
     },
     "Generate an image": {
+      "main": [
+        []
+      ]
+    },
+    "Generate an image1": {
       "main": [
         [
           {
@@ -306,8 +339,8 @@
       }
     ]
   },
-  "versionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
-  "activeVersionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
+  "versionId": "412d08c1-1ee5-4b19-b49e-b3c90e2c7a0f",
+  "activeVersionId": "412d08c1-1ee5-4b19-b49e-b3c90e2c7a0f",
   "triggerCount": 1,
   "shared": [
     {
@@ -319,9 +352,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-15T19:24:27.022Z",
-    "createdAt": "2025-12-15T19:24:27.022Z",
-    "versionId": "7f5998b6-a625-49a9-87ca-17d0d3d9828e",
+    "updatedAt": "2025-12-22T22:06:10.253Z",
+    "createdAt": "2025-12-22T22:06:10.253Z",
+    "versionId": "412d08c1-1ee5-4b19-b49e-b3c90e2c7a0f",
     "workflowId": "mLsfMwWBnPljO9Sj",
     "nodes": [
       {
@@ -477,8 +510,8 @@
         "type": "@n8n/n8n-nodes-langchain.googleGemini",
         "typeVersion": 1,
         "position": [
-          272,
-          -432
+          224,
+          -512
         ],
         "id": "c88322c2-da62-444b-84c1-ddfe9362eb49",
         "name": "Generate an image3",
@@ -505,8 +538,8 @@
         "type": "@n8n/n8n-nodes-langchain.googleGemini",
         "typeVersion": 1,
         "position": [
-          240,
-          -96
+          224,
+          -304
         ],
         "id": "da7f8688-b5c5-4e25-b326-ba642953efcf",
         "name": "Generate an image",
@@ -514,6 +547,34 @@
           "googlePalmApi": {
             "id": "LKQbGwmroZKBfciU",
             "name": "Gemini - Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "modelId": {
+            "__rl": true,
+            "value": "models/gemini-3-pro-image-preview",
+            "mode": "list",
+            "cachedResultName": "models/gemini-3-pro-image-preview (Nano Banana Pro)"
+          },
+          "prompt": "=Design a modern, minimalist slide deck inspired by a clean Google Slides template. Use a restrained palette of warm neutrals, soft greens and browns with occasional accent colors. Compose images with generous white space and balanced layouts; each slide should focus on a single idea. Maintain high contrast between text and background for readability, and limit your color choices to 2–3 primary hues for cohesion.\n\nFor typography, set titles and headings in a refined serif font to convey elegance, while using a complementary sans-serif font for body text to ensure clarity. Keep fonts consistent in their respective roles across all slides.\n\nIncorporate simple abstract graphics or diagrams only when they reinforce the message, and keep them extremely minimal and abstract, especially when depicting humans or human-related features. Graphics and diagrams **MUST** use only simple geometric shapes and lines. There should only be a handful of shapes per image. Avoid realistic or detailed illustrations; instead, use abstract silhouettes, simple shapes or outlines without facial details. Icons and symbols should be abstract, geometric, and stripped of superfluous detail.\n\nThe overall mood should be calm, professional, and elegant—appropriate for presentations that need to convey trust and clarity.\n\nUse the following settings JSON as a guide for the desired aesthetic:\n\n{\n  \"color_palette\": 7,\n  \"lighting\": 4,\n  \"contrast\": 7,\n  \"composition\": 9,\n  \"perspective_scale\": 2,\n  \"atmosphere\": 5,\n  \"subject_placement\": 8,\n  \"mood\": 8,\n  \"texture\": 4,\n  \"color_temperature\": 6\n}\n\n\nFinally, the contents of the slide should be derived from the slide message. The slide message must also be thoughtfully, seamlessly, and aesthetically pleasiningly incorporated into the slide image. \n\n<slide_message>\n{{ $json.body.text }}\n</slide_message>\n",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.googleGemini",
+        "typeVersion": 1,
+        "position": [
+          224,
+          -96
+        ],
+        "id": "87f3f7f9-8ada-4b62-ab21-c48936c07150",
+        "name": "Generate an image1",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "AsZOn9pvCSS39mHQ",
+            "name": "Gemini - Cribl 2"
           }
         }
       }
@@ -556,7 +617,7 @@
         "main": [
           [
             {
-              "node": "Generate an image",
+              "node": "Generate an image1",
               "type": "main",
               "index": 0
             }
@@ -569,6 +630,11 @@
         ]
       },
       "Generate an image": {
+        "main": [
+          []
+        ]
+      },
+      "Generate an image1": {
         "main": [
           [
             {
