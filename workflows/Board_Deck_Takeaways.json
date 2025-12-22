@@ -1,1 +1,357 @@
-{"updatedAt":"2025-12-20T05:09:06.840Z","createdAt":"2025-12-20T02:14:15.837Z","id":"4cCsYYYaNoTNWB3U","name":"Board_Deck_Takeaways","active":false,"isArchived":false,"nodes":[{"parameters":{},"id":"trigger1","name":"When clicking 'Execute workflow'","type":"n8n-nodes-base.manualTrigger","typeVersion":1,"position":[112,304]},{"parameters":{"mode":"raw","jsonOutput":"{\n  \"dashboard_discovery_model_version\": \"1.0\",\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_api\": {\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  },\n  \"snowflake_tables\": {\n    \"omni_documents\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENTS\"\n    },\n    \"dashboard_recommendations\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS\"\n    }\n  }\n}","includeOtherFields":true,"include":"except","excludeFields":"headers,params,query,webhookUrl,executionMode","options":{}},"id":"globalVars1","name":"Global Vars","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[304,304]},{"parameters":{"mode":"raw","jsonOutput":"{\n  \"56a414f9-4bc9-4d41-958a-9f5652389081\": [\n    {\n      \"drill_name\": \"upsell_opps\",\n      \"query\": {\n        \"limit\": 1000,\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\"sales__accounts.account_name\", \"sales__opportunity.opportunity_name\"]\n      },\n      \"sql\": \"SELECT * FROM sales__opportunity\"\n    },\n    {\n      \"drill_name\": \"new_opps\",\n      \"query\": {\n        \"limit\": 1000,\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\"sales__accounts.account_name\"]\n      },\n      \"sql\": \"SELECT * FROM sales__opportunity WHERE type='new'\"\n    }\n  ]\n}","includeOtherFields":true,"options":{}},"id":"loadQueries1","name":"Load Drill Queries","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[512,304]},{"parameters":{"assignments":{"assignments":[{"id":"filtered_data","name":"filtered_data","type":"object","value":"={{ Object.fromEntries(Object.entries($json).filter(([key, value]) => !['headers', 'params', 'query', 'webhookUrl', 'executionMode'].includes(key) && Array.isArray(value))) }}"}]},"options":{}},"id":"prepareUUIDs1","name":"Filter System Fields","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[704,304]},{"parameters":{"options":{"reset":false}},"id":"outerLoop1","name":"Loop Over UUIDs","type":"n8n-nodes-base.splitInBatches","typeVersion":3,"position":[1104,304]},{"parameters":{"fieldToSplitOut":"queries","include":"selectedOtherFields","fieldsToInclude":{"fields":[{"fieldName":"uuid"}]},"options":{"disableDotNotation":false,"destinationFieldName":""}},"id":"extractQueries1","name":"Expand Queries Array","type":"n8n-nodes-base.splitOut","typeVersion":1,"position":[1312,464]},{"parameters":{"options":{"reset":true}},"id":"innerLoop1","name":"Loop Over Queries","type":"n8n-nodes-base.splitInBatches","typeVersion":3,"position":[1552,640]},{"parameters":{"assignments":{"assignments":[{"id":"uuid","name":"uuid","type":"string","value":"={{ $json.uuid }}"},{"id":"drill_name","name":"drill_name","type":"string","value":"={{ $json.drill_name }}"},{"id":"query","name":"query","type":"object","value":"={{ $json.query || {} }}"}]},"options":{}},"id":"formatBody1","name":"Format Request Body","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[1760,784]},{"parameters":{"method":"POST","url":"https://n8n-relayer-1.app.n8n.cloud/webhook/omni-pattern-detection-subworkflow","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Content-Type","value":"application/json"},{"name":"callbackurl","value":"={{ $execution.resumeUrl }}"}]},"sendBody":true,"specifyBody":"json","jsonBody":"={{ {\n  query: $json.query,\n  userId: $json.userId || '893ce348-0fb2-44ac-b0f8-06521a341580'\n} }}","options":{}},"id":"httpPost1","name":"POST Drill Query","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[1952,784]},{"parameters":{"amount":1},"id":"wait1","name":"Wait Between Requests","type":"n8n-nodes-base.wait","typeVersion":1.1,"position":[2160,928],"webhookId":"345cb7e2-b4a8-4913-a4ba-bfb248a4b4a3"},{"parameters":{"assignments":{"assignments":[{"id":"uuid_items","name":"uuid_items","type":"array","value":"={{ Object.entries($json.filtered_data).map(([uuid, queries]) => ({ uuid, queries, queryCount: queries.length })) }}"}]},"options":{}},"id":"transformUUIDs1","name":"Transform to UUID Array","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[912,304]}],"connections":{"When clicking 'Execute workflow'":{"main":[[{"node":"Global Vars","type":"main","index":0}]]},"Global Vars":{"main":[[{"node":"Load Drill Queries","type":"main","index":0}]]},"Load Drill Queries":{"main":[[{"node":"Filter System Fields","type":"main","index":0}]]},"Loop Over UUIDs":{"main":[[],[{"node":"Expand Queries Array","type":"main","index":0}]]},"Expand Queries Array":{"main":[[{"node":"Loop Over Queries","type":"main","index":0}]]},"Loop Over Queries":{"main":[[{"node":"Loop Over UUIDs","type":"main","index":0}],[{"node":"Format Request Body","type":"main","index":0}]]},"Format Request Body":{"main":[[{"node":"POST Drill Query","type":"main","index":0}]]},"POST Drill Query":{"main":[[{"node":"Wait Between Requests","type":"main","index":0}]]},"Wait Between Requests":{"main":[[{"node":"Loop Over Queries","type":"main","index":0}]]},"Filter System Fields":{"main":[[{"node":"Transform to UUID Array","type":"main","index":0}]]},"Transform to UUID Array":{"main":[[{"node":"Loop Over UUIDs","type":"main","index":0}]]}},"settings":{"executionOrder":"v1","callerPolicy":"workflowsFromSameOwner","availableInMCP":false},"staticData":null,"meta":null,"pinData":{},"versionId":"f23c9cb9-d469-42eb-a921-4ed756967c3e","activeVersionId":null,"triggerCount":0,"shared":[{"updatedAt":"2025-12-20T02:14:15.842Z","createdAt":"2025-12-20T02:14:15.842Z","role":"workflow:owner","workflowId":"4cCsYYYaNoTNWB3U","projectId":"2vHf2VxAoKk0WgJE"}],"activeVersion":null,"tags":[]}
+{
+  "updatedAt": "2025-12-21T08:39:29.804Z",
+  "createdAt": "2025-12-20T02:14:15.837Z",
+  "id": "4cCsYYYaNoTNWB3U",
+  "name": "Board_Deck_Takeaways",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger1",
+      "name": "When clicking 'Execute workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"dashboard_discovery_model_version\": \"1.0\",\n  \"snowflake_base_url\": \"https://ml16699-hya89079.snowflakecomputing.com\",\n  \"omni_documents_search_service\": {\n    \"snowflake_database\": \"ANALYTICS\",\n    \"snowflake_schema\": \"OMNI\",\n    \"service_name\": \"omni_documents_search_service\"\n  },\n  \"omni_api\": {\n    \"omni_base_url\": \"https://cribl.omniapp.co\",\n    \"model_id\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\"\n  },\n  \"snowflake_tables\": {\n    \"omni_documents\": {\n      \"snowflake_database\": \"ANALYTICS\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DOCUMENTS\"\n    },\n    \"dashboard_recommendations\": {\n      \"snowflake_database\": \"RAW\",\n      \"snowflake_schema\": \"OMNI\",\n      \"table_name\": \"DASHBOARD_RECOMMENDATIONS\"\n    }\n  }\n}",
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "headers,params,query,webhookUrl,executionMode",
+        "options": {}
+      },
+      "id": "globalVars1",
+      "name": "Global Vars",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n    \"56a414f9-4bc9-4d41-958a-9f5652389081\": [\n    {\n      \"drill_name\": \"upsell_opps\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\n          \"sales__accounts.account_name\",\n          \"sales__opportunity.opportunity_name\",\n          \"sales__accounts.owner_name\",\n          \"sales__opportunity.forecast\",\n          \"sales__opportunity.stage_name\",\n          \"sales__opportunity.record_type\",\n          \"sales__opportunity.new_arr_derived\",\n          \"sales__opportunity.close_date\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"sales__opportunity.geo_segment\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"PUBLIC SECTOR\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.type_of_opp\": {\n            \"type\": \"null\",\n            \"is_negative\": false\n          },\n          \"sales__opportunity.deal_generated_source\": {\n            \"type\": \"null\",\n            \"is_negative\": true\n          },\n          \"sales__opportunity.loss_reason_to_exclude\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          },\n          \"sales__opportunity.record_type_rolled_up_\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"New\",\n              \"Upsell\"\n            ]\n          },\n          \"sales__opportunity.nbm_entered_or_upsell_added_date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q1\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\"\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          }\n        },\n        \"modelId\": \"3b668837-0ae9-4351-93cf-e36bf88706e1\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"model_extension_id\": \"27c7f29d-a2bb-4daf-97af-27e34b9461a2\",\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"opp_creation_marketing_attribution\"\n      },\n      \"sql\": \"SELECT \\\"sales__accounts\\\".\\\"ACCOUNT_NAME\\\" AS \\\"sales__accounts.account_name\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_NAME\\\" AS \\\"sales__opportunity.opportunity_name\\\",\\n    \\\"sales__accounts\\\".\\\"OWNER_NAME\\\" AS \\\"sales__accounts.owner_name\\\",\\n    \\\"sales__opportunity\\\".\\\"FORECAST\\\" AS \\\"sales__opportunity.forecast\\\",\\n    \\\"sales__opportunity\\\".\\\"STAGE_NAME\\\" AS \\\"sales__opportunity.stage_name\\\",\\n    \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" AS \\\"sales__opportunity.record_type\\\",\\n    \\\"sales__opportunity\\\".\\\"NEW_ARR_DERIVED\\\" AS \\\"sales__opportunity.new_arr_derived\\\",\\n    \\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\" AS \\\"sales__opportunity.close_date__raw\\\",\\n    \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\" AS \\\"sales__accounts.account_id\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_ID\\\" AS \\\"sales__opportunity.opportunity_id\\\",\\n    TO_CHAR(\\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__opportunity.close_date\\\"\\nFROM \\\"SALES\\\".\\\"OPPORTUNITY\\\" AS \\\"sales__opportunity\\\"\\n    LEFT JOIN \\\"SALES\\\".\\\"ACCOUNTS\\\" AS \\\"sales__accounts\\\" ON \\\"sales__opportunity\\\".\\\"ACCOUNT_ID\\\" = \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\"\\nWHERE (NOT \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" = 'PUBLIC SECTOR' OR \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" IS NULL) AND \\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" IS NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\" IN ('SDR Generated', 'BDR Generated') THEN 'SDR Generated'\\n        ELSE \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\"\\n    END IS NOT NULL AND CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" IS NULL OR \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" NOT IN ('Created in Error / Duplicate', 'Duplicate - Merged w/ Active Opp', 'Created in Error') THEN TRUE\\n        ELSE FALSE\\n    END) AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END IN ('New', 'Upsell') AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST(TIMESTAMP '2025-02-01 00:00:00' AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2025-02-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', (((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') + INTERVAL '18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE))))\\nGROUP BY 9, 1, 3, 8, 4, 7, 10, 2, 6, 5\\nLIMIT 1000\"\n    },\n    {\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\n          \"sales__accounts.account_name\",\n          \"sales__opportunity.opportunity_name\",\n          \"sales__accounts.owner_name\",\n          \"sales__opportunity.forecast\",\n          \"sales__opportunity.stage_name\",\n          \"sales__opportunity.record_type\",\n          \"sales__opportunity.new_arr_derived\",\n          \"sales__opportunity.close_date\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"sales__opportunity.geo_segment\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"PUBLIC SECTOR\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.type_of_opp\": {\n            \"type\": \"null\",\n            \"is_negative\": false\n          },\n          \"sales__opportunity.deal_generated_source\": {\n            \"type\": \"null\",\n            \"is_negative\": true\n          },\n          \"sales__opportunity.loss_reason_to_exclude\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          },\n          \"sales__opportunity.record_type_rolled_up_\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"EQUALS\",\n                \"type\": \"string\",\n                \"values\": [\n                  \"New\"\n                ]\n              },\n              {\n                \"kind\": \"EQUALS\",\n                \"type\": \"string\",\n                \"values\": [\n                  \"New\",\n                  \"Upsell\"\n                ]\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false,\n            \"cancel_query_filter\": false\n          },\n          \"sales__opportunity.nbm_entered_or_upsell_added_date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2025 Q4\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\"\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          }\n        },\n        \"modelId\": \"bba18fb9-2b69-414b-838f-669e82422d29\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"model_extension_id\": \"efbb2d95-10d0-4ccf-9538-702efeb80a49\",\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"opp_creation_marketing_attribution\"\n      },\n      \"sql\": \"SELECT \\\"sales__accounts\\\".\\\"ACCOUNT_NAME\\\" AS \\\"sales__accounts.account_name\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_NAME\\\" AS \\\"sales__opportunity.opportunity_name\\\",\\n    \\\"sales__accounts\\\".\\\"OWNER_NAME\\\" AS \\\"sales__accounts.owner_name\\\",\\n    \\\"sales__opportunity\\\".\\\"FORECAST\\\" AS \\\"sales__opportunity.forecast\\\",\\n    \\\"sales__opportunity\\\".\\\"STAGE_NAME\\\" AS \\\"sales__opportunity.stage_name\\\",\\n    \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" AS \\\"sales__opportunity.record_type\\\",\\n    \\\"sales__opportunity\\\".\\\"NEW_ARR_DERIVED\\\" AS \\\"sales__opportunity.new_arr_derived\\\",\\n    \\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\" AS \\\"sales__opportunity.close_date__raw\\\",\\n    \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\" AS \\\"sales__accounts.account_id\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_ID\\\" AS \\\"sales__opportunity.opportunity_id\\\",\\n    TO_CHAR(\\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__opportunity.close_date\\\"\\nFROM \\\"SALES\\\".\\\"OPPORTUNITY\\\" AS \\\"sales__opportunity\\\"\\n    LEFT JOIN \\\"SALES\\\".\\\"ACCOUNTS\\\" AS \\\"sales__accounts\\\" ON \\\"sales__opportunity\\\".\\\"ACCOUNT_ID\\\" = \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\"\\nWHERE (NOT \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" = 'PUBLIC SECTOR' OR \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" IS NULL) AND \\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" IS NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\" IN ('SDR Generated', 'BDR Generated') THEN 'SDR Generated'\\n        ELSE \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\"\\n    END IS NOT NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" IS NULL OR \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" NOT IN ('Created in Error / Duplicate', 'Duplicate - Merged w/ Active Opp', 'Created in Error') THEN TRUE\\n        ELSE FALSE\\n    END AND CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END = 'New')) AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END IN ('New', 'Upsell') AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST(TIMESTAMP '2024-11-01 00:00:00' AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2024-11-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', (((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') + INTERVAL '18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE))))\\nGROUP BY 9, 1, 3, 8, 4, 7, 10, 2, 6, 5\\nLIMIT 1000\",\n      \"drill_name\": \"new_opps\"\n    }\n  ]\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "loadQueries1",
+      "name": "Load Drill Queries",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "outerLoop1",
+      "name": "Loop Over UUIDs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1104,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "uuid_items[0].queries",
+        "include": "allOtherFields",
+        "options": {
+          "disableDotNotation": false,
+          "destinationFieldName": ""
+        }
+      },
+      "id": "extractQueries1",
+      "name": "Expand Queries Array",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        272
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": true
+        }
+      },
+      "id": "innerLoop1",
+      "name": "Loop Over Queries",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "uuid",
+              "name": "uuid",
+              "type": "string",
+              "value": "={{ $json.uuid }}"
+            },
+            {
+              "id": "drill_name",
+              "name": "drill_name",
+              "type": "string",
+              "value": "={{ $json.drill_name }}"
+            },
+            {
+              "id": "query",
+              "name": "query",
+              "type": "object",
+              "value": "={{ $json.query || {} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "formatBody1",
+      "name": "Format Request Body",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1968,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-relayer-1.app.n8n.cloud/webhook-test/omni-pattern-detection-subworkflow",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "callbackurl",
+              "value": "={{ $execution.resumeUrl }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  query: $json.query,\n  userId: $json.userId || '893ce348-0fb2-44ac-b0f8-06521a341580'\n} }}",
+        "options": {}
+      },
+      "id": "httpPost1",
+      "name": "POST Drill Query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "wait1",
+      "name": "Wait Between Requests",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2368,
+        928
+      ],
+      "webhookId": "345cb7e2-b4a8-4913-a4ba-bfb248a4b4a3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  return uuidKeys.map(uuid => ({\n    json: {\n      uuid: uuid,\n      queries: drillQueries[uuid],\n      queryCount: drillQueries[uuid].length\n    }\n  }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        304
+      ],
+      "id": "d9071922-dd3c-4544-8313-87cd21b0b593",
+      "name": "Prepare UUID Loop Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentItem = $input.first().json;\n\n  if (!currentItem.uuid || !currentItem.queries) {\n    return [{\n      json: {\n        error: 'Missing required fields: uuid or queries',\n        received: currentItem\n      }\n    }];\n  }\n\n  const uuid = currentItem.uuid;\n  const queries = currentItem.queries;\n\n  if (!Array.isArray(queries)) {\n    return [{\n      json: {\n        error: 'queries is not an array',\n        type: typeof queries\n      }\n    }];\n  }\n\n  return queries.map(query => ({\n    json: {\n      uuid: uuid,\n      drill_name: query.drill_name || 'unnamed_drill',\n      query: query.query || {},\n      sql: query.sql || ''\n    }\n  }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        480
+      ],
+      "id": "5dfd4e0b-b9ab-4a4d-a846-c8ef49e931bd",
+      "name": "Extract Queries for UUID"
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Global Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Vars": {
+      "main": [
+        [
+          {
+            "node": "Load Drill Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Drill Queries": {
+      "main": [
+        [
+          {
+            "node": "Prepare UUID Loop Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over UUIDs": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Extract Queries for UUID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Queries Array": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Queries": {
+      "main": [
+        [
+          {
+            "node": "Loop Over UUIDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Request Body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Request Body": {
+      "main": [
+        [
+          {
+            "node": "POST Drill Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Drill Query": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between Requests": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare UUID Loop Data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over UUIDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Queries for UUID": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "d50fd145-e05e-42c7-9aef-fbb63f58e226",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-20T02:14:15.842Z",
+      "createdAt": "2025-12-20T02:14:15.842Z",
+      "role": "workflow:owner",
+      "workflowId": "4cCsYYYaNoTNWB3U",
+      "projectId": "2vHf2VxAoKk0WgJE"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
