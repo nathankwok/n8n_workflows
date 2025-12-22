@@ -95,3 +95,10 @@ dev-debug.log
 
 PRPs/
 .mcp.json
+
+data/
+sql/
+
+prds/
+
+
