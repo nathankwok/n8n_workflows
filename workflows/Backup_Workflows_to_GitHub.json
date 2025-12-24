@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-10T09:35:16.214Z",
+  "updatedAt": "2025-12-22T23:13:53.466Z",
   "createdAt": "2025-11-15T20:47:32.827Z",
   "id": "gcilbe9NvWGgtaEQ",
   "name": "Backup_Workflows_to_GitHub",
@@ -20,8 +20,8 @@
       "name": "GitHub",
       "type": "n8n-nodes-base.github",
       "position": [
-        640,
-        192
+        1136,
+        208
       ],
       "typeVersion": 1.1,
       "alwaysOutputData": true,
@@ -77,8 +77,8 @@
       "name": "If",
       "type": "n8n-nodes-base.if",
       "position": [
-        832,
-        192
+        1424,
+        208
       ],
       "typeVersion": 2.2
     },
@@ -91,7 +91,6 @@
             "caseSensitive": true,
             "typeValidation": "strict"
           },
-          "combinator": "and",
           "conditions": [
             {
               "id": "e0c66624-429a-4f1f-bf7b-1cc1b32bad7b",
@@ -99,10 +98,11 @@
                 "type": "string",
                 "operation": "notEquals"
               },
-              "leftValue": "={{ $json.content }}",
-              "rightValue": "={{ $('Loop Over Items').item.json.toJsonString() }}"
+              "leftValue": "={{ $('Hash Github Workflow').item.json.hash.toJsonString() }}",
+              "rightValue": "={{ $('Hash Local Workflow').item.json.hash.toJsonString() }}"
             }
-          ]
+          ],
+          "combinator": "and"
         },
         "options": {}
       },
@@ -110,21 +110,21 @@
       "name": "If1",
       "type": "n8n-nodes-base.if",
       "position": [
-        1712,
-        512
+        2208,
+        528
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {
-        "jsCode": "let items = $input.all()\n\nfor (item of items) {\n  item.json.content = Buffer.from(item.json.content, 'base64').toString('utf8')\n}\n\nreturn items;\n"
+        "jsCode": "let items = $input.all()\n\nfor (item of items) {\n  item.json.content_base64 = item.json.content;\n\n  // Parse base_64 -> string\n  let content_str = Buffer.from(item.json.content, 'base64').toString('utf8');\n  item.json.content_str = content_str;\n\n  // Parse string -> json object\n  item.json.content = JSON.parse(content_str);\n}\n\nreturn items;\n"
       },
       "id": "a6685870-c443-409c-8a18-d98369637f21",
       "name": "Code",
       "type": "n8n-nodes-base.code",
       "position": [
-        1392,
-        176
+        1792,
+        192
       ],
       "typeVersion": 2,
       "onError": "continueRegularOutput"
@@ -142,8 +142,8 @@
       "name": "Create new file and commit",
       "type": "n8n-nodes-base.github",
       "position": [
-        1024,
-        352
+        1616,
+        368
       ],
       "typeVersion": 1.1,
       "webhookId": "89bca4de-1c07-4d62-8d6a-3f020efe2e7d",
@@ -169,8 +169,8 @@
       "name": "Update file content and commit",
       "type": "n8n-nodes-base.github",
       "position": [
-        2080,
-        704
+        2576,
+        720
       ],
       "typeVersion": 1.1,
       "webhookId": "0ade4e7d-b8f9-43cc-b52b-de000a53463e",
@@ -230,8 +230,8 @@
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1600,
-        928
+        1888,
+        944
       ],
       "typeVersion": 1
     },
@@ -244,8 +244,8 @@
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1200,
-        640
+        1488,
+        656
       ],
       "typeVersion": 1
     },
@@ -286,8 +286,8 @@
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        896,
-        64
+        1280,
+        80
       ],
       "typeVersion": 1
     },
@@ -457,6 +457,36 @@
       ],
       "id": "e9bb0804-b3dd-4d49-9dfa-ddddd4d53c35",
       "name": "Filter"
+    },
+    {
+      "parameters": {
+        "type": "=SHA1",
+        "value": "={{ $json.content.toJsonString() }}",
+        "dataPropertyName": "hash"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        2032,
+        368
+      ],
+      "id": "f05ffcac-b469-43da-aff0-eac983a4ee00",
+      "name": "Hash Github Workflow"
+    },
+    {
+      "parameters": {
+        "type": "=SHA1",
+        "value": "={{ $json.toJsonString() }}",
+        "dataPropertyName": "hash"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        752,
+        208
+      ],
+      "id": "eca39d8d-5941-4ff2-95b8-95aa29631bf3",
+      "name": "Hash Local Workflow"
     }
   ],
   "connections": {
@@ -500,7 +530,7 @@
       "main": [
         [
           {
-            "node": "If1",
+            "node": "Hash Github Workflow",
             "type": "main",
             "index": 0
           }
@@ -523,7 +553,7 @@
         [],
         [
           {
-            "node": "GitHub",
+            "node": "Hash Local Workflow",
             "type": "main",
             "index": 0
           }
@@ -617,6 +647,28 @@
           }
         ]
       ]
+    },
+    "Hash Github Workflow": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hash Local Workflow": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -626,7 +678,7 @@
     "node:Schedule Trigger": {
       "recurrenceRules": [
         null,
-        356,
+        358,
         354,
         50
       ]
@@ -636,8 +688,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4bee3f2d-b1bf-4d84-a9dc-d0b7545a00b9",
-  "activeVersionId": "4bee3f2d-b1bf-4d84-a9dc-d0b7545a00b9",
+  "versionId": "1483d91c-3b33-449b-b40f-d50517acf9f0",
+  "activeVersionId": "1483d91c-3b33-449b-b40f-d50517acf9f0",
   "triggerCount": 1,
   "shared": [
     {
@@ -649,9 +701,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-10T09:35:16.215Z",
-    "createdAt": "2025-12-10T09:35:16.215Z",
-    "versionId": "4bee3f2d-b1bf-4d84-a9dc-d0b7545a00b9",
+    "updatedAt": "2025-12-22T23:13:53.467Z",
+    "createdAt": "2025-12-22T23:13:53.467Z",
+    "versionId": "1483d91c-3b33-449b-b40f-d50517acf9f0",
     "workflowId": "gcilbe9NvWGgtaEQ",
     "nodes": [
       {
@@ -668,8 +720,8 @@
         "name": "GitHub",
         "type": "n8n-nodes-base.github",
         "position": [
-          640,
-          192
+          1136,
+          208
         ],
         "typeVersion": 1.1,
         "alwaysOutputData": true,
@@ -725,8 +777,8 @@
         "name": "If",
         "type": "n8n-nodes-base.if",
         "position": [
-          832,
-          192
+          1424,
+          208
         ],
         "typeVersion": 2.2
       },
@@ -739,7 +791,6 @@
               "caseSensitive": true,
               "typeValidation": "strict"
             },
-            "combinator": "and",
             "conditions": [
               {
                 "id": "e0c66624-429a-4f1f-bf7b-1cc1b32bad7b",
@@ -747,10 +798,11 @@
                   "type": "string",
                   "operation": "notEquals"
                 },
-                "leftValue": "={{ $json.content }}",
-                "rightValue": "={{ $('Loop Over Items').item.json.toJsonString() }}"
+                "leftValue": "={{ $('Hash Github Workflow').item.json.hash.toJsonString() }}",
+                "rightValue": "={{ $('Hash Local Workflow').item.json.hash.toJsonString() }}"
               }
-            ]
+            ],
+            "combinator": "and"
           },
           "options": {}
         },
@@ -758,21 +810,21 @@
         "name": "If1",
         "type": "n8n-nodes-base.if",
         "position": [
-          1712,
-          512
+          2208,
+          528
         ],
         "typeVersion": 2.2
       },
       {
         "parameters": {
-          "jsCode": "let items = $input.all()\n\nfor (item of items) {\n  item.json.content = Buffer.from(item.json.content, 'base64').toString('utf8')\n}\n\nreturn items;\n"
+          "jsCode": "let items = $input.all()\n\nfor (item of items) {\n  item.json.content_base64 = item.json.content;\n\n  // Parse base_64 -> string\n  let content_str = Buffer.from(item.json.content, 'base64').toString('utf8');\n  item.json.content_str = content_str;\n\n  // Parse string -> json object\n  item.json.content = JSON.parse(content_str);\n}\n\nreturn items;\n"
         },
         "id": "a6685870-c443-409c-8a18-d98369637f21",
         "name": "Code",
         "type": "n8n-nodes-base.code",
         "position": [
-          1392,
-          176
+          1792,
+          192
         ],
         "typeVersion": 2,
         "onError": "continueRegularOutput"
@@ -790,8 +842,8 @@
         "name": "Create new file and commit",
         "type": "n8n-nodes-base.github",
         "position": [
-          1024,
-          352
+          1616,
+          368
         ],
         "typeVersion": 1.1,
         "webhookId": "89bca4de-1c07-4d62-8d6a-3f020efe2e7d",
@@ -817,8 +869,8 @@
         "name": "Update file content and commit",
         "type": "n8n-nodes-base.github",
         "position": [
-          2080,
-          704
+          2576,
+          720
         ],
         "typeVersion": 1.1,
         "webhookId": "0ade4e7d-b8f9-43cc-b52b-de000a53463e",
@@ -878,8 +930,8 @@
         "name": "Sticky Note",
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          1600,
-          928
+          1888,
+          944
         ],
         "typeVersion": 1
       },
@@ -892,8 +944,8 @@
         "name": "Sticky Note1",
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          1200,
-          640
+          1488,
+          656
         ],
         "typeVersion": 1
       },
@@ -934,8 +986,8 @@
         "name": "Sticky Note4",
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          896,
-          64
+          1280,
+          80
         ],
         "typeVersion": 1
       },
@@ -1105,6 +1157,36 @@
         ],
         "id": "e9bb0804-b3dd-4d49-9dfa-ddddd4d53c35",
         "name": "Filter"
+      },
+      {
+        "parameters": {
+          "type": "=SHA1",
+          "value": "={{ $json.content.toJsonString() }}",
+          "dataPropertyName": "hash"
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 1,
+        "position": [
+          2032,
+          368
+        ],
+        "id": "f05ffcac-b469-43da-aff0-eac983a4ee00",
+        "name": "Hash Github Workflow"
+      },
+      {
+        "parameters": {
+          "type": "=SHA1",
+          "value": "={{ $json.toJsonString() }}",
+          "dataPropertyName": "hash"
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 1,
+        "position": [
+          752,
+          208
+        ],
+        "id": "eca39d8d-5941-4ff2-95b8-95aa29631bf3",
+        "name": "Hash Local Workflow"
       }
     ],
     "connections": {
@@ -1148,7 +1230,7 @@
         "main": [
           [
             {
-              "node": "If1",
+              "node": "Hash Github Workflow",
               "type": "main",
               "index": 0
             }
@@ -1171,7 +1253,7 @@
           [],
           [
             {
-              "node": "GitHub",
+              "node": "Hash Local Workflow",
               "type": "main",
               "index": 0
             }
@@ -1260,6 +1342,28 @@
           [
             {
               "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hash Github Workflow": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hash Local Workflow": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
               "type": "main",
               "index": 0
             }
