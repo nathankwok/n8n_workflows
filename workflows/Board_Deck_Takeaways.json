@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-23T19:28:59.295Z",
+  "updatedAt": "2025-12-24T22:25:44.551Z",
   "createdAt": "2025-12-20T02:14:15.837Z",
   "id": "4cCsYYYaNoTNWB3U",
   "name": "Board_Deck_Takeaways",
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        304,
-        928
+        224,
+        1120
       ]
     },
     {
@@ -38,7 +38,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"551e19e0-6d32-4a5e-9a93-ac81cb486d88\": [\n    {\n      \"drill_name\": \"lake_customers\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"product__adoption\",\n        \"fields\": [\n          \"product__adoption.customer_name\",\n          \"product__adoption.products_adopted\",\n          \"product__adoption.total_cloud_stream_in_gb_30d\",\n          \"product__adoption.total_cloud_edge_in_gb_30d\",\n          \"product__adoption.total_cloud_edge_nodes_30d\",\n          \"product__adoption.total_cloud_completed_searches_30d\",\n          \"product__adoption.total_software_stream_in_gb_30d\",\n          \"product__adoption.total_software_edge_nodes_30d\",\n          \"product__adoption.total_software_edge_in_gb_30d\",\n          \"product__adoption.lake_gbs_customer_data_max\",\n          \"product__adoption.total_connected_billable_stream_in_gb_30d\",\n          \"product__adoption.total_connected_billable_edge_in_gb_30d\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"product__adoption.date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q3\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\",\n                \"is_negative\": false,\n                \"ignore_if_unjoinable\": true\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          },\n          \"product__adoption.adopt_lake\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          },\n          \"product__adoption.is_last_day_of_fiscal_quarter\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          }\n        },\n        \"modelId\": \"4345b118-cbbe-4f7c-a705-ea0aa8da57c0\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"adoption\"\n      }\n    },\n    {\n      \"drill_name\": \"max_lake_gbs_customer_data\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"product__adoption\",\n        \"fields\": [\n          \"product__adoption.customer_name\",\n          \"product__adoption.products_adopted\",\n          \"product__adoption.total_cloud_stream_in_gb_30d\",\n          \"product__adoption.total_cloud_edge_in_gb_30d\",\n          \"product__adoption.total_cloud_edge_nodes_30d\",\n          \"product__adoption.total_cloud_completed_searches_30d\",\n          \"product__adoption.total_software_stream_in_gb_30d\",\n          \"product__adoption.total_software_edge_nodes_30d\",\n          \"product__adoption.total_software_edge_in_gb_30d\",\n          \"product__adoption.lake_gbs_customer_data_max\",\n          \"product__adoption.total_connected_billable_stream_in_gb_30d\",\n          \"product__adoption.total_connected_billable_edge_in_gb_30d\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"product__adoption.date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q3\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\",\n                \"is_negative\": false\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          },\n          \"product__adoption.is_last_day_of_fq\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          }\n        },\n        \"modelId\": \"d1529738-b066-4b0e-ab06-ce82559602b7\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"adoption\"\n      }    \n    }\n  ],\n    \"56a414f9-4bc9-4d41-958a-9f5652389081\": [\n    {\n      \"drill_name\": \"upsell_opps\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\n          \"sales__accounts.account_name\",\n          \"sales__opportunity.opportunity_name\",\n          \"sales__accounts.owner_name\",\n          \"sales__opportunity.forecast\",\n          \"sales__opportunity.stage_name\",\n          \"sales__opportunity.record_type\",\n          \"sales__opportunity.new_arr_derived\",\n          \"sales__opportunity.close_date\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"sales__opportunity.geo_segment\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"PUBLIC SECTOR\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.type_of_opp\": {\n            \"type\": \"null\",\n            \"is_negative\": false\n          },\n          \"sales__opportunity.deal_generated_source\": {\n            \"type\": \"null\",\n            \"is_negative\": true\n          },\n          \"sales__opportunity.loss_reason_to_exclude\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          },\n          \"sales__opportunity.record_type_rolled_up_\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"New\",\n              \"Upsell\"\n            ]\n          },\n          \"sales__opportunity.nbm_entered_or_upsell_added_date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q1\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\"\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          }\n        },\n        \"modelId\": \"3b668837-0ae9-4351-93cf-e36bf88706e1\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"model_extension_id\": \"27c7f29d-a2bb-4daf-97af-27e34b9461a2\",\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"opp_creation_marketing_attribution\"\n      },\n      \"sql\": \"SELECT \\\"sales__accounts\\\".\\\"ACCOUNT_NAME\\\" AS \\\"sales__accounts.account_name\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_NAME\\\" AS \\\"sales__opportunity.opportunity_name\\\",\\n    \\\"sales__accounts\\\".\\\"OWNER_NAME\\\" AS \\\"sales__accounts.owner_name\\\",\\n    \\\"sales__opportunity\\\".\\\"FORECAST\\\" AS \\\"sales__opportunity.forecast\\\",\\n    \\\"sales__opportunity\\\".\\\"STAGE_NAME\\\" AS \\\"sales__opportunity.stage_name\\\",\\n    \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" AS \\\"sales__opportunity.record_type\\\",\\n    \\\"sales__opportunity\\\".\\\"NEW_ARR_DERIVED\\\" AS \\\"sales__opportunity.new_arr_derived\\\",\\n    \\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\" AS \\\"sales__opportunity.close_date__raw\\\",\\n    \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\" AS \\\"sales__accounts.account_id\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_ID\\\" AS \\\"sales__opportunity.opportunity_id\\\",\\n    TO_CHAR(\\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__opportunity.close_date\\\"\\nFROM \\\"SALES\\\".\\\"OPPORTUNITY\\\" AS \\\"sales__opportunity\\\"\\n    LEFT JOIN \\\"SALES\\\".\\\"ACCOUNTS\\\" AS \\\"sales__accounts\\\" ON \\\"sales__opportunity\\\".\\\"ACCOUNT_ID\\\" = \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\"\\nWHERE (NOT \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" = 'PUBLIC SECTOR' OR \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" IS NULL) AND \\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" IS NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\" IN ('SDR Generated', 'BDR Generated') THEN 'SDR Generated'\\n        ELSE \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\"\\n    END IS NOT NULL AND CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" IS NULL OR \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" NOT IN ('Created in Error / Duplicate', 'Duplicate - Merged w/ Active Opp', 'Created in Error') THEN TRUE\\n        ELSE FALSE\\n    END) AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END IN ('New', 'Upsell') AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST(TIMESTAMP '2025-02-01 00:00:00' AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2025-02-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', (((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') + INTERVAL '18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE))))\\nGROUP BY 9, 1, 3, 8, 4, 7, 10, 2, 6, 5\\nLIMIT 1000\"\n    },\n    {\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\n          \"sales__accounts.account_name\",\n          \"sales__opportunity.opportunity_name\",\n          \"sales__accounts.owner_name\",\n          \"sales__opportunity.forecast\",\n          \"sales__opportunity.stage_name\",\n          \"sales__opportunity.record_type\",\n          \"sales__opportunity.new_arr_derived\",\n          \"sales__opportunity.close_date\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"sales__opportunity.geo_segment\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"PUBLIC SECTOR\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.type_of_opp\": {\n            \"type\": \"null\",\n            \"is_negative\": false\n          },\n          \"sales__opportunity.deal_generated_source\": {\n            \"type\": \"null\",\n            \"is_negative\": true\n          },\n          \"sales__opportunity.loss_reason_to_exclude\": {\n            \"type\": \"boolean\",\n            \"is_negative\": false,\n            \"treat_nulls_as_false\": false\n          },\n          \"sales__opportunity.record_type_rolled_up_\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"EQUALS\",\n                \"type\": \"string\",\n                \"values\": [\n                  \"New\"\n                ]\n              },\n              {\n                \"kind\": \"EQUALS\",\n                \"type\": \"string\",\n                \"values\": [\n                  \"New\",\n                  \"Upsell\"\n                ]\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false,\n            \"cancel_query_filter\": false\n          },\n          \"sales__opportunity.nbm_entered_or_upsell_added_date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2025 Q4\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\"\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          }\n        },\n        \"modelId\": \"bba18fb9-2b69-414b-838f-669e82422d29\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"model_extension_id\": \"efbb2d95-10d0-4ccf-9538-702efeb80a49\",\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"opp_creation_marketing_attribution\"\n      },\n      \"sql\": \"SELECT \\\"sales__accounts\\\".\\\"ACCOUNT_NAME\\\" AS \\\"sales__accounts.account_name\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_NAME\\\" AS \\\"sales__opportunity.opportunity_name\\\",\\n    \\\"sales__accounts\\\".\\\"OWNER_NAME\\\" AS \\\"sales__accounts.owner_name\\\",\\n    \\\"sales__opportunity\\\".\\\"FORECAST\\\" AS \\\"sales__opportunity.forecast\\\",\\n    \\\"sales__opportunity\\\".\\\"STAGE_NAME\\\" AS \\\"sales__opportunity.stage_name\\\",\\n    \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" AS \\\"sales__opportunity.record_type\\\",\\n    \\\"sales__opportunity\\\".\\\"NEW_ARR_DERIVED\\\" AS \\\"sales__opportunity.new_arr_derived\\\",\\n    \\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\" AS \\\"sales__opportunity.close_date__raw\\\",\\n    \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\" AS \\\"sales__accounts.account_id\\\",\\n    \\\"sales__opportunity\\\".\\\"OPPORTUNITY_ID\\\" AS \\\"sales__opportunity.opportunity_id\\\",\\n    TO_CHAR(\\\"sales__opportunity\\\".\\\"CLOSE_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__opportunity.close_date\\\"\\nFROM \\\"SALES\\\".\\\"OPPORTUNITY\\\" AS \\\"sales__opportunity\\\"\\n    LEFT JOIN \\\"SALES\\\".\\\"ACCOUNTS\\\" AS \\\"sales__accounts\\\" ON \\\"sales__opportunity\\\".\\\"ACCOUNT_ID\\\" = \\\"sales__accounts\\\".\\\"ACCOUNT_ID\\\"\\nWHERE (NOT \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" = 'PUBLIC SECTOR' OR \\\"sales__opportunity\\\".\\\"GEO_SEGMENT\\\" IS NULL) AND \\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" IS NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\" IN ('SDR Generated', 'BDR Generated') THEN 'SDR Generated'\\n        ELSE \\\"sales__opportunity\\\".\\\"DEAL_GENERATED_SOURCE\\\"\\n    END IS NOT NULL AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" IS NULL OR \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" NOT IN ('Created in Error / Duplicate', 'Duplicate - Merged w/ Active Opp', 'Created in Error') THEN TRUE\\n        ELSE FALSE\\n    END AND CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END = 'New')) AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Upsell', 'Expansion', 'Renewal+Upsell') THEN 'Upsell'\\n        ELSE \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\"\\n    END IN ('New', 'Upsell') AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST(TIMESTAMP '2024-11-01 00:00:00' AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2024-11-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" >= CAST((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND \\\"sales__opportunity\\\".\\\"NBM_ENTERED_OR_UPSELL_ADDED_DATE\\\" < CAST((DATE_TRUNC('QUARTER', (((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') + INTERVAL '18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE))))\\nGROUP BY 9, 1, 3, 8, 4, 7, 10, 2, 6, 5\\nLIMIT 1000\",\n      \"drill_name\": \"new_opps\"\n    }\n  ],\n  \"e440171b-9cd6-49ea-9fe6-a27c51e2c01f\": [\n    {\n      \"drill_name\": \"Deal Registration ID count distinct\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"sales__opportunity\",\n        \"fields\": [\n          \"sales__registrations.registration_source_type\",\n          \"sales__registrations.registration_id\",\n          \"sales__registrations.registration_name\",\n          \"sales__registrations.type\",\n          \"sales__registrations.created_by_name\",\n          \"sales__registrations.owner_name\",\n          \"sales__registrations.status\",\n          \"sales__registrations.registration_date\",\n          \"sales__registrations.expected_close_date\",\n          \"sales__registrations.approval_date\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"sales__registrations.status\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"Approved\",\n              \"Closed Won\",\n              \"Closed-Won\"\n            ],\n            \"is_negative\": false\n          },\n          \"sales__opportunity.loss_reason\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"Created in Error\",\n              \"Created in Error / Duplicate\",\n              \"Duplicate - Merged w/ Active Opp\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.record_type\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"Expansion\",\n              \"New\",\n              \"Renewal+Upsell\",\n              \"Upsell\"\n            ],\n            \"is_negative\": false\n          },\n          \"sales__opportunity.type_of_opp\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"Downsell\",\n              \"NFR\",\n              \"OEM\",\n              \"Services Only\"\n            ],\n            \"is_negative\": true\n          },\n          \"sales__opportunity.record_type_groups\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"New Logo\"\n            ]\n          },\n          \"sales__registrations.registration_date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q3\"\n              },\n              {\n                \"kind\": \"BETWEEN\",\n                \"type\": \"date\",\n                \"left_side\": \"2 fiscal years ago\",\n                \"right_side\": \"1 fiscal quarters ago\",\n                \"is_negative\": false\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          }\n        },\n        \"modelId\": \"3739282e-3287-437c-b998-d07feeb5f910\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"deal_registrations\"\n      },\n      \"sql\": \"SELECT \\\"sales__registrations\\\".\\\"REGISTRATION_SOURCE_TYPE\\\" AS \\\"sales__registrations.registration_source_type\\\",\\n    \\\"sales__registrations\\\".\\\"REGISTRATION_ID\\\" AS \\\"sales__registrations.registration_id\\\",\\n    \\\"sales__registrations\\\".\\\"REGISTRATION_NAME\\\" AS \\\"sales__registrations.registration_name\\\",\\n    \\\"sales__registrations\\\".\\\"TYPE\\\" AS \\\"sales__registrations.type\\\",\\n    \\\"sales__registrations\\\".\\\"CREATED_BY_NAME\\\" AS \\\"sales__registrations.created_by_name\\\",\\n    \\\"sales__registrations\\\".\\\"OWNER_NAME\\\" AS \\\"sales__registrations.owner_name\\\",\\n    \\\"sales__registrations\\\".\\\"STATUS\\\" AS \\\"sales__registrations.status\\\",\\n    \\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\" AS \\\"sales__registrations.registration_date__raw\\\",\\n    \\\"sales__registrations\\\".\\\"EXPECTED_CLOSE_DATE\\\" AS \\\"sales__registrations.expected_close_date__raw\\\",\\n    \\\"sales__registrations\\\".\\\"APPROVAL_DATE\\\" AS \\\"sales__registrations.approval_date__raw\\\",\\n    TO_CHAR(\\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__registrations.registration_date\\\",\\n    TO_CHAR(\\\"sales__registrations\\\".\\\"EXPECTED_CLOSE_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__registrations.expected_close_date\\\",\\n    TO_CHAR(\\\"sales__registrations\\\".\\\"APPROVAL_DATE\\\", 'YYYY-MM-DD') AS \\\"sales__registrations.approval_date\\\"\\nFROM \\\"SALES\\\".\\\"OPPORTUNITY\\\" AS \\\"sales__opportunity\\\"\\n    LEFT JOIN \\\"SALES\\\".\\\"REGISTRATIONS\\\" AS \\\"sales__registrations\\\" ON \\\"sales__opportunity\\\".\\\"OPPORTUNITY_ID\\\" = \\\"sales__registrations\\\".\\\"OPPORTUNITY_ID\\\"\\nWHERE \\\"sales__registrations\\\".\\\"STATUS\\\" IN ('Approved', 'Closed Won', 'Closed-Won') AND (\\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" NOT IN ('Created in Error', 'Created in Error / Duplicate', 'Duplicate - Merged w/ Active Opp') OR \\\"sales__opportunity\\\".\\\"LOSS_REASON\\\" IS NULL) AND (\\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Expansion', 'New', 'Renewal+Upsell', 'Upsell') AND (\\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" NOT IN ('Downsell', 'NFR', 'OEM', 'Services Only') OR \\\"sales__opportunity\\\".\\\"TYPE_OF_OPP\\\" IS NULL)) AND (CASE\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" = 'New' THEN 'New Logo'\\n        WHEN \\\"sales__opportunity\\\".\\\"RECORD_TYPE\\\" IN ('Expansion', 'Renewal+Upsell', 'Upsell') THEN 'Incremental'\\n        ELSE 'Other'\\n    END = 'New Logo' AND \\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\" >= CAST(TIMESTAMP '2025-08-01 00:00:00' AS DATE) AND (\\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2025-08-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\" >= CAST((DATE_TRUNC('YEAR', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-1 year') + INTERVAL '11 month')) + INTERVAL '-11 month') AS DATE) AND \\\"sales__registrations\\\".\\\"REGISTRATION_DATE\\\" < CAST((DATE_TRUNC('QUARTER', (CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE))))\\nGROUP BY 10, 5, 9, 6, 8, 2, 3, 1, 7, 4\\nLIMIT 1000\"\n    }\n  ]\n}",
+        "jsonOutput": "{\n  \"82b670ff-cdbd-4bfd-9cd1-e33da5a9fa74\": [\n    {\n      \"drill_name\": \"count_orgs\",\n      \"query\": {\n        \"limit\": 1000,\n        \"sorts\": [],\n        \"table\": \"cloud_edge_nodes_fq\",\n        \"fields\": [\n          \"cloud_edge_nodes_fq.date[fiscal_quarter]\",\n          \"cloud_edge_nodes_fq.org_id\",\n          \"cloud_edge_nodes_fq.total_edge_nodes\"\n        ],\n        \"pivots\": [],\n        \"dbtMode\": false,\n        \"filters\": {\n          \"cloud_edge_nodes_fq.date\": {\n            \"type\": \"composite\",\n            \"filters\": [\n              {\n                \"kind\": \"TIME_FOR_UNIT_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"FY2026 Q3\"\n              },\n              {\n                \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n                \"type\": \"date\",\n                \"left_side\": \"6 complete fiscal quarters ago\",\n                \"right_side\": \"6 quarters\",\n                \"is_negative\": false\n              }\n            ],\n            \"conjunction\": \"AND\",\n            \"is_negative\": false\n          },\n          \"product__cloud_orgs.org_type\": {\n            \"kind\": \"EQUALS\",\n            \"type\": \"string\",\n            \"values\": [\n              \"Customer\",\n              \"Free\"\n            ],\n            \"is_negative\": false\n          },\n          \"cloud_edge_nodes_fq.total_edge_nodes\": {\n            \"kind\": \"GREATER_THAN\",\n            \"type\": \"number\",\n            \"values\": [\n              \"0\"\n            ],\n            \"is_negative\": false,\n            \"is_inclusive\": false\n          }\n        },\n        \"modelId\": \"912e8580-4519-4971-b8c3-1c30608c7f49\",\n        \"version\": 8,\n        \"controls\": [],\n        \"rewriteSql\": true,\n        \"row_totals\": {},\n        \"fill_fields\": [],\n        \"calculations\": [],\n        \"column_limit\": 50,\n        \"join_via_map\": {},\n        \"column_totals\": {},\n        \"userEditedSQL\": \"\",\n        \"dimensionIndex\": 0,\n        \"default_group_by\": true,\n        \"custom_summary_types\": {},\n        \"join_paths_from_topic_name\": \"cloud_edge_nodes_fq\"\n      },\n      \"sql\": \"WITH \\\"cloud_edge_nodes_fq\\\" AS (SELECT *\\n        FROM (SELECT\\n        first_day_of_fq as date,\\n        org_id,\\n        max(edge_nodes) as total_edge_nodes\\n      FROM (SELECT\\n        date_trunc('day',date) as date,\\n        org_id,\\n        d.FIRST_DAY_OF_FISCAL_QUARTER as first_day_of_fq,\\n        max(max_edge_nodes) as edge_nodes\\n        FROM ANALYTICS.PRODUCT.CLOUD_TELEMETRY_DAILY c\\n        left join UTIL.DATES d on c.date = d.DATE_ACTUAL\\n        GROUP BY 1,2,3\\n        ) t1\\n      GROUP BY 1,2\\n            ))\\n\\nSELECT 'FY' || CAST(EXTRACT(YEAR FROM (\\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\" + INTERVAL '11 month')) AS VARCHAR) || (' Q' || CAST(CAST(FLOOR((MOD(EXTRACT(MONTH FROM \\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\") + -13, 12) + 12 - 1) / 3) AS BIGINT) + 1 AS VARCHAR)) AS \\\"cloud_edge_nodes_fq.date[fiscal_quarter]\\\",\\n        \\\"cloud_edge_nodes_fq\\\".\\\"ORG_ID\\\" AS \\\"cloud_edge_nodes_fq.org_id\\\",\\n        \\\"cloud_edge_nodes_fq\\\".\\\"TOTAL_EDGE_NODES\\\" AS \\\"cloud_edge_nodes_fq.total_edge_nodes\\\"\\n    FROM \\\"cloud_edge_nodes_fq\\\"\\n        LEFT JOIN \\\"PRODUCT\\\".\\\"CLOUD_ORGS\\\" AS \\\"product__cloud_orgs\\\" ON \\\"cloud_edge_nodes_fq\\\".\\\"ORG_ID\\\" = \\\"product__cloud_orgs\\\".\\\"ORG_ID\\\"\\n    WHERE \\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\" >= CAST(TIMESTAMP '2025-08-01 00:00:00' AS DATE) AND (\\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\" < CAST((DATE_TRUNC('QUARTER', ((TIMESTAMP '2025-08-01 00:00:00' + INTERVAL '3 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND \\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\" >= CAST((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE)) AND (\\\"cloud_edge_nodes_fq\\\".\\\"DATE\\\" < CAST((DATE_TRUNC('QUARTER', (((DATE_TRUNC('QUARTER', ((CAST(CURRENT_TIMESTAMP AS TIMESTAMP(0)) + INTERVAL '-18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') + INTERVAL '18 month') + INTERVAL '2 month')) + INTERVAL '-2 month') AS DATE) AND (\\\"product__cloud_orgs\\\".\\\"ORG_TYPE\\\" IN ('Customer', 'Free') AND \\\"cloud_edge_nodes_fq\\\".\\\"TOTAL_EDGE_NODES\\\" > 0))\\n    GROUP BY 1, 2, 3\\n    LIMIT 1000\",\n      \"document_query_name\": \"Product: Edge (Cloud)\"\n    }\n  ]\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -47,7 +47,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1440,
+        1648,
         1120
       ]
     },
@@ -62,29 +62,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2528,
+        2736,
         1120
       ],
       "executeOnce": false
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "uuid_items[0].queries",
-        "include": "allOtherFields",
-        "options": {
-          "disableDotNotation": false,
-          "destinationFieldName": ""
-        }
-      },
-      "id": "extractQueries1",
-      "name": "Expand Queries Array",
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        2656,
-        1456
-      ],
-      "disabled": true
     },
     {
       "parameters": {
@@ -95,7 +76,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        3392,
+        3600,
         1456
       ],
       "executeOnce": false
@@ -119,7 +100,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ \n{\n  user_id: $json.user_id || $('Global Vars').item.json.default_user_id,\n  current_fiscal_quarter_query:  $json.current_fiscal_quarter_query,\n  previous_fiscal_quarter_query:  $json.previous_fiscal_quarter_query\n} \n}}",
+        "jsonBody": "={{ \n\n  $json\n}}",
         "options": {}
       },
       "id": "httpPost1",
@@ -127,19 +108,19 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5312,
+        5520,
         1760
       ],
       "executeOnce": false
     },
     {
       "parameters": {
-        "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(uuid => ({\n    json: {\n      uuid: uuid,\n      queries: drillQueries[uuid],\n      queryCount: drillQueries[uuid].length\n    }\n  }))\n\n  return drill_queries;"
+        "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(document_query_id => ({\n    json: {\n      document_query_id: document_query_id,\n      queries: drillQueries[document_query_id],\n      queryCount: drillQueries[document_query_id].length\n    }\n  }))\n\n  return drill_queries;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2032,
+        2240,
         1120
       ],
       "id": "d9071922-dd3c-4544-8313-87cd21b0b593",
@@ -147,12 +128,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const currentItem = $input.first().json;\n\n  if (!currentItem.uuid || !currentItem.queries) {\n    return [{\n      json: {\n        error: 'Missing required fields: uuid or queries',\n        received: currentItem\n      }\n    }];\n  }\n\n  const uuid = currentItem.uuid;\n  const queries = currentItem.queries;\n\n  if (!Array.isArray(queries)) {\n    return [{\n      json: {\n        error: 'queries is not an array',\n        type: typeof queries\n      }\n    }];\n  }\n\n  return queries.map(query => ({\n    json: {\n      uuid: uuid,\n      drill_name: query.drill_name || 'unnamed_drill',\n      query: query.query || {},\n      sql: query.sql || ''\n    }\n  }));"
+        "jsCode": "const currentItem = $input.first().json;\n\n  if (!currentItem.document_query_id || !currentItem.queries) {\n    return [{\n      json: {\n        error: 'Missing required fields: document_query_id or queries',\n        received: currentItem\n      }\n    }];\n  }\n\n  const document_query_id = currentItem.document_query_id;\n  const queries = currentItem.queries;\n\n  if (!Array.isArray(queries)) {\n    return [{\n      json: {\n        error: 'queries is not an array',\n        type: typeof queries\n      }\n    }];\n  }\n\n  return queries.map(query => ({\n    json: {\n      document_query_id: document_query_id,\n      document_query_name: query.document_query_name || '',\n      drill_name: query.drill_name || 'unnamed_drill',\n      query: query.query || {}\n    }\n  }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2832,
+        3040,
         1296
       ],
       "id": "5dfd4e0b-b9ab-4a4d-a846-c8ef49e931bd",
@@ -169,7 +150,7 @@
       "name": "Webhook Callback Wait",
       "type": "n8n-nodes-base.wait",
       "position": [
-        5216,
+        5424,
         672
       ],
       "webhookId": "5cd058b4-48c8-449a-9c09-959a5b8a2b48",
@@ -183,7 +164,7 @@
       "name": "Update finishedSet",
       "type": "n8n-nodes-base.code",
       "position": [
-        5856,
+        6064,
         672
       ],
       "typeVersion": 2
@@ -206,7 +187,7 @@
       "name": "Initialize finishedSet",
       "type": "n8n-nodes-base.set",
       "position": [
-        3136,
+        3344,
         512
       ],
       "executeOnce": true,
@@ -240,7 +221,7 @@
       "name": "If All Finished",
       "type": "n8n-nodes-base.if",
       "position": [
-        4336,
+        4544,
         512
       ],
       "typeVersion": 2
@@ -253,7 +234,7 @@
       "name": "Acknowledge Finished",
       "type": "n8n-nodes-base.respondToWebhook",
       "position": [
-        5696,
+        5904,
         896
       ],
       "typeVersion": 1.1
@@ -280,7 +261,7 @@
       "name": "Continue Workflow (noop)",
       "type": "n8n-nodes-base.noOp",
       "position": [
-        5584,
+        5792,
         352
       ],
       "typeVersion": 1
@@ -292,7 +273,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1728,
+        1936,
         1120
       ],
       "id": "347e89ad-1d53-4099-8d9d-20a8602b2c12",
@@ -305,32 +286,12 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        5712,
+        5920,
         1760
       ],
       "id": "75631430-add9-4385-b26e-6c83f12f04e6",
       "name": "Wait",
       "webhookId": "722519d8-a165-4f2b-a0fc-24915e959db5"
-    },
-    {
-      "parameters": {
-        "model": "o4-mini",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-      "typeVersion": 1,
-      "position": [
-        912,
-        1328
-      ],
-      "id": "5421085b-5efc-40de-895d-5f9d003d2ddf",
-      "name": "Azure OpenAI Chat Model",
-      "credentials": {
-        "azureOpenAiApi": {
-          "id": "N96DE6AiByL8h8kA",
-          "name": "Azure OpenAI o4-mini"
-        }
-      }
     },
     {
       "parameters": {
@@ -363,19 +324,143 @@
     },
     {
       "parameters": {
+        "jsonSchemaExample": "{\n\t\"current_fiscal_quarter_query\": {\n  \n},\n\t\"previous_fiscal_quarter_query\": {\n  \n}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        4096,
+        2656
+      ],
+      "id": "5d7f57ba-6e3f-488c-aaac-d6db6eca7df4",
+      "name": "Structured Output Parser1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let output = JSON.parse(item.json.output);\n\n  if (\"current_fiscal_quarter_query\" in output) {\n    item.json.current_fiscal_quarter_query = output.current_fiscal_quarter_query;\n  }\n\n  if (\"previous_fiscal_quarter_query\" in output) {\n    item.json.previous_fiscal_quarter_query = output.previous_fiscal_quarter_query;\n  }\n  \n  if (\"query\" in output) {\n    item.json.query = output.query;\n  }\n\n  delete item.json.output;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4512,
+        2448
+      ],
+      "id": "39eee60c-2b5f-4c2c-8082-d9b95868ed89",
+      "name": "Parse Modified Query AI Output",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "o4-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        912,
+        1328
+      ],
+      "id": "5421085b-5efc-40de-895d-5f9d003d2ddf",
+      "name": "o4-mini",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "N96DE6AiByL8h8kA",
+          "name": "Azure OpenAI o4-mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ",
+        "title": "=Board_Deck_Takeaways_{{ $now.format('yyyyMMdd_HHmmss') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        1120
+      ],
+      "id": "e61568b1-3b9b-4c59-98c9-ba817d46fe30",
+      "name": "Create Takeaways Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "dzy8xbOq7YSB6444",
+          "name": "Google Docs Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
         "mode": "raw",
-        "jsonOutput": "={\n  \"uuid\": \"{{ $('Loop Over Queries').item.json.uuid }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"query\" : {{  $('Loop Over Queries').item.json.query || {} }},\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.current_fiscal_quarter }}\",\n\"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_quarter }}\",\n\"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').item.json.output.current_fiscal_half }}\",\n\"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_half }}\"\n\n\n}\n",
+        "jsonOutput": "={\n  \"document_query_id\": \"{{ $('Loop Over Queries').item.json.document_query_id }}\",\n  \"document_query_name\": \"{{ $('Loop Over Queries').item.json.document_query_name }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_quarter }}\",\n  \"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').item.json.output.current_fiscal_half }}\",\n  \"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_half }}\",\n  \n  \"user_id\": \"{{ $json.user_id || $('Global Vars').item.json.default_user_id  }}\",\n  \"current_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.current_fiscal_quarter_query || {} }},\n  \"previous_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.previous_fiscal_quarter_query || {} }},\n  \"google_document_id\": \"{{ $('Create Takeaways Doc').item.json.id }}\"\n\n}\n\n\n\n",
         "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4768,
-        1760
+        4976,
+        1696
       ],
       "id": "b62a9170-658d-4907-9592-d33d8e748f5a",
-      "name": "Edit Fields"
+      "name": "Create Request Payload"
+    },
+    {
+      "parameters": {
+        "content": "<task>\nGoal: Produce two modified copies of the supplied query JSON.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON exactly as received; preserve every field order and value.\n2. Locate the first object inside \"filters\" whose inner field \"kind\" equals \"TIME_FOR_UNIT_DURATION\" (case-sensitive).\n3. Duplicate the entire query twice:\n   a. In Copy 1, replace that object’s \"left_side\" value with the provided {current_fiscal_quarter}.\n   b. In Copy 1, replace the numeric value in limit to 200 .\n   c. In Copy 2, replace that same \"left_side\" value with the provided {previous_fiscal_quarter} .\n   d. In Copy 2, replace the numeric value in limit to 200\n4. Return a json object with the structured output in the format of output_format with the two edited JSON objects in the for each key: current_fiscal_quarter_query and previous_fiscal_quarter_query\n</task>\n\n<context>\nYou will receive:\n• A complete JSON object named query.\n• Two strings: \n  – current_fiscal_quarter  \n  – previous_fiscal_quarter  \n\nReplace **ONLY** the \"left_side\" value of the filter having \"kind\": \"TIME_FOR_UNIT_DURATION\" and the numeric value for limit. All other content must remain bit-for-bit identical, including whitespace and ordering.  We prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4368,
+        1280
+      ],
+      "typeVersion": 1,
+      "id": "7ef40ecd-556e-48e1-addd-d5b437cee372",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n    \"type\": \"object\",\n    \"properties\": {\n      \"limit\": {\n        \"type\": \"number\",\n        \"description\": \"Maximum number of rows to return\"\n      },\n      \"sorts\": {\n        \"type\": \"array\",\n        \"description\": \"Array of sort configuration objects\",\n        \"items\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"column_name\": {\n              \"type\": \"string\",\n              \"description\": \"Full field name to sort by (must exist in fields array)\"\n            },\n            \"sort_descending\": {\n              \"type\": \"boolean\",\n              \"description\": \"true for descending (highest first), false for ascending\"\n            },\n            \"null_sort\": {\n              \"type\": \"string\",\n              \"description\": \"Optional: How to handle NULL values (OMNI_DEFAULT, NULLS_FIRST, NULLS_LAST)\",\n              \"enum\": [\"OMNI_DEFAULT\", \"NULLS_FIRST\", \"NULLS_LAST\"]\n            },\n            \"is_column_sort\": {\n              \"type\": \"boolean\",\n              \"description\": \"Optional: Whether this is a column-based sort vs aggregation sort\"\n            }\n          },\n          \"required\": [\"column_name\", \"sort_descending\"]\n        }\n      },\n      \"table\": {\n        \"type\": \"string\",\n        \"description\": \"The primary table/view to query (format: schema__table)\"\n      },\n      \"fields\": {\n        \"type\": \"array\",\n        \"description\": \"List of column names to SELECT\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      },\n      \"pivots\": {\n        \"type\": \"array\",\n        \"description\": \"Pivot table configuration\"\n      },\n      \"dbtMode\": {\n        \"type\": \"boolean\",\n        \"description\": \"Whether to use dbt model directly\"\n      },\n      \"filters\": {\n        \"type\": \"object\",\n        \"description\": \"WHERE clause conditions\"\n      },\n      \"modelId\": {\n        \"type\": \"string\",\n        \"description\": \"Omni model identifier (UUID format)\"\n      },\n      \"version\": {\n        \"type\": \"number\",\n        \"description\": \"Query schema version\"\n      },\n      \"controls\": {\n        \"type\": \"array\",\n        \"description\": \"Dashboard filter controls\"\n      },\n      \"rewriteSql\": {\n        \"type\": \"boolean\",\n        \"description\": \"Allow SQL rewriting for optimization\"\n      },\n      \"row_totals\": {\n        \"type\": \"object\",\n        \"description\": \"Row totaling configuration\"\n      },\n      \"fill_fields\": {\n        \"type\": \"array\",\n        \"description\": \"Fields to fill with default values\"\n      },\n      \"calculations\": {\n        \"type\": \"array\",\n        \"description\": \"Custom calculated fields\"\n      },\n      \"column_limit\": {\n        \"type\": \"number\",\n        \"description\": \"Maximum columns to return\"\n      },\n      \"join_via_map\": {\n        \"type\": \"object\",\n        \"description\": \"Custom join configurations\"\n      },\n      \"column_totals\": {\n        \"type\": \"object\",\n        \"description\": \"Column totaling configuration\"\n      },\n      \"userEditedSQL\": {\n        \"type\": \"string\",\n        \"description\": \"User-overridden SQL\"\n      },\n      \"dimensionIndex\": {\n        \"type\": \"number\",\n        \"description\": \"Dimension ordering\"\n      },\n      \"default_group_by\": {\n        \"type\": \"boolean\",\n        \"description\": \"Use default grouping\"\n      },\n      \"custom_summary_types\": {\n        \"type\": \"object\",\n        \"description\": \"Custom aggregation types\"\n      },\n      \"join_paths_from_topic_name\": {\n        \"type\": \"string\",\n        \"description\": \"Topic/model name for joins\"\n      }\n    },\n    \"required\": [\n      \"limit\",\n      \"sorts\",\n      \"table\",\n      \"fields\",\n      \"pivots\",\n      \"dbtMode\",\n      \"filters\",\n      \"modelId\",\n      \"version\",\n      \"controls\",\n      \"rewriteSql\",\n      \"row_totals\",\n      \"fill_fields\",\n      \"calculations\",\n      \"column_limit\",\n      \"join_via_map\",\n      \"column_totals\",\n      \"userEditedSQL\",\n      \"dimensionIndex\",\n      \"default_group_by\",\n      \"custom_summary_types\",\n      \"join_paths_from_topic_name\"\n    ]\n  }"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        4144,
+        1712
+      ],
+      "id": "5abcf832-7ccf-4c94-a988-237be2d39bec",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let output = JSON.parse(item.json.output);\n\n  if (\"current_fiscal_quarter_query\" in output) {\n    item.json.current_fiscal_quarter_query = output.current_fiscal_quarter_query;\n  }\n\n  if (\"previous_fiscal_quarter_query\" in output) {\n    item.json.previous_fiscal_quarter_query = output.previous_fiscal_quarter_query;\n  }\n  \n  if (\"query\" in output) {\n    item.json.query = output.query;\n  }\n\n  delete item.json.output;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4528,
+        1504
+      ],
+      "id": "e17ce027-26fc-465a-87d1-098a4fd7e0b0",
+      "name": "Parse Modified Query AI Output1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<role>\nYou are a JSON-transformation agent who edits BI-tool query objects.\n</role>\n\n<task>\nGoal: Produce two modified copies of the supplied query JSON.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON exactly as received; preserve every field order and value.\n2. Locate the first object inside \"filters\" whose inner field \"kind\" equals \"TIME_FOR_UNIT_DURATION\" (case-sensitive).\n3. Duplicate the entire query twice:\n   a. In Copy 1, replace that object’s \"left_side\" value with the provided {current_fiscal_quarter}.\n   b. In Copy 1, replace the numeric value in limit to 200 .\n   c. In Copy 2, replace that same \"left_side\" value with the provided {previous_fiscal_quarter} .\n   d. In Copy 2, replace the numeric value in limit to 200 .\n4. Return a json object with the structured output in the format of output_format with the two edited JSON objects in the for each key: current_fiscal_quarter_query and previous_fiscal_quarter_query\n</task>\n\n<context>\nYou will receive:\n• A complete JSON object named query.\n• Two strings: \n  – current_fiscal_quarter  \n  – previous_fiscal_quarter  \n\nReplace **ONLY** the \"left_side\" value of the filter having \"kind\": \"TIME_FOR_UNIT_DURATION\" and the numeric value for limit. All other content must remain bit-for-bit identical, including whitespace and ordering.  We prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<examples>\nInput:\n\n```json\n{\n  \"query\": { ...original JSON... },\n  \"current_fiscal_quarter\": \"FY2026 Q2\",\n  \"previous_fiscal_quarter\": \"FY2026 Q1\"\n}\n\n```\n\nExpected high-level output (schema only):\n\n```json\n{\n  \"current_fiscal_quarter_query\": { /* query with FY2026 Q2 in left_side */ },\n  \"previous_fiscal_quarter_query\": { /* query with FY2026 Q1 in left_side */ }\n}\n```\n</examples>\n\n<input>\n{\n  \"query\": {{ $json.query.toJsonString() }},\n  \"current_fiscal_quarter\": \"{{  $('Fiscal Quarter Extractor').item.json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_quarter }}\"\n}\n</input>\n\n<guidelines>\n- Preserve JSON formatting exactly; do not pretty-print or minify.\n- Do not alter any other filters, even if they also contain TIME_* kinds.\n- If no matching filter exists, return an error object explaining “TIME_FOR_UNIT_DURATION filter not found”.\n- Point out any ambiguities or missing data instead of guessing.\n- Do not simply agree; highlight logical or data issues and propose corrections.\n- Mention tricky edge cases (e.g., multiple TIME_FOR_UNIT_DURATION filters, malformed JSON).\n- Output only valid JSON or an error object - no commentary, nor preamble.\n</guidelines>\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3920,
+        2448
+      ],
+      "id": "3a3a4333-4773-44f9-8d18-103b318fbe67",
+      "name": "OLD Query JSON Modifier",
+      "disabled": true
     },
     {
       "parameters": {
@@ -385,11 +470,11 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        3696,
-        1744
+        3904,
+        2640
       ],
       "id": "0b5d49f3-9f62-4323-93f5-bf49acbe8642",
-      "name": "Azure OpenAI Chat Model1",
+      "name": "OLD gpt-5-mini",
       "credentials": {
         "azureOpenAiApi": {
           "id": "ljEp6Un527XmKGRN",
@@ -399,44 +484,40 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n\t\"current_fiscal_quarter_query\": {\n  \n},\n\t\"previous_fiscal_quarter_query\": {\n  \n}\n}"
+        "model": "gpt-5-mini",
+        "options": {
+          "timeout": 360000
+        }
       },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
       "position": [
-        3888,
-        1760
+        3920,
+        1728
       ],
-      "id": "5d7f57ba-6e3f-488c-aaac-d6db6eca7df4",
-      "name": "Structured Output Parser1"
+      "id": "c307facc-4098-4a60-a627-d4538284d845",
+      "name": "gpt-5-mini",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "ljEp6Un527XmKGRN",
+          "name": "Azure OpenAI gpt-5-mini"
+        }
+      }
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=<role>\nYou are a JSON-transformation agent who edits BI-tool query objects.\n</role>\n\n<task>\nGoal: Produce two modified copies of the supplied query JSON.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON exactly as received; preserve every field order and value.\n2. Locate the first object inside \"filters\" whose inner field \"kind\" equals \"TIME_FOR_UNIT_DURATION\" (case-sensitive).\n3. Duplicate the entire query twice:\n   a. In Copy 1, replace that object’s \"left_side\" value with the provided {current_fiscal_quarter}.\n   b. In Copy 2, replace that same \"left_side\" value with the provided {previous_fiscal_quarter}.\n4. Return a json object with the structured output in the format of output_format with the two edited JSON objects in the for each key: current_fiscal_quarter_query and previous_fiscal_quarter_query\n</task>\n\n<context>\nYou will receive:\n• A complete JSON object named query.\n• Two strings: \n  – current_fiscal_quarter  \n  – previous_fiscal_quarter  \n\nReplace only the \"left_side\" value of the filter having \"kind\": \"TIME_FOR_UNIT_DURATION\". All other content must remain bit-for-bit identical, including whitespace and ordering.  We prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<examples>\nInput:\n\n```json\n{\n  \"query\": { ...original JSON... },\n  \"current_fiscal_quarter\": \"FY2026 Q2\",\n  \"previous_fiscal_quarter\": \"FY2026 Q1\"\n}\n\n```\n\nExpected high-level output (schema only):\n\n```json\n{\n  \"current_fiscal_quarter_query\": { /* query with FY2026 Q2 in left_side */ },\n  \"previous_fiscal_quarter_query\": { /* query with FY2026 Q1 in left_side */ }\n}\n```\n</examples>\n\n<input>\n{\n  \"query\": {{ $json.query.toJsonString() }},\n  \"current_fiscal_quarter\": \"{{  $('Fiscal Quarter Extractor').item.json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_quarter }}\"\n}\n</input>\n\n<guidelines>\n- Preserve JSON formatting exactly; do not pretty-print or minify.\n- Do not alter any other filters, even if they also contain TIME_* kinds.\n- If no matching filter exists, return an error object explaining “TIME_FOR_UNIT_DURATION filter not found”.\n- Point out any ambiguities or missing data instead of guessing.\n- Do not simply agree; highlight logical or data issues and propose corrections.\n- Mention tricky edge cases (e.g., multiple TIME_FOR_UNIT_DURATION filters, malformed JSON).\n- Output only valid JSON or an error object - no commentary, nor preamble.\n</guidelines>\n",
+        "text": "=<role>\nYou are a JSON-transformation agent who edits BI-tool query objects for fiscal quarter comparisons with automatic sorting.\n</role>\n\n<task>\nGoal: Produce two modified copies of the supplied query JSON with numeric measure sorts added and fiscal quarter filters updated.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON exactly as received; preserve every field order and value.\n2. **Add Sorts**: Identify numeric measures in the \"fields\" array and add them to the \"sorts\" array.\n3. **Locate Filter**: Find the first object inside \"filters\" whose inner field \"kind\" equals \"TIME_FOR_UNIT_DURATION\" (case-sensitive).\n4. **Duplicate Query**: Create two copies of the modified query:\n   a. In Copy 1, replace that filter object's \"left_side\" value with the provided {current_fiscal_quarter}.\n   b. In Copy 1, replace the numeric value in \"limit\" to 200.\n   c. In Copy 2, replace that same \"left_side\" value with the provided {previous_fiscal_quarter}.\n   d. In Copy 2, replace the numeric value in \"limit\" to 200.\n5. **Return**: A JSON object with the structured output format containing the two edited query objects for keys: current_fiscal_quarter_query and previous_fiscal_quarter_query.\n</task>\n\n<context>\nYou will receive:\n• A complete JSON object named \"query\" following Omni analytics query structure\n• Two strings:\n  – current_fiscal_quarter\n  – previous_fiscal_quarter\n\nThe query object contains these key fields:\n- **fields**: Array of column names to SELECT and display (format: \"schema__table.field_name\")\n- **sorts**: Array of sort configuration objects (you will modify this)\n- **filters**: Object containing WHERE clause conditions\n- **limit**: Numeric value for row limit (you will set this to 200)\n- **table**: String reference to the data table\n- **modelId**: Omni model identifier (UUID)\n- **version**: Query schema version\n- **Other fields**: pivots, calculations, etc. (preserve unchanged)\n\nModify **ONLY** the \"sorts\" array, the \"left_side\" value of the TIME_FOR_UNIT_DURATION filter, and the \"limit\" value. All other content must remain bit-for-bit identical, including whitespace and ordering. We prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<numeric_measure_identification>\n<step_1>\n<description>\nIdentify Numeric Measures in Fields Array\n\nScan the \"fields\" array and identify numeric measures using these patterns:\n</description>\n\n<inclusion_patterns>\nInclusion Patterns (these ARE numeric measures):\n- `total_*` → e.g., total_ending_arr, total_customers, total_new_arr\n- `*_arr` → e.g., new_arr, upsell_arr, churn_arr, downsell_arr\n- `*_sum` → e.g., revenue_sum, new_arr_sum\n- `*_count` → e.g., opportunity_count, customer_count\n- `*_max`, `*_min` → e.g., lake_gbs_customer_data_max, min_date\n- `*_avg`, `*_average`, `*_mean` → e.g., avg_deal_size, mean_time_to_close\n- `*_gb`, `*_tb`, `*_bytes` → e.g., total_cloud_stream_in_gb_30d, total_edge_in_bytes\n- `*_nodes`, `*_instances` → e.g., total_edge_nodes, cloud_edge_nodes_30d\n- `*_percentage`, `*_percent`, `*_rate`, `*_ratio` → percentage/ratio metrics\n- `*_revenue`, `*_bookings`, `*_billings` → financial metrics\n- `*_headcount`, `*_employees`, `*_users` → when aggregated\n- `*_derived` → e.g., new_arr_derived, calculated_revenue_derived\n- `cumulative_*` → e.g., cumulative_revenue\n- `max_*`, `min_*` → e.g., max_edge_nodes, min_starting_arr\n</inclusion_patterns>\n\n<exclusion_patterns>\nExclusion Patterns (these are NOT numeric measures - they're dimensions):\n- `*_name`, `*_title` → e.g., customer_name, account_name, owner_name\n- `*_id` → e.g., cribl_id, org_id, opportunity_id (identifiers are dimensions)\n- `*_date`, `*_time`, `*_timestamp` → e.g., close_date, created_at\n- `*_type`, `*_category`, `*_status` → e.g., customer_type, stage_name\n- `*_description`, `*_notes` → text descriptions\n- `is_*`, `has_*` → e.g., is_last_day_of_fq, is_active (boolean flags)\n- Fields with `[transformations]` → e.g., fiscal_quarter[fiscal_quarter], first_purchase_quarter[date]\n- `owner_*`, `created_by_*`, `updated_by_*` → user references\n- `*_key` → lookup keys\n</exclusion_patterns>\n\n<pattern_matching_rules>\nPattern Matching Rules (Regex):\n```\nINCLUDE if field name matches ANY of:\n  - ^.*total_.*$              (contains \"total_\")\n  - ^.*_arr$                  (ends with \"_arr\")\n  - ^.*_sum$                  (ends with \"_sum\")\n  - ^.*_count$                (ends with \"_count\")\n  - ^.*_max$                  (ends with \"_max\")\n  - ^.*_min$                  (ends with \"_min\")\n  - ^.*_avg$|^.*_mean$        (ends with \"_avg\" or \"_mean\")\n  - ^.*_gb.*$|^.*_bytes.*$    (contains \"_gb\" or \"_bytes\")\n  - ^.*_nodes.*$              (contains \"_nodes\")\n  - ^.*_derived$              (ends with \"_derived\")\n  - ^max_.*$|^min_.*$         (starts with \"max_\" or \"min_\")\n  - ^cumulative_.*$           (starts with \"cumulative_\")\n\nEXCLUDE if field name matches ANY of:\n  - ^.*_name$|^.*_title$      (ends with \"_name\" or \"_title\")\n  - ^.*_id$                   (ends with \"_id\")\n  - ^.*date.*$|^.*quarter.*$  (contains \"date\" or \"quarter\")\n  - ^.*_at$                   (ends with \"_at\")\n  - ^.*_type$|^.*_status$     (ends with \"_type\" or \"_status\")\n  - ^.*_stage$                (ends with \"_stage\")\n  - ^is_.*$|^has_.*$          (starts with \"is_\" or \"has_\")\n  - ^.*\\[.*\\]$                (contains brackets)\n```\n</pattern_matching_rules>\n\n<example_field_analysis>\nExample Field Analysis:\n- `finance__customer_quarterly_arr.total_customers` → ✅ NUMERIC MEASURE (matches `total_*`)\n- `finance__customer_quarterly_arr.customer_name` → ❌ DIMENSION (matches `*_name`)\n- `finance__customer_quarterly_arr.total_arr` → ✅ NUMERIC MEASURE (matches `total_*` and `*_arr`)\n- `finance__customer_quarterly_arr.fiscal_quarter_name` → ❌ DIMENSION (matches `*_name`)\n- `finance__customer_quarterly_arr.new_arr_sum` → ✅ NUMERIC MEASURE (matches `*_sum`)\n- `finance__customer_quarterly_arr.fiscal_quarter[fiscal_quarter]` → ❌ DIMENSION (has brackets)\n</example_field_analysis>\n</step_1>\n</numeric_measure_identification>\n\n<sort_object_creation>\n<step_2>\n<description>\nCreate Sort Objects for Numeric Measures\n\nFor each identified numeric measure, create a sort object with this structure:\n\n```json\n{\n  \"column_name\": \"schema__table.field_name\",\n  \"sort_descending\": true\n}\n```\n</description>\n\n<field_definitions>\nField Definitions:\n- **column_name** (required, string): The exact field reference from the fields array\n- **sort_descending** (required, boolean): Set to `true` for descending sort (largest values first)\n</field_definitions>\n\n<sort_direction_guidelines>\nSort Direction Guidelines:\n- Numeric measures: Use `true` (descending) to show largest values first\n- This is the standard for BI tools to show \"top performers\" or \"highest values\"\n</sort_direction_guidelines>\n\n<deduplication>\nDeduplication:\nIf the \"sorts\" array already has items, check before adding:\n- If a sort object already exists for a given `column_name`, skip it\n- Append new sort objects only for measures not already in sorts\n- Preserve existing sort objects in their original order\n</deduplication>\n\n<example>\nExample:\nInput fields:\n```json\n[\n  \"finance__customer_quarterly_arr.customer_name\",\n  \"finance__customer_quarterly_arr.total_ending_arr\",\n  \"finance__customer_quarterly_arr.total_new_arr\"\n]\n```\n\nCreated sort objects:\n```json\n[\n  {\n    \"column_name\": \"finance__customer_quarterly_arr.total_ending_arr\",\n    \"sort_descending\": true\n  },\n  {\n    \"column_name\": \"finance__customer_quarterly_arr.total_new_arr\",\n    \"sort_descending\": true\n  }\n]\n```\n\nNote: `customer_name` is excluded because it ends with `_name` (dimension, not measure).\n</example>\n</step_2>\n</sort_object_creation>\n\n<query_modification>\n<step_3>\n<description>\nModify Query Object - Add Sorts\n\nAdd the created sort objects to the \"sorts\" array in the query object.\n</description>\n\n<before_adding_sorts>\nBefore Adding Sorts:\n```json\n{\n  \"sorts\": [],\n  \"fields\": [\n    \"finance__customer_quarterly_arr.fiscal_quarter_name\",\n    \"finance__customer_quarterly_arr.total_customers\",\n    \"finance__customer_quarterly_arr.total_arr\"\n  ]\n}\n```\n</before_adding_sorts>\n\n<after_adding_sorts>\nAfter Adding Sorts:\n```json\n{\n  \"sorts\": [\n    {\n      \"column_name\": \"finance__customer_quarterly_arr.total_customers\",\n      \"sort_descending\": true\n    },\n    {\n      \"column_name\": \"finance__customer_quarterly_arr.total_arr\",\n      \"sort_descending\": true\n    }\n  ],\n  \"fields\": [\n    \"finance__customer_quarterly_arr.fiscal_quarter_name\",\n    \"finance__customer_quarterly_arr.total_customers\",\n    \"finance__customer_quarterly_arr.total_arr\"\n  ]\n}\n```\n</after_adding_sorts>\n</step_3>\n</query_modification>\n\n<fiscal_quarter_modification>\n<step_4>\n<description>\nModify Fiscal Quarter Filter and Limit\n\nAfter adding sorts, locate and modify the TIME_FOR_UNIT_DURATION filter:\n\n1. Find the first filter object where `\"kind\": \"TIME_FOR_UNIT_DURATION\"`\n2. Note the current \"left_side\" value\n3. Prepare to create two copies with different left_side values\n</description>\n\n<filter_structure>\nFilter Structure:\n```json\n{\n  \"type\": \"date\",\n  \"kind\": \"TIME_FOR_UNIT_DURATION\",\n  \"left_side\": \"FY2026 Q1\",\n  \"right_side\": {\n    \"unit\": \"fiscal_quarter\",\n    \"count\": 1\n  }\n}\n```\n</filter_structure>\n\n<modifications_for_each_copy>\nModifications for Each Copy:\n- **Copy 1 (current_fiscal_quarter_query)**:\n  - Set `left_side` to {current_fiscal_quarter}\n  - Set `limit` to 200\n- **Copy 2 (previous_fiscal_quarter_query)**:\n  - Set `left_side` to {previous_fiscal_quarter}\n  - Set `limit` to 200\n</modifications_for_each_copy>\n</step_4>\n</fiscal_quarter_modification>\n\n<examples>\n<complete_example>\n<input>\n```json\n{\n  \"query\": {\n    \"limit\": 1000,\n    \"sorts\": [],\n    \"table\": \"finance__customer_quarterly_arr\",\n    \"fields\": [\n      \"finance__customer_quarterly_arr.fiscal_quarter_name\",\n      \"finance__customer_quarterly_arr.total_customers\",\n      \"finance__customer_quarterly_arr.total_arr\"\n    ],\n    \"filters\": {\n      \"type\": \"composite\",\n      \"operator\": \"and\",\n      \"conditions\": [\n        {\n          \"type\": \"date\",\n          \"kind\": \"TIME_FOR_UNIT_DURATION\",\n          \"left_side\": \"FY2026 Q1\",\n          \"right_side\": {\n            \"unit\": \"fiscal_quarter\",\n            \"count\": 1\n          }\n        }\n      ]\n    },\n    \"modelId\": \"e3a78095-f13c-49a2-9a4c-617fca386ca4\",\n    \"version\": 8\n  },\n  \"current_fiscal_quarter\": \"FY2026 Q2\",\n  \"previous_fiscal_quarter\": \"FY2026 Q1\"\n}\n```\n</input>\n\n<processing_steps>\nProcessing Steps:\n\n**Step 1: Identify numeric measures**\n- ❌ `fiscal_quarter_name` → ends with `_name` (dimension)\n- ✅ `total_customers` → matches `total_*` (measure)\n- ✅ `total_arr` → matches `total_*` and `*_arr` (measure)\n\n**Step 2: Create sort objects**\n```json\n[\n  {\n    \"column_name\": \"finance__customer_quarterly_arr.total_customers\",\n    \"sort_descending\": true\n  },\n  {\n    \"column_name\": \"finance__customer_quarterly_arr.total_arr\",\n    \"sort_descending\": true\n  }\n]\n```\n\n**Step 3: Add sorts to query**\n\n**Step 4: Find TIME_FOR_UNIT_DURATION filter and prepare for duplication**\n\n**Step 5: Create two copies with modified values**\n</processing_steps>\n\n<expected_output>\n```json\n{\n  \"current_fiscal_quarter_query\": {\n    \"limit\": 200,\n    \"sorts\": [\n      {\n        \"column_name\": \"finance__customer_quarterly_arr.total_customers\",\n        \"sort_descending\": true\n      },\n      {\n        \"column_name\": \"finance__customer_quarterly_arr.total_arr\",\n        \"sort_descending\": true\n      }\n    ],\n    \"table\": \"finance__customer_quarterly_arr\",\n    \"fields\": [\n      \"finance__customer_quarterly_arr.fiscal_quarter_name\",\n      \"finance__customer_quarterly_arr.total_customers\",\n      \"finance__customer_quarterly_arr.total_arr\"\n    ],\n    \"filters\": {\n      \"type\": \"composite\",\n      \"operator\": \"and\",\n      \"conditions\": [\n        {\n          \"type\": \"date\",\n          \"kind\": \"TIME_FOR_UNIT_DURATION\",\n          \"left_side\": \"FY2026 Q2\",\n          \"right_side\": {\n            \"unit\": \"fiscal_quarter\",\n            \"count\": 1\n          }\n        }\n      ]\n    },\n    \"modelId\": \"e3a78095-f13c-49a2-9a4c-617fca386ca4\",\n    \"version\": 8\n  },\n  \"previous_fiscal_quarter_query\": {\n    \"limit\": 200,\n    \"sorts\": [\n      {\n        \"column_name\": \"finance__customer_quarterly_arr.total_customers\",\n        \"sort_descending\": true\n      },\n      {\n        \"column_name\": \"finance__customer_quarterly_arr.total_arr\",\n        \"sort_descending\": true\n      }\n    ],\n    \"table\": \"finance__customer_quarterly_arr\",\n    \"fields\": [\n      \"finance__customer_quarterly_arr.fiscal_quarter_name\",\n      \"finance__customer_quarterly_arr.total_customers\",\n      \"finance__customer_quarterly_arr.total_arr\"\n    ],\n    \"filters\": {\n      \"type\": \"composite\",\n      \"operator\": \"and\",\n      \"conditions\": [\n        {\n          \"type\": \"date\",\n          \"kind\": \"TIME_FOR_UNIT_DURATION\",\n          \"left_side\": \"FY2026 Q1\",\n          \"right_side\": {\n            \"unit\": \"fiscal_quarter\",\n            \"count\": 1\n          }\n        }\n      ]\n    },\n    \"modelId\": \"e3a78095-f13c-49a2-9a4c-617fca386ca4\",\n    \"version\": 8\n  }\n}\n```\n</expected_output>\n</complete_example>\n</examples>\n\n<input>\n{\n  \"query\": {{ $json.query.toJsonString() }},\n  \"current_fiscal_quarter\": \"{{  $('Fiscal Quarter Extractor').item.json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').item.json.output.previous_fiscal_quarter }}\"\n}\n</input>\n\n<edge_cases>\n<description>\nEdge Cases to Handle\n</description>\n\n<case_1>\n1. Query with existing sorts:\n- Append new sort objects to the existing sorts array\n- Preserve the order of existing sorts\n- Do not create duplicate sort objects for fields already in sorts\n\n**Example Input:**\n```json\n{\n  \"sorts\": [\n    {\n      \"column_name\": \"sales__opportunity.new_arr_derived\",\n      \"sort_descending\": true\n    }\n  ],\n  \"fields\": [\n    \"sales__opportunity.account_name\",\n    \"sales__opportunity.new_arr_derived\",\n    \"sales__opportunity.total_arr\"\n  ]\n}\n```\n\n**Processing:**\n- `new_arr_derived` already has a sort → skip\n- `total_arr` does not have a sort → add\n\n**Result:**\n```json\n{\n  \"sorts\": [\n    {\n      \"column_name\": \"sales__opportunity.new_arr_derived\",\n      \"sort_descending\": true\n    },\n    {\n      \"column_name\": \"sales__opportunity.total_arr\",\n      \"sort_descending\": true\n    }\n  ]\n}\n```\n</case_1>\n\n<case_2>\n2. Query with no numeric measures:\n- Return the query with only fiscal quarter and limit modifications\n- The sorts array remains as-is (empty or with existing sorts)\n\n**Example:**\n```json\n{\n  \"fields\": [\n    \"sales__accounts.account_name\",\n    \"sales__accounts.owner_name\",\n    \"sales__opportunity.close_date\"\n  ],\n  \"sorts\": []\n}\n```\n\n**Result:** Sorts array stays empty `[]`\n</case_2>\n\n<case_3>\n3. Query with mixed numeric and dimension fields:\n- Only add sorts for true numeric measures\n- Skip all dimension fields even if they contain numbers in their values\n</case_3>\n\n<case_4>\n4. Multiple TIME_FOR_UNIT_DURATION filters:\n- Only modify the FIRST occurrence\n- Leave other TIME_* filters unchanged\n</case_4>\n\n<case_5>\n5. Missing TIME_FOR_UNIT_DURATION filter:\n- Return error object: `{\"error\": \"TIME_FOR_UNIT_DURATION filter not found\"}`\n</case_5>\n\n<case_6>\n6. Malformed JSON:\n- Return error object: `{\"error\": \"Invalid JSON structure\", \"details\": \"<specific issue>\"}`\n</case_6>\n</edge_cases>\n\n<guidelines>\n<description>\nProcessing Guidelines\n</description>\n\n- Preserve JSON formatting exactly; do not pretty-print or minify.\n- Apply sorts modification BEFORE duplicating the query.\n- Do not alter any filters except the first TIME_FOR_UNIT_DURATION filter's left_side value.\n- If no matching TIME_FOR_UNIT_DURATION filter exists, return an error object: `{\"error\": \"TIME_FOR_UNIT_DURATION filter not found\"}`\n- Point out any ambiguities or missing data instead of guessing.\n- Do not simply agree with assumptions; highlight logical or data issues and propose corrections.\n- Mention tricky edge cases when they occur.\n- Output only valid JSON or an error object - no commentary, preamble, or markdown formatting.\n- Ensure both output queries have identical sorts arrays (derived from the original query's fields).\n- Set limit to exactly 200 in both output queries.\n- Both queries should be complete, valid Omni query objects.\n</guidelines>\n\n<output_format>\n<description>\nExpected Output Structure\n</description>\n\n```json\n{\n  \"current_fiscal_quarter_query\": {\n    /* Complete query object with:\n       - sorts: array with numeric measure sorts\n       - limit: 200\n       - filters: TIME_FOR_UNIT_DURATION.left_side = current_fiscal_quarter\n       - all other fields: unchanged\n    */\n  },\n  \"previous_fiscal_quarter_query\": {\n    /* Complete query object with:\n       - sorts: array with numeric measure sorts (same as current)\n       - limit: 200\n       - filters: TIME_FOR_UNIT_DURATION.left_side = previous_fiscal_quarter\n       - all other fields: unchanged\n    */\n  }\n}\n```\n\nIf there's an error:\n```json\n{\n  \"error\": \"Error description\",\n  \"details\": \"Specific issue details\"\n}\n```\n</output_format>\n\n<validation_checklist>\n<description>\nValidation Before Returning\n\nVerify the following before returning the result:\n</description>\n\n- [ ] All numeric measures from \"fields\" are in \"sorts\" (no duplicates)\n- [ ] No dimension fields (names, IDs, dates) are in \"sorts\"\n- [ ] All sort objects have both \"column_name\" and \"sort_descending\" fields\n- [ ] All \"sort_descending\" values are `true`\n- [ ] Both queries have \"limit\" set to 200\n- [ ] Current query has correct current_fiscal_quarter in TIME_FOR_UNIT_DURATION filter\n- [ ] Previous query has correct previous_fiscal_quarter in TIME_FOR_UNIT_DURATION filter\n- [ ] Both queries have identical \"sorts\" arrays\n- [ ] All other fields (table, modelId, version, etc.) are preserved unchanged\n- [ ] The output is valid JSON with no syntax errors\n- [ ] Output contains exactly two keys: \"current_fiscal_quarter_query\" and \"previous_fiscal_quarter_query\"\n</validation_checklist>\n",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        3712,
-        1552
+        3968,
+        1504
       ],
-      "id": "3a3a4333-4773-44f9-8d18-103b318fbe67",
+      "id": "a9cca20c-75ad-4dbd-ae3f-c04559bb043e",
       "name": "Query JSON Modifier"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let output = JSON.parse(item.json.output);\n\n  item.json.current_fiscal_quarter_query = output.current_fiscal_quarter_query;\n  item.json.previous_fiscal_quarter_query = output.previous_fiscal_quarter_query;\n\n  delete item.json.output;\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4304,
-        1552
-      ],
-      "id": "39eee60c-2b5f-4c2c-8082-d9b95868ed89",
-      "name": "Parse Modified Query AI Output"
     }
   ],
   "connections": {
@@ -489,11 +570,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Expand Queries Array": {
-      "main": [
-        []
       ]
     },
     "Loop Over Queries": {
@@ -631,17 +707,6 @@
         ]
       ]
     },
-    "Azure OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Fiscal Quarter Extractor",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Structured Output Parser": {
       "ai_outputParser": [
         [
@@ -657,30 +722,8 @@
       "main": [
         [
           {
-            "node": "Load Drill Queries",
+            "node": "Create Takeaways Doc",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "POST Drill Query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Azure OpenAI Chat Model1": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Query JSON Modifier",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -691,7 +734,61 @@
         []
       ]
     },
-    "Query JSON Modifier": {
+    "Parse Modified Query AI Output": {
+      "main": [
+        []
+      ]
+    },
+    "o4-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fiscal Quarter Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Takeaways Doc": {
+      "main": [
+        [
+          {
+            "node": "Load Drill Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Request Payload": {
+      "main": [
+        [
+          {
+            "node": "POST Drill Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        []
+      ]
+    },
+    "Parse Modified Query AI Output1": {
+      "main": [
+        [
+          {
+            "node": "Create Request Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OLD Query JSON Modifier": {
       "main": [
         [
           {
@@ -702,11 +799,33 @@
         ]
       ]
     },
-    "Parse Modified Query AI Output": {
+    "OLD gpt-5-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "OLD Query JSON Modifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-5-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Query JSON Modifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query JSON Modifier": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Parse Modified Query AI Output1",
             "type": "main",
             "index": 0
           }
@@ -729,11 +848,31 @@
         "json": {
           "output": {
             "today": "2025-12-22",
-            "current_fiscal_quarter": "FY2026 Q4",
-            "previous_fiscal_quarter": "FY2026 Q3",
+            "current_fiscal_quarter": "FY2026 Q3",
+            "previous_fiscal_quarter": "FY2026 Q2",
             "current_fiscal_half": "FY2026 H2",
             "previous_fiscal_half": "FY2026 H1"
           }
+        }
+      }
+    ],
+    "Create Takeaways Doc": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1TN9S5sCp-DBlhYFV6a_ihTvVa6tr4pkjDb8JHL9PWyA",
+          "name": "Board_Deck_Takeaways_20251224_114757",
+          "mimeType": "application/vnd.google-apps.document"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "OLD Query JSON Modifier": [
+      {
+        "json": {
+          "output": "{\n  \"current_fiscal_quarter_query\": {\"limit\":200,\"sorts\":[],\"table\":\"cloud_edge_nodes_fq\",\"fields\":[\"cloud_edge_nodes_fq.date[fiscal_quarter]\",\"cloud_edge_nodes_fq.org_id\",\"cloud_edge_nodes_fq.total_edge_nodes\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"cloud_edge_nodes_fq.date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\",\"is_negative\":false}],\"conjunction\":\"AND\",\"is_negative\":false},\"product__cloud_orgs.org_type\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"Customer\",\"Free\"],\"is_negative\":false},\"cloud_edge_nodes_fq.total_edge_nodes\":{\"kind\":\"GREATER_THAN\",\"type\":\"number\",\"values\":[\"0\"],\"is_negative\":false,\"is_inclusive\":false}},\"modelId\":\"912e8580-4519-4971-b8c3-1c30608c7f49\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"cloud_edge_nodes_fq\"},\n  \"previous_fiscal_quarter_query\": {\"limit\":200,\"sorts\":[],\"table\":\"cloud_edge_nodes_fq\",\"fields\":[\"cloud_edge_nodes_fq.date[fiscal_quarter]\",\"cloud_edge_nodes_fq.org_id\",\"cloud_edge_nodes_fq.total_edge_nodes\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"cloud_edge_nodes_fq.date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\",\"is_negative\":false}],\"conjunction\":\"AND\",\"is_negative\":false},\"product__cloud_orgs.org_type\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"Customer\",\"Free\"],\"is_negative\":false},\"cloud_edge_nodes_fq.total_edge_nodes\":{\"kind\":\"GREATER_THAN\",\"type\":\"number\",\"values\":[\"0\"],\"is_negative\":false,\"is_inclusive\":false}},\"modelId\":\"912e8580-4519-4971-b8c3-1c30608c7f49\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"cloud_edge_nodes_fq\"}\n}"
         },
         "pairedItem": {
           "item": 0
@@ -743,7 +882,7 @@
     "Query JSON Modifier": [
       {
         "json": {
-          "output": "{\n  \"current_fiscal_quarter_query\":{\"limit\":1000,\"sorts\":[],\"table\":\"sales__opportunity\",\"fields\":[\"sales__accounts.account_name\",\"sales__opportunity.opportunity_name\",\"sales__accounts.owner_name\",\"sales__opportunity.forecast\",\"sales__opportunity.stage_name\",\"sales__opportunity.record_type\",\"sales__opportunity.new_arr_derived\",\"sales__opportunity.close_date\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"sales__opportunity.geo_segment\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"PUBLIC SECTOR\"],\"is_negative\":true},\"sales__opportunity.type_of_opp\":{\"type\":\"null\",\"is_negative\":false},\"sales__opportunity.deal_generated_source\":{\"type\":\"null\",\"is_negative\":true},\"sales__opportunity.loss_reason_to_exclude\":{\"type\":\"boolean\",\"is_negative\":false,\"treat_nulls_as_false\":false},\"sales__opportunity.record_type_rolled_up_\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"New\",\"Upsell\"]},\"sales__opportunity.nbm_entered_or_upsell_added_date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"FY2026 Q4\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\"}],\"conjunction\":\"AND\",\"is_negative\":false}},\"modelId\":\"3b668837-0ae9-4351-93cf-e36bf88706e1\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"model_extension_id\":\"27c7f29d-a2bb-4daf-97af-27e34b9461a2\",\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"opp_creation_marketing_attribution\"},\n  \"previous_fiscal_quarter_query\":{\"limit\":1000,\"sorts\":[],\"table\":\"sales__opportunity\",\"fields\":[\"sales__accounts.account_name\",\"sales__opportunity.opportunity_name\",\"sales__accounts.owner_name\",\"sales__opportunity.forecast\",\"sales__opportunity.stage_name\",\"sales__opportunity.record_type\",\"sales__opportunity.new_arr_derived\",\"sales__opportunity.close_date\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"sales__opportunity.geo_segment\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"PUBLIC SECTOR\"],\"is_negative\":true},\"sales__opportunity.type_of_opp\":{\"type\":\"null\",\"is_negative\":false},\"sales__opportunity.deal_generated_source\":{\"type\":\"null\",\"is_negative\":true},\"sales__opportunity.loss_reason_to_exclude\":{\"type\":\"boolean\",\"is_negative\":false,\"treat_nulls_as_false\":false},\"sales__opportunity.record_type_rolled_up_\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"New\",\"Upsell\"]},\"sales__opportunity.nbm_entered_or_upsell_added_date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"FY2026 Q3\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\"}],\"conjunction\":\"AND\",\"is_negative\":false}},\"modelId\":\"3b668837-0ae9-4351-93cf-e36bf88706e1\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"model_extension_id\":\"27c7f29d-a2bb-4daf-97af-27e34b9461a2\",\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"opp_creation_marketing_attribution\"}\n}"
+          "output": "{\n  \"current_fiscal_quarter_query\": {\n    \"limit\": 200,\n    \"sorts\": [\n      {\n        \"column_name\": \"cloud_edge_nodes_fq.total_edge_nodes\",\n        \"sort_descending\": true\n      }\n    ],\n    \"table\": \"cloud_edge_nodes_fq\",\n    \"fields\": [\n      \"cloud_edge_nodes_fq.date[fiscal_quarter]\",\n      \"cloud_edge_nodes_fq.org_id\",\n      \"cloud_edge_nodes_fq.total_edge_nodes\"\n    ],\n    \"pivots\": [],\n    \"dbtMode\": false,\n    \"filters\": {\n      \"cloud_edge_nodes_fq.date\": {\n        \"type\": \"composite\",\n        \"filters\": [\n          {\n            \"kind\": \"TIME_FOR_UNIT_DURATION\",\n            \"type\": \"date\",\n            \"left_side\": \"FY2026 Q3\"\n          },\n          {\n            \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n            \"type\": \"date\",\n            \"left_side\": \"6 complete fiscal quarters ago\",\n            \"right_side\": \"6 quarters\",\n            \"is_negative\": false\n          }\n        ],\n        \"conjunction\": \"AND\",\n        \"is_negative\": false\n      },\n      \"product__cloud_orgs.org_type\": {\n        \"kind\": \"EQUALS\",\n        \"type\": \"string\",\n        \"values\": [\n          \"Customer\",\n          \"Free\"\n        ],\n        \"is_negative\": false\n      },\n      \"cloud_edge_nodes_fq.total_edge_nodes\": {\n        \"kind\": \"GREATER_THAN\",\n        \"type\": \"number\",\n        \"values\": [\n          \"0\"\n        ],\n        \"is_negative\": false,\n        \"is_inclusive\": false\n      }\n    },\n    \"modelId\": \"912e8580-4519-4971-b8c3-1c30608c7f49\",\n    \"version\": 8,\n    \"controls\": [],\n    \"rewriteSql\": true,\n    \"row_totals\": {},\n    \"fill_fields\": [],\n    \"calculations\": [],\n    \"column_limit\": 50,\n    \"join_via_map\": {},\n    \"column_totals\": {},\n    \"userEditedSQL\": \"\",\n    \"dimensionIndex\": 0,\n    \"default_group_by\": true,\n    \"custom_summary_types\": {},\n    \"join_paths_from_topic_name\": \"cloud_edge_nodes_fq\"\n  },\n  \"previous_fiscal_quarter_query\": {\n    \"limit\": 200,\n    \"sorts\": [\n      {\n        \"column_name\": \"cloud_edge_nodes_fq.total_edge_nodes\",\n        \"sort_descending\": true\n      }\n    ],\n    \"table\": \"cloud_edge_nodes_fq\",\n    \"fields\": [\n      \"cloud_edge_nodes_fq.date[fiscal_quarter]\",\n      \"cloud_edge_nodes_fq.org_id\",\n      \"cloud_edge_nodes_fq.total_edge_nodes\"\n    ],\n    \"pivots\": [],\n    \"dbtMode\": false,\n    \"filters\": {\n      \"cloud_edge_nodes_fq.date\": {\n        \"type\": \"composite\",\n        \"filters\": [\n          {\n            \"kind\": \"TIME_FOR_UNIT_DURATION\",\n            \"type\": \"date\",\n            \"left_side\": \"FY2026 Q2\"\n          },\n          {\n            \"kind\": \"TIME_FOR_INTERVAL_DURATION\",\n            \"type\": \"date\",\n            \"left_side\": \"6 complete fiscal quarters ago\",\n            \"right_side\": \"6 quarters\",\n            \"is_negative\": false\n          }\n        ],\n        \"conjunction\": \"AND\",\n        \"is_negative\": false\n      },\n      \"product__cloud_orgs.org_type\": {\n        \"kind\": \"EQUALS\",\n        \"type\": \"string\",\n        \"values\": [\n          \"Customer\",\n          \"Free\"\n        ],\n        \"is_negative\": false\n      },\n      \"cloud_edge_nodes_fq.total_edge_nodes\": {\n        \"kind\": \"GREATER_THAN\",\n        \"type\": \"number\",\n        \"values\": [\n          \"0\"\n        ],\n        \"is_negative\": false,\n        \"is_inclusive\": false\n      }\n    },\n    \"modelId\": \"912e8580-4519-4971-b8c3-1c30608c7f49\",\n    \"version\": 8,\n    \"controls\": [],\n    \"rewriteSql\": true,\n    \"row_totals\": {},\n    \"fill_fields\": [],\n    \"calculations\": [],\n    \"column_limit\": 50,\n    \"join_via_map\": {},\n    \"column_totals\": {},\n    \"userEditedSQL\": \"\",\n    \"dimensionIndex\": 0,\n    \"default_group_by\": true,\n    \"custom_summary_types\": {},\n    \"join_paths_from_topic_name\": \"cloud_edge_nodes_fq\"\n  }\n}"
         },
         "pairedItem": {
           "item": 0
@@ -751,7 +890,7 @@
       }
     ]
   },
-  "versionId": "3eea8075-17b2-4755-a8ae-fa085f9b03a9",
+  "versionId": "c312468e-8e3a-430d-9ddc-18f86ae7c6bf",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
