@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T22:35:44.859Z",
+  "updatedAt": "2025-12-24T23:30:13.702Z",
   "createdAt": "2025-12-20T03:54:31.574Z",
   "id": "QzzrCNPkQevDtQdv",
   "name": "Board_Deck_Omni_Query_Analysis",
@@ -45,7 +45,7 @@
         "model": "gpt-5-mini",
         "options": {
           "responseFormat": "json_object",
-          "timeout": 300000
+          "timeout": 360000
         }
       },
       "id": "azure-openai-model",
@@ -114,7 +114,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4336,
+        4448,
         112
       ]
     },
@@ -141,7 +141,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        4592,
+        4704,
         112
       ],
       "retryOnFail": true,
@@ -330,7 +330,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=<role>\nYou are a seasoned Business-Intelligence Data Analyst from McKinsey. Given two quarter-level JSON datasets, you will surface the most significant single-quarter insights and the most impactful inter-quarter changes, then return a structured, evidence-backed report with confidence scores. The output must be fully self-contained and must contain board deck level insights.\n</role>\n\n<task>\n1. Parse both JSON inputs and verify they share compatible schemas.  \n2. Infer or confirm:\n   • primary metric name (e.g., revenue, usage, spend)  \n   • dimensions available (e.g., customer, region, product)  \n3. For each quarter separately:  \n   a. Rank the top N (default = 10) entities by the primary metric, descending.  \n   b. Detect notable patterns (spikes, dips, outliers, seasonality).  \n   c. Summarize key insights, each with: insight text, supporting numbers, confidence 0-1, and category (e.g., “Growth Driver”, “Risk”, “Anomaly”).  \n4. Across quarters:  \n   a. Calculate absolute and % deltas for every comparable metric.  \n   b. Flag the largest movers (both positive & negative).  \n   c. Explain possible causes and drivers for changes in the metric, or hypotheses wherever evident. \n5. Rate overall data quality (completeness, outliers, missing fields) and adjust confidence scores accordingly.  \n6. Assemble the final output in the exact structure defined in <output_format>.  \n7. Before finalising, self-check for:  \n   • numerical accuracy  \n   • insight completeness per requirements  \n   • clarity and conciseness  \n   • presence of every required field.\n</task>\n\n<context>\nInputs  \n• current_fiscal_quarter_results – full result set for the current fiscal quarter.  \n• previous_fiscal_quarter_results – full result set for the immediately preceding fiscal quarter.  \n\nScope & assumptions  \n• Each record contains at least: dimension(s), primary_metric, and optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nAssumptions  \n• Each record contains at least: dimension(s), primary_metric, plus optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nOutput expectations  \n• Must be fully self-contained; do not reference external resources.  \n• Confidence scores reflect statistical strength, data quality, and analyst certainty.  \n• Categories help stakeholders triage (examples: Growth Driver, Decline, Anomaly, Operational, Strategic).  \n\nConstraints  \nWe prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<input>\n{\n  \"current_fiscal_quarter_results\": {{ $json.current_fiscal_quarter_results.toJsonString() }},\n\n  \"previous_fiscal_quarter_results\": {{ $json.previous_fiscal_quarter_results.toJsonString() }}\n}\n</input>\n\n<guidelines>\n– Keep prose short, active voice; avoid fluff. The notes should be short enough to go into a presentation.\n- Output only valid JSON or an error object - no commentary, nor preamble.\n– List insights as bullet points; keep paragraphs under 3 sentences.  \n– Sort entities strictly by descending primary metric.  \n– Include numeric evidence (totals, percentages, deltas).  \n– Confidence must be a decimal 0-1 with two digits (e.g., 0.87).  \n– Call out any data issues or hidden assumptions (“gotchas”).  \n– Never fabricate data; if uncertain, say so explicitly.  \n– Do not simply agree with the query; challenge ambiguities or gaps.  \n– Use ISO dates and standard units.  \n– All JSON keys must be lower_snake_case.  \n– Verify that every insight is traceable to values in the input datasets.\n</guidelines>\n- You **MUST** output a JSON with the fields `current_quarter_analysis`, `previous_quarter_analysis`, and `inter_quarter_comparison` at the very minimum.\n\n<output_format>\n```json\n{\n  \"current_quarter_analysis\": {\n    \"top_entities\": [\n      {\n        \"entity\": \"<dimension_value>\",\n        \"metric_value\": <number>,\n        \"percent_of_total\": <number>,\n        \"insights\": [\n          {\n            \"text\": \"<concise insight>\",\n            \"category\": \"<category>\",\n            \"confidence\": <0-1>,\n            \"supporting_data\": {\n              \"total_metric\": <number>,\n              \"comparison_to_median\": <number>\n            }\n          }\n        ]\n      }\n    ],\n    \"overall_notes\": \"<data-quality comments>\"\n  },\n  \"previous_quarter_analysis\": { ...same shape... },\n  \"inter_quarter_comparison\": {\n    \"major_changes\": [\n      {\n        \"dimension\": \"<dimension_value>\",\n        \"current_metric\": <number>,\n        \"previous_metric\": <number>,\n        \"absolute_change\": <number>,\n        \"percent_change\": <number>,\n        \"insight\": \"<explanation or hypothesis>\",\n        \"category\": \"<category>\",\n        \"confidence\": <0-1>,\n        \"supporting_data\": { \"rank_shift\": <integer> }\n      }\n    ],\n    \"overall_delta_summary\": \"<paragraph>\",\n    \"confidence_overall\": <0-1>\n  },\n  \"data_quality\": {\n    \"completeness_score\": <0-1>,\n    \"issues_found\": [ \"<issue1>\", \"<issue2>\" ]\n  }\n}\n```\n</output_format>",
+        "text": "=<role>\nYou are a seasoned Business-Intelligence Data Analyst from McKinsey. Given two quarter-level JSON datasets, you will surface the most significant single-quarter insights and the most impactful inter-quarter changes, then return a structured, evidence-backed report with confidence scores. The output must be fully self-contained and must contain board deck level insights.\n</role>\n\n<task>\n1. Parse both JSON inputs and verify they share compatible schemas.  \n2. Infer or confirm:\n   • primary metric name (e.g., revenue, usage, spend)  \n   • dimensions available (e.g., customer, region, product)  \n3. For each quarter separately:  \n   a. Rank the top N (default = 5) entities by the primary metric, descending.  \n   b. Detect notable patterns (spikes, dips, outliers, seasonality).  \n   c. Summarize key insights, each with: insight text, supporting numbers, confidence 0-1, and category (e.g., “Growth Driver”, “Risk”, “Anomaly”).  \n4. Across quarters:  \n   a. Calculate absolute and % deltas for every comparable metric.  \n   b. Flag the largest movers (both positive & negative).  \n   c. Explain possible causes and drivers for changes in the metric, or hypotheses wherever evident. \n5. Rate overall data quality (completeness, outliers, missing fields) and adjust confidence scores accordingly.  \n6. Assemble the final output in the exact structure defined in <output_format>.  \n7. Before finalising, self-check for:  \n   • numerical accuracy  \n   • insight completeness per requirements  \n   • clarity and conciseness  \n   • presence of every required field.\n</task>\n\n<context>\nInputs  \n• current_fiscal_quarter_results – full result set for the current fiscal quarter.  \n• previous_fiscal_quarter_results – full result set for the immediately preceding fiscal quarter.  \n\nScope & assumptions  \n• Each record contains at least: dimension(s), primary_metric, and optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nAssumptions  \n• Each record contains at least: dimension(s), primary_metric, plus optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nOutput expectations  \n• Must be fully self-contained; do not reference external resources.  \n• Confidence scores reflect statistical strength, data quality, and analyst certainty.  \n• Categories help stakeholders triage (examples: Growth Driver, Decline, Anomaly, Operational, Strategic).  \n\nConstraints  \nWe prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<input>\n{\n  \"current_fiscal_quarter_results\": {{ $json.current_fiscal_quarter_results.toJsonString() }},\n\n  \"previous_fiscal_quarter_results\": {{ $json.previous_fiscal_quarter_results.toJsonString() }}\n}\n</input>\n\n<guidelines>\n– Keep prose short, active voice; avoid fluff. The notes should be short enough to go into a presentation.\n- Output only valid JSON or an error object - no commentary, nor preamble.\n– List insights as bullet points; keep paragraphs under 3 sentences.  \n– Sort entities strictly by descending primary metric.  \n– Include numeric evidence (totals, percentages, deltas).  \n– Confidence must be a decimal 0-1 with two digits (e.g., 0.87).  \n– Call out any data issues or hidden assumptions (“gotchas”).  \n– Never fabricate data; if uncertain, say so explicitly.  \n– Do not simply agree with the query; challenge ambiguities or gaps.  \n– Use ISO dates and standard units.  \n– All JSON keys must be lower_snake_case.  \n– Verify that every insight is traceable to values in the input datasets.\n</guidelines>\n- You **MUST** output a JSON with the fields `current_quarter_analysis`, `previous_quarter_analysis`, and `inter_quarter_comparison` at the very minimum.\n\n<output_format>\n```json\n{\n  \"current_quarter_analysis\": {\n    \"top_entities\": [\n      {\n        \"entity\": \"<dimension_value>\",\n        \"metric_value\": <number>,\n        \"percent_of_total\": <number>,\n        \"insights\": [\n          {\n            \"text\": \"<concise insight>\",\n            \"category\": \"<category>\",\n            \"confidence\": <0-1>,\n            \"supporting_data\": {\n              \"total_metric\": <number>,\n              \"comparison_to_median\": <number>\n            }\n          }\n        ]\n      }\n    ],\n    \"overall_notes\": \"<data-quality comments>\"\n  },\n  \"previous_quarter_analysis\": { ...same shape... },\n  \"inter_quarter_comparison\": {\n    \"major_changes\": [\n      {\n        \"dimension\": \"<dimension_value>\",\n        \"current_metric\": <number>,\n        \"previous_metric\": <number>,\n        \"absolute_change\": <number>,\n        \"percent_change\": <number>,\n        \"insight\": \"<explanation or hypothesis>\",\n        \"category\": \"<category>\",\n        \"confidence\": <0-1>,\n        \"supporting_data\": { \"rank_shift\": <integer> }\n      }\n    ],\n    \"overall_delta_summary\": \"<paragraph>\",\n    \"confidence_overall\": <0-1>\n  },\n  \"data_quality\": {\n    \"completeness_score\": <0-1>,\n    \"issues_found\": [ \"<issue1>\", \"<issue2>\" ]\n  }\n}\n```\n</output_format>",
         "hasOutputParser": true,
         "options": {
           "systemMessage": "You are an expert data analyst specializing in pattern detection and business intelligence. You analyze query results to identify trends, patterns, anomalies, and actionable insights. You provide clear, concise analysis in structured JSON format."
@@ -376,8 +376,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        3024,
-        416
+        3600,
+        432
       ],
       "id": "5a2a640d-5b9f-4b89-968e-b64d426e351c",
       "name": "Google Gemini Chat Model",
@@ -491,10 +491,8 @@
         "actionsUi": {
           "actionFields": [
             {
-              "object": "table",
               "action": "insert",
-              "rows": 1,
-              "columns": 3
+              "text": "={{ $json.output }}"
             }
           ]
         }
@@ -502,11 +500,11 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        3680,
+        4160,
         112
       ],
-      "id": "498cef95-0582-46ce-8778-07c481425a8a",
-      "name": "Update a document",
+      "id": "7c6b7b92-fdf8-49e9-9ed3-3f9466b17815",
+      "name": "Update a document1",
       "credentials": {
         "googleDocsOAuth2Api": {
           "id": "dzy8xbOq7YSB6444",
@@ -516,30 +514,39 @@
     },
     {
       "parameters": {
-        "operation": "update",
-        "documentURL": "={{ $('Webhook').item.json.body.google_document_id }}",
-        "actionsUi": {
-          "actionFields": [
-            {
-              "action": "insert",
-              "locationChoice": "location",
-              "text": "ffff"
-            }
-          ]
-        }
+        "promptType": "define",
+        "text": "=<role>\nYou are a business intelligence analyst who extracts and formats executive-level takeaways from structured analysis data into presentation-ready text.\n</role>\n\n<task>\nGoal: Extract key insights from structured quarterly analysis JSON and format them as concise, executive-ready takeaways for Google Docs insertion.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON containing quarterly analysis data\n2. Extract high-priority insights from current quarter, previous quarter, and inter-quarter comparisons\n3. Categorize insights by priority: Critical Anomalies, Growth Drivers, Risks, and Operational Notes\n4. Format each takeaway with proper structure for Google Docs API insertion\n5. Return plain text with clear section markers and bullet formatting\n</task>\n\n<context>\nYou will receive a JSON object containing:\n- **current_quarter_analysis**: Top entities with metric values, percentages, and categorized insights\n- **previous_quarter_analysis**: Same structure for the prior period\n- **inter_quarter_comparison**: Major changes between quarters with absolute and percent changes\n- **data_quality**: Completeness score and data quality issues\n\nEach insight has:\n- **text**: The actual insight narrative\n- **category**: Classification (Anomaly, Growth Driver, Risk, Operational, Decline)\n- **confidence**: Confidence score (0.0 to 1.0)\n- **supporting_data**: Metrics and context\n\nYour output must be plain text formatted for direct insertion into Google Docs via API, with clear section headers and bullet points using standard text characters.\n</context>\n\n<extraction_rules>\n<priority_classification>\nPriority Classification:\n\n1. **CRITICAL (Must Include)**:\n   - Insights with category \"Anomaly\" and confidence >= 0.80\n   - Major changes with absolute percent_change > 1000% OR > 50% with high confidence\n   - Any insight mentioning \"validation required\", \"investigate\", or \"immediate\"\n   - Data quality issues with completeness_score < 0.85\n\n2. **HIGH (Should Include)**:\n   - Insights with category \"Risk\" and confidence >= 0.90\n   - Growth Drivers with confidence >= 0.90 and significant impact\n   - Inter-quarter changes with absolute value > 20% and confidence >= 0.85\n   - Top 3 entities by metric value in current quarter\n\n3. **MEDIUM (Include if Space Permits)**:\n   - Operational insights with confidence >= 0.90\n   - Entities showing consistent trends across quarters\n   - Minor declines (< 10%) with context\n   - Supporting data points that add clarity\n\n4. **LOW (Optional)**:\n   - Operational notes with low impact\n   - Stable accounts with minimal change\n   - Redundant information already covered\n</priority_classification>\n\n<insight_selection>\nInsight Selection Criteria:\n\nFor each category, select insights based on:\n\n**Critical Anomalies**:\n- Include ALL insights with category \"Anomaly\"\n- Prioritize by confidence score (highest first)\n- Include supporting metrics (current_metric, previous_metric, percent_change)\n- Highlight if validation or investigation is recommended\n\n**Growth Drivers**:\n- Include top 3-5 growth insights by percent_change or absolute_change\n- Focus on confidence >= 0.90\n- Include specific numbers (growth %, absolute change)\n- Note consistency across quarters if applicable\n\n**Risks & Declines**:\n- Include ALL risks with confidence >= 0.90\n- Include declines > 5% regardless of confidence\n- Provide context (is it normal fluctuation or concerning trend?)\n- Flag accounts that dropped out of top rankings\n\n**Operational Notes**:\n- Include only if adding strategic context\n- Summarize stable trends rather than listing each one\n- Focus on overall patterns rather than individual accounts\n</insight_selection>\n\n<text_formatting>\nText Formatting Rules:\n\n1. Use hierarchical structure with clear headers\n2. Use \"•\" for bullet points (not \"- \" or \"* \")\n3. Use numbers with metric formatting: \"53,805 nodes\" not \"53805 nodes\"\n4. Use percentage formatting: \"+11.2%\" not \"11.19\"\n5. Bold important terms using **term** (will be converted for Google Docs)\n6. Use em-dash (—) for emphasis, not hyphens\n7. Keep sentences concise (max 25 words per bullet)\n8. Start each bullet with action or state, not \"The account...\"\n</text_formatting>\n</extraction_rules>\n\n<output_structure>\n<document_layout>\nDocument Layout:\n\nThe output should follow this exact structure:\n\n```\nEXECUTIVE TAKEAWAYS: [METRIC NAME] - [CURRENT QUARTER] vs [PREVIOUS QUARTER]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔴 CRITICAL ANOMALIES (Require Validation)\n\n• [Highest priority anomaly with specific numbers and context]\n• [Second priority anomaly]\n• [Additional critical items...]\n\nData Quality Note: [Completeness score and major issues if < 0.85]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📈 GROWTH DRIVERS\n\n• [Top growth driver with percent change and absolute numbers]\n• [Second growth driver]\n• [Additional growth items...]\n\nOverall Trend: [Summary of aggregate growth with total change metrics]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ RISKS & DECLINES\n\n• [Highest risk item with context]\n• [Decline with percentage and interpretation]\n• [Additional risk items...]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 OPERATIONAL HIGHLIGHTS\n\n• [Key stable accounts or patterns]\n• [Notable operational trends]\n• [Context for understanding the data]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRECOMMENDATIONS\n\n• [Specific action item based on critical anomalies]\n• [Validation or investigation needed]\n• [Strategic consideration based on trends]\n```\n</document_layout>\n\n<section_details>\nSection-Specific Guidelines:\n\n**CRITICAL ANOMALIES Section**:\n- Start with the highest impact anomaly (largest absolute change or highest % with high base)\n- Include entity name, current metric, previous metric, and percent change\n- State specific recommendation (e.g., \"Validate with GTM/ETL\", \"Investigate onboarding\")\n- Group similar anomalies if applicable (e.g., \"Three accounts show >1000% growth\")\n- Always include data quality note if completeness < 0.85\n\n**GROWTH DRIVERS Section**:\n- Lead with largest absolute contributors to growth\n- Include both percentage and absolute numbers\n- Note if growth is consistent vs. one-time jump\n- End with \"Overall Trend\" line showing aggregate metrics from overall_delta_summary\n- Format: \"Overall Trend: Aggregate increased by [absolute] nodes (+[percent]%) from [prev total] to [current total]\"\n\n**RISKS & DECLINES Section**:\n- Prioritize by confidence score and magnitude\n- Provide context: \"Normal fluctuation\" vs \"Monitor for churn\"\n- Include ranking changes if significant (e.g., \"Dropped from #5 to #8\")\n- Note if decline is accelerating vs. stabilizing\n\n**OPERATIONAL HIGHLIGHTS Section**:\n- Summarize stable trends rather than listing each account\n- Include context that helps interpret other sections\n- Note data patterns or methodology considerations\n- Keep to 3-5 bullets maximum\n\n**RECOMMENDATIONS Section**:\n- Derive directly from Critical Anomalies and High Risks\n- Make action-oriented and specific\n- Include owner or team if identifiable (GTM, ETL, Ops)\n- Prioritize by urgency: Immediate → Near-term → Strategic\n</section_details>\n</output_structure>\n\n<formatting_examples>\n<good_examples>\nGood Examples:\n\n✅ **Entity Reference**:\n\"quizzical-khorana-50rbbst (53,805 nodes, 34.6% of top-10) shows massive increase vs Q2\"\n\n✅ **Percentage Formatting**:\n\"Increased by +11.2% quarter-over-quarter (from 19,407 to 21,579 nodes)\"\n\n✅ **Change Description**:\n\"Massive increase of 53,567 nodes (+22,508%) — likely new onboarding or account consolidation; validate with GTM/ETL immediately\"\n\n✅ **Risk Statement**:\n\"Declined by -455 nodes (-5.9%) vs prior quarter — monitor for potential churn or capacity reduction\"\n\n✅ **Operational Summary**:\n\"Five accounts remain stable in top-10 across both quarters with <2% variance\"\n\n✅ **Recommendation**:\n\"Validate three accounts with >1000% growth (quizzical, hardcore, upbeat) with GTM team to confirm contract start dates and ingestion logic\"\n</good_examples>\n\n<bad_examples>\nBad Examples:\n\n❌ **Too Verbose**:\n\"The account named quizzical-khorana-50rbbst, which is one of our accounts, has shown an increase in the metric we are tracking, going from a previous value to a current value\"\n\n❌ **Poor Number Formatting**:\n\"Increased by 11.19237% (from 19407 to 21579)\"\n\n❌ **Passive Voice**:\n\"A decline was observed in the account caprine-euclid-l7uwlrq\"\n\n❌ **Missing Context**:\n\"Account X increased by 50%\"\n(Should include: what metric, from what to what, why significant)\n\n❌ **Vague Recommendation**:\n\"Look into the data issues\"\n(Should be: \"Validate data completeness score of 0.78 by reviewing ETL pipeline for account name mapping consistency\")\n</bad_examples>\n</formatting_examples>\n\n<number_formatting>\n<rules>\nNumber Formatting Rules:\n\n1. **Large Numbers**: Use comma separators\n   - 53805 → 53,805\n   - 155367 → 155,367\n\n2. **Percentages**: Round to 1 decimal place, include sign\n   - 11.19 → +11.2%\n   - -5.91 → -5.9%\n   - 22507.56 → +22,508% (round to whole number for very large %)\n\n3. **Percent of Total**: Round to 1 decimal place\n   - 34.63 → 34.6%\n   - 4.52 → 4.5%\n\n4. **Confidence Scores**: Convert to percentage or use descriptive terms\n   - 0.95 → \"high confidence (95%)\" or just \"high confidence\"\n   - 0.78 → \"moderate confidence (78%)\"\n   - < 0.70 → \"low confidence\"\n\n5. **Decimal Numbers**: Round to whole numbers unless precision matters\n   - 7070.37% → 7,070%\n   - 2611.59% → 2,612%\n\n6. **Small Changes**: Use +/- with precision\n   - -172 → -172 nodes\n   - +136 → +136 nodes\n\n7. **Rank Changes**: Use # symbol and direction\n   - \"Dropped from #5 to #8\"\n   - \"Rose from #10 to #3\"\n</rules>\n\n<examples>\nFormatting Examples:\n\n**Before**: \"entity metric_value is 53805 and percent_of_total is 34.63\"\n**After**: \"53,805 nodes (34.6% of top-10)\"\n\n**Before**: \"percent_change: 11.19\"\n**After**: \"+11.2% growth\"\n\n**Before**: \"confidence: 0.85\"\n**After**: \"high confidence\" or \"(85% confidence)\"\n\n**Before**: \"absolute_change: -455, percent_change: -5.91\"\n**After**: \"-455 nodes (-5.9%)\"\n</examples>\n</number_formatting>\n\n<input_processing>\n<steps>\nInput Processing Steps:\n\n1. **Parse JSON Structure**:\n   - Verify all required sections exist (current_quarter_analysis, previous_quarter_analysis, inter_quarter_comparison)\n   - Check data_quality.completeness_score\n   - Count total insights available\n\n2. **Extract Current Quarter Insights**:\n   - Iterate through current_quarter_analysis.top_entities\n   - For each entity, extract insights array\n   - Tag each insight with entity name and metric_value for context\n   - Calculate entity rank (1st, 2nd, 3rd, etc.)\n\n3. **Extract Previous Quarter Insights**:\n   - Same process as current quarter\n   - Note which entities appear in both quarters\n   - Flag entities that disappeared or newly appeared\n\n4. **Extract Inter-Quarter Comparisons**:\n   - Process inter_quarter_comparison.major_changes array\n   - Sort by absolute_change magnitude (descending)\n   - Separate into growth vs. decline\n   - Flag extreme changes (> 1000% or > 50 with high base)\n\n5. **Categorize All Insights**:\n   - Critical Anomalies: category=\"Anomaly\" OR percent_change > 1000%\n   - Growth Drivers: category=\"Growth Driver\" OR positive major_changes\n   - Risks: category=\"Risk\" OR category=\"Decline\" OR negative changes\n   - Operational: category=\"Operational\" OR stable accounts\n\n6. **Prioritize Within Categories**:\n   - Sort by confidence score (descending)\n   - Then by magnitude (absolute_change or metric_value)\n   - Then by category priority (Anomaly > Risk > Growth > Operational)\n\n7. **Format Each Insight**:\n   - Apply number formatting rules\n   - Construct narrative sentence\n   - Add context from supporting_data if relevant\n   - Keep to max 25 words\n</steps>\n\n<edge_cases>\nEdge Cases to Handle:\n\n**Missing Data**:\n- If previous_metric is null or 0: \"New account in current quarter\"\n- If current_metric is null: \"Account no longer in top rankings\"\n- If percent_change is null: Calculate manually or state \"baseline comparison unavailable\"\n\n**Extreme Values**:\n- If percent_change > 10000%: Round to nearest thousand, flag as \"likely data issue\"\n- If confidence < 0.5: Include disclaimer \"low confidence — verify data\"\n- If metric_value is negative: Flag as \"data error — negative value impossible\"\n\n**Data Quality Issues**:\n- If completeness_score < 0.70: Add prominent warning in Critical Anomalies\n- If issues_found array has > 5 items: Summarize top 3 most critical\n- If overall_notes mentions \"ETL\" or \"mapping\": Include in recommendations\n\n**Ranking Changes**:\n- If rank_shift is null: \"First appearance in top-10\" or \"Not previously in top-10\"\n- If rank_shift > 0: \"Rose [shift] positions\"\n- If rank_shift < 0: \"Dropped [shift] positions\"\n- If rank_shift == 0: \"Maintained ranking\"\n</edge_cases>\n</input_processing>\n\n<validation_checklist>\nValidation Before Returning:\n\n- [ ] All sections are present (Critical Anomalies, Growth Drivers, Risks, Operational, Recommendations)\n- [ ] Each section has at least 1 bullet (or states \"None identified\")\n- [ ] All numbers are properly formatted with commas and appropriate rounding\n- [ ] All percentages include +/- sign\n- [ ] Entity names are spelled exactly as in input\n- [ ] Confidence scores are interpreted, not just reported as decimals\n- [ ] Section headers use proper emoji indicators (🔴 ⚠️ 📈 📊)\n- [ ] Separator lines use exactly 64 \"━\" characters\n- [ ] Bullets use \"•\" character consistently\n- [ ] Total character count is reasonable for Google Docs (< 5000 chars recommended)\n- [ ] No JSON artifacts or raw field names appear in output\n- [ ] Recommendations are actionable and specific\n- [ ] Data quality issues are prominently noted if completeness < 0.85\n- [ ] Overall trend summary is included in Growth Drivers section\n</validation_checklist>\n\n<output_requirements>\nOutput Requirements:\n\n**Format**: Plain text, UTF-8 encoded\n\n**Structure**: Exactly 6 sections in order:\n1. Title line\n2. Critical Anomalies\n3. Growth Drivers\n4. Risks & Declines\n5. Operational Highlights\n6. Recommendations\n\n**Separators**: Use \"━\" (U+2501) character for horizontal rules (64 characters wide)\n\n**Bullets**: Use \"•\" (U+2022) character\n\n**Emojis**: Use standard emoji codes:\n- 🔴 (Red Circle) for Critical\n- 📈 (Chart Increasing) for Growth\n- ⚠️ (Warning) for Risks\n- 📊 (Bar Chart) for Operational\n\n**Length Guidelines**:\n- Title: 1 line\n- Critical Anomalies: 3-7 bullets + data quality note\n- Growth Drivers: 3-5 bullets + overall trend\n- Risks & Declines: 2-5 bullets\n- Operational Highlights: 2-4 bullets\n- Recommendations: 2-4 bullets\n\n**Tone**: Professional, concise, action-oriented\n\n**Perspective**: Third-person objective (\"Account X shows...\" not \"We see account X...\")\n\n**No Preamble**: Output should start immediately with title line, no \"Here is the formatted output:\" or similar\n</output_requirements>\n\n<example_output>\nExample Output Structure:\n\n```\nEXECUTIVE TAKEAWAYS: Edge Nodes - FY2026 Q3 vs FY2026 Q2\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔴 CRITICAL ANOMALIES (Require Validation)\n\n• quizzical-khorana-50rbbst shows massive increase of 53,567 nodes (+22,508%) vs Q2 — likely new onboarding or account consolidation; validate with GTM/ETL immediately\n• hardcore-elbakyan-50xvd2z jumped from 135 to 9,680 nodes (+7,070%) — probable reclassification or new deployment; confirm contract start date\n• upbeat-ansell-7ikkus7 increased from 276 to 7,478 nodes (+2,612%) — verify data mapping and ingestion logic\n• intelligent-bose-h8omefz appears as new top account with no prior-quarter match — likely renamed or previously uncategorized\n\nData Quality Note: Completeness score of 78% indicates potential ETL or name-mapping inconsistencies; review data pipeline before executive reporting.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📈 GROWTH DRIVERS\n\n• keen-engelbart-yrawjpm delivered healthy growth of +2,172 nodes (+11.2%), from 19,407 to 21,579 — largest stable contributor\n• sharp-ptolemy-o24v40l recovered strongly with +1,073 nodes (+17.9%) vs prior quarter\n• beautiful-montalcini-msl3hcr showed consistent growth of +136 nodes (+1.7%) — stable mid-size performer\n\nOverall Trend: Top-10 aggregate increased by 58,533 nodes (+60.4%) from 96,834 to 155,367, driven primarily by three large movers noted in Critical Anomalies.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ RISKS & DECLINES\n\n• caprine-euclid-l7uwlrq declined by -455 nodes (-5.9%), dropping from #5 to #8 — monitor for potential churn or capacity reduction\n• priceless-archimedes-d0qkdzk contracted by -280 nodes (-1.6%) — likely normal fluctuation for large account, but track trend\n• ruminant-gagarin-k690duv decreased by -172 nodes (-1.0%) — minimal decline, operational monitoring sufficient\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 OPERATIONAL HIGHLIGHTS\n\n• Five accounts (keen-engelbart, priceless-archimedes, ruminant-gagarin, beautiful-montalcini, caprine-euclid) remain in top-10 across both quarters\n• Core account base shows stability with <2% variance for established accounts\n• Dataset contains strong outliers requiring validation before extrapolating trends to full population\n• Account naming inconsistencies suggest ETL review needed for accurate quarter-over-quarter tracking\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRECOMMENDATIONS\n\n• Immediate: Validate three accounts with >1000% growth (quizzical, hardcore, upbeat) with GTM team to confirm contract start dates and rule out data errors\n• Near-term: Review ETL pipeline and account name mapping logic to improve data completeness from 78% to >90%\n• Strategic: Investigate concentration risk — top account (quizzical) now holds 34.6% of top-10 aggregate, up from negligible share in Q2\n• Monitoring: Track caprine-euclid-l7uwlrq decline trajectory over next 2 quarters to distinguish normal fluctuation from churn signal\n```\n</example_output>\n\n\n<input>\n{{ $json.output.toJsonString() }}\n</input>\n",
+        "options": {}
       },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
       "position": [
-        3888,
+        3664,
         112
       ],
-      "id": "7c6b7b92-fdf8-49e9-9ed3-3f9466b17815",
-      "name": "Update a document1",
+      "id": "817f602a-5d36-4cfb-8831-809c5b14cf8c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-5-mini",
+        "options": {
+          "responseFormat": "json_object",
+          "timeout": 360000
+        }
+      },
+      "id": "f20757ab-6429-46a0-9009-559efb948312",
+      "name": "Azure OpenAI GPT-5-mini1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        432
+      ],
       "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "dzy8xbOq7YSB6444",
-          "name": "Google Docs Cribl"
+        "azureOpenAiApi": {
+          "id": "ljEp6Un527XmKGRN",
+          "name": "Azure OpenAI gpt-5-mini"
         }
       }
     }
@@ -683,7 +690,7 @@
       "main": [
         [
           {
-            "node": "Update a document",
+            "node": "AI Agent",
             "type": "main",
             "index": 0
           }
@@ -703,24 +710,19 @@
     },
     "Google Gemini Chat Model": {
       "ai_languageModel": [
-        []
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
       ]
     },
     "OLD Pattern Detection Agent": {
       "main": [
         [],
         []
-      ]
-    },
-    "Update a document": {
-      "main": [
-        [
-          {
-            "node": "Update a document1",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     },
     "Update a document1": {
@@ -732,6 +734,22 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI GPT-5-mini1": {
+      "ai_languageModel": [
+        []
       ]
     }
   },
@@ -7498,10 +7516,20 @@
           "item": 0
         }
       }
+    ],
+    "AI Agent": [
+      {
+        "json": {
+          "output": "EXECUTIVE TAKEAWAYS: Edge Nodes - FY2026 Q3 vs FY2026 Q2\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔴 CRITICAL ANOMALIES (Require Validation)\n\n• quizzical-khorana-50rbbst shows massive increase of 53,567 nodes (+22,508%) vs Q2 — likely new onboarding or account consolidation; validate with GTM/ETL immediately\n• hardcore-elbakyan-50xvd2z jumped from 135 to 9,680 nodes (+7,070%) — probable reclassification or new deployment; confirm contract start date\n• upbeat-ansell-7ikkus7 increased from 276 to 7,478 nodes (+2,612%) — verify data mapping and ingestion logic\n• intelligent-bose-h8omefz appears as new top account (7,019 nodes) with no prior-quarter match — likely renamed or previously uncategorized\n\nData Quality Note: Completeness score of 78% indicates potential ETL or name-mapping inconsistencies; review data pipeline before executive reporting.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📈 GROWTH DRIVERS\n\n• keen-engelbart-yrawjpm delivered healthy growth of +2,172 nodes (+11.2%), from 19,407 to 21,579 — largest stable contributor\n• sharp-ptolemy-o24v40l recovered strongly with +1,073 nodes (+18.0%) vs prior quarter\n• beautiful-montalcini-msl3hcr showed consistent growth of +136 nodes (+1.7%) — stable mid-size performer\n\nOverall Trend: Top-10 aggregate increased by 58,533 nodes (+60.5%) from 96,834 to 155,367, driven primarily by three large movers noted in Critical Anomalies.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ RISKS & DECLINES\n\n• caprine-euclid-l7uwlrq declined by -455 nodes (-5.9%), dropping from #5 to #8 — monitor for potential churn or capacity reduction\n• priceless-archimedes-d0qkdzk contracted by -280 nodes (-1.6%) — likely normal fluctuation for large account, but track trend\n• ruminant-gagarin-k690duv decreased by -172 nodes (-1.0%) — minimal decline, operational monitoring sufficient\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 OPERATIONAL HIGHLIGHTS\n\n• Five accounts (keen-engelbart, priceless-archimedes, ruminant-gagarin, beautiful-montalcini, caprine-euclid) remain in top-10 across both quarters\n• Core account base shows stability with <2% variance for established accounts\n• Dataset contains strong outliers requiring validation before extrapolating trends to full population\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRECOMMENDATIONS\n\n• Immediate: Validate three accounts with >1000% growth (quizzical, hardcore, upbeat) with GTM team to confirm contract start dates and rule out data errors\n• Near-term: Review ETL pipeline and account name mapping logic to improve data completeness from 78% to >90%\n• Strategic: Investigate concentration risk — top account (quizzical) now holds 34.6% of top-10 aggregate\n• Monitoring: Track caprine-euclid-l7uwlrq decline trajectory over next 2 quarters to distinguish normal fluctuation from churn signal"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
     ]
   },
-  "versionId": "0d05df54-a047-4ca9-996b-f656d02c61b1",
-  "activeVersionId": "0d05df54-a047-4ca9-996b-f656d02c61b1",
+  "versionId": "4ad111f9-78ba-4ac2-8c96-d56ad54b9960",
+  "activeVersionId": "4ad111f9-78ba-4ac2-8c96-d56ad54b9960",
   "triggerCount": 1,
   "shared": [
     {
@@ -7513,9 +7541,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-24T22:35:44.861Z",
-    "createdAt": "2025-12-24T22:35:44.861Z",
-    "versionId": "0d05df54-a047-4ca9-996b-f656d02c61b1",
+    "updatedAt": "2025-12-24T23:30:13.704Z",
+    "createdAt": "2025-12-24T23:30:13.704Z",
+    "versionId": "4ad111f9-78ba-4ac2-8c96-d56ad54b9960",
     "workflowId": "QzzrCNPkQevDtQdv",
     "nodes": [
       {
@@ -7557,7 +7585,7 @@
           "model": "gpt-5-mini",
           "options": {
             "responseFormat": "json_object",
-            "timeout": 300000
+            "timeout": 360000
           }
         },
         "id": "azure-openai-model",
@@ -7626,7 +7654,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          4336,
+          4448,
           112
         ]
       },
@@ -7653,7 +7681,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.3,
         "position": [
-          4592,
+          4704,
           112
         ],
         "retryOnFail": true,
@@ -7842,7 +7870,7 @@
       {
         "parameters": {
           "promptType": "define",
-          "text": "=<role>\nYou are a seasoned Business-Intelligence Data Analyst from McKinsey. Given two quarter-level JSON datasets, you will surface the most significant single-quarter insights and the most impactful inter-quarter changes, then return a structured, evidence-backed report with confidence scores. The output must be fully self-contained and must contain board deck level insights.\n</role>\n\n<task>\n1. Parse both JSON inputs and verify they share compatible schemas.  \n2. Infer or confirm:\n   • primary metric name (e.g., revenue, usage, spend)  \n   • dimensions available (e.g., customer, region, product)  \n3. For each quarter separately:  \n   a. Rank the top N (default = 10) entities by the primary metric, descending.  \n   b. Detect notable patterns (spikes, dips, outliers, seasonality).  \n   c. Summarize key insights, each with: insight text, supporting numbers, confidence 0-1, and category (e.g., “Growth Driver”, “Risk”, “Anomaly”).  \n4. Across quarters:  \n   a. Calculate absolute and % deltas for every comparable metric.  \n   b. Flag the largest movers (both positive & negative).  \n   c. Explain possible causes and drivers for changes in the metric, or hypotheses wherever evident. \n5. Rate overall data quality (completeness, outliers, missing fields) and adjust confidence scores accordingly.  \n6. Assemble the final output in the exact structure defined in <output_format>.  \n7. Before finalising, self-check for:  \n   • numerical accuracy  \n   • insight completeness per requirements  \n   • clarity and conciseness  \n   • presence of every required field.\n</task>\n\n<context>\nInputs  \n• current_fiscal_quarter_results – full result set for the current fiscal quarter.  \n• previous_fiscal_quarter_results – full result set for the immediately preceding fiscal quarter.  \n\nScope & assumptions  \n• Each record contains at least: dimension(s), primary_metric, and optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nAssumptions  \n• Each record contains at least: dimension(s), primary_metric, plus optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nOutput expectations  \n• Must be fully self-contained; do not reference external resources.  \n• Confidence scores reflect statistical strength, data quality, and analyst certainty.  \n• Categories help stakeholders triage (examples: Growth Driver, Decline, Anomaly, Operational, Strategic).  \n\nConstraints  \nWe prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<input>\n{\n  \"current_fiscal_quarter_results\": {{ $json.current_fiscal_quarter_results.toJsonString() }},\n\n  \"previous_fiscal_quarter_results\": {{ $json.previous_fiscal_quarter_results.toJsonString() }}\n}\n</input>\n\n<guidelines>\n– Keep prose short, active voice; avoid fluff. The notes should be short enough to go into a presentation.\n- Output only valid JSON or an error object - no commentary, nor preamble.\n– List insights as bullet points; keep paragraphs under 3 sentences.  \n– Sort entities strictly by descending primary metric.  \n– Include numeric evidence (totals, percentages, deltas).  \n– Confidence must be a decimal 0-1 with two digits (e.g., 0.87).  \n– Call out any data issues or hidden assumptions (“gotchas”).  \n– Never fabricate data; if uncertain, say so explicitly.  \n– Do not simply agree with the query; challenge ambiguities or gaps.  \n– Use ISO dates and standard units.  \n– All JSON keys must be lower_snake_case.  \n– Verify that every insight is traceable to values in the input datasets.\n</guidelines>\n- You **MUST** output a JSON with the fields `current_quarter_analysis`, `previous_quarter_analysis`, and `inter_quarter_comparison` at the very minimum.\n\n<output_format>\n```json\n{\n  \"current_quarter_analysis\": {\n    \"top_entities\": [\n      {\n        \"entity\": \"<dimension_value>\",\n        \"metric_value\": <number>,\n        \"percent_of_total\": <number>,\n        \"insights\": [\n          {\n            \"text\": \"<concise insight>\",\n            \"category\": \"<category>\",\n            \"confidence\": <0-1>,\n            \"supporting_data\": {\n              \"total_metric\": <number>,\n              \"comparison_to_median\": <number>\n            }\n          }\n        ]\n      }\n    ],\n    \"overall_notes\": \"<data-quality comments>\"\n  },\n  \"previous_quarter_analysis\": { ...same shape... },\n  \"inter_quarter_comparison\": {\n    \"major_changes\": [\n      {\n        \"dimension\": \"<dimension_value>\",\n        \"current_metric\": <number>,\n        \"previous_metric\": <number>,\n        \"absolute_change\": <number>,\n        \"percent_change\": <number>,\n        \"insight\": \"<explanation or hypothesis>\",\n        \"category\": \"<category>\",\n        \"confidence\": <0-1>,\n        \"supporting_data\": { \"rank_shift\": <integer> }\n      }\n    ],\n    \"overall_delta_summary\": \"<paragraph>\",\n    \"confidence_overall\": <0-1>\n  },\n  \"data_quality\": {\n    \"completeness_score\": <0-1>,\n    \"issues_found\": [ \"<issue1>\", \"<issue2>\" ]\n  }\n}\n```\n</output_format>",
+          "text": "=<role>\nYou are a seasoned Business-Intelligence Data Analyst from McKinsey. Given two quarter-level JSON datasets, you will surface the most significant single-quarter insights and the most impactful inter-quarter changes, then return a structured, evidence-backed report with confidence scores. The output must be fully self-contained and must contain board deck level insights.\n</role>\n\n<task>\n1. Parse both JSON inputs and verify they share compatible schemas.  \n2. Infer or confirm:\n   • primary metric name (e.g., revenue, usage, spend)  \n   • dimensions available (e.g., customer, region, product)  \n3. For each quarter separately:  \n   a. Rank the top N (default = 5) entities by the primary metric, descending.  \n   b. Detect notable patterns (spikes, dips, outliers, seasonality).  \n   c. Summarize key insights, each with: insight text, supporting numbers, confidence 0-1, and category (e.g., “Growth Driver”, “Risk”, “Anomaly”).  \n4. Across quarters:  \n   a. Calculate absolute and % deltas for every comparable metric.  \n   b. Flag the largest movers (both positive & negative).  \n   c. Explain possible causes and drivers for changes in the metric, or hypotheses wherever evident. \n5. Rate overall data quality (completeness, outliers, missing fields) and adjust confidence scores accordingly.  \n6. Assemble the final output in the exact structure defined in <output_format>.  \n7. Before finalising, self-check for:  \n   • numerical accuracy  \n   • insight completeness per requirements  \n   • clarity and conciseness  \n   • presence of every required field.\n</task>\n\n<context>\nInputs  \n• current_fiscal_quarter_results – full result set for the current fiscal quarter.  \n• previous_fiscal_quarter_results – full result set for the immediately preceding fiscal quarter.  \n\nScope & assumptions  \n• Each record contains at least: dimension(s), primary_metric, and optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nAssumptions  \n• Each record contains at least: dimension(s), primary_metric, plus optional secondary metrics.  \n• The primary metric is numeric and additive.  \n\nOutput expectations  \n• Must be fully self-contained; do not reference external resources.  \n• Confidence scores reflect statistical strength, data quality, and analyst certainty.  \n• Categories help stakeholders triage (examples: Growth Driver, Decline, Anomaly, Operational, Strategic).  \n\nConstraints  \nWe prefer the simplest workflow that fully handles edge cases and follows security-best practices.\n</context>\n\n<input>\n{\n  \"current_fiscal_quarter_results\": {{ $json.current_fiscal_quarter_results.toJsonString() }},\n\n  \"previous_fiscal_quarter_results\": {{ $json.previous_fiscal_quarter_results.toJsonString() }}\n}\n</input>\n\n<guidelines>\n– Keep prose short, active voice; avoid fluff. The notes should be short enough to go into a presentation.\n- Output only valid JSON or an error object - no commentary, nor preamble.\n– List insights as bullet points; keep paragraphs under 3 sentences.  \n– Sort entities strictly by descending primary metric.  \n– Include numeric evidence (totals, percentages, deltas).  \n– Confidence must be a decimal 0-1 with two digits (e.g., 0.87).  \n– Call out any data issues or hidden assumptions (“gotchas”).  \n– Never fabricate data; if uncertain, say so explicitly.  \n– Do not simply agree with the query; challenge ambiguities or gaps.  \n– Use ISO dates and standard units.  \n– All JSON keys must be lower_snake_case.  \n– Verify that every insight is traceable to values in the input datasets.\n</guidelines>\n- You **MUST** output a JSON with the fields `current_quarter_analysis`, `previous_quarter_analysis`, and `inter_quarter_comparison` at the very minimum.\n\n<output_format>\n```json\n{\n  \"current_quarter_analysis\": {\n    \"top_entities\": [\n      {\n        \"entity\": \"<dimension_value>\",\n        \"metric_value\": <number>,\n        \"percent_of_total\": <number>,\n        \"insights\": [\n          {\n            \"text\": \"<concise insight>\",\n            \"category\": \"<category>\",\n            \"confidence\": <0-1>,\n            \"supporting_data\": {\n              \"total_metric\": <number>,\n              \"comparison_to_median\": <number>\n            }\n          }\n        ]\n      }\n    ],\n    \"overall_notes\": \"<data-quality comments>\"\n  },\n  \"previous_quarter_analysis\": { ...same shape... },\n  \"inter_quarter_comparison\": {\n    \"major_changes\": [\n      {\n        \"dimension\": \"<dimension_value>\",\n        \"current_metric\": <number>,\n        \"previous_metric\": <number>,\n        \"absolute_change\": <number>,\n        \"percent_change\": <number>,\n        \"insight\": \"<explanation or hypothesis>\",\n        \"category\": \"<category>\",\n        \"confidence\": <0-1>,\n        \"supporting_data\": { \"rank_shift\": <integer> }\n      }\n    ],\n    \"overall_delta_summary\": \"<paragraph>\",\n    \"confidence_overall\": <0-1>\n  },\n  \"data_quality\": {\n    \"completeness_score\": <0-1>,\n    \"issues_found\": [ \"<issue1>\", \"<issue2>\" ]\n  }\n}\n```\n</output_format>",
           "hasOutputParser": true,
           "options": {
             "systemMessage": "You are an expert data analyst specializing in pattern detection and business intelligence. You analyze query results to identify trends, patterns, anomalies, and actionable insights. You provide clear, concise analysis in structured JSON format."
@@ -7888,8 +7916,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
         "typeVersion": 1,
         "position": [
-          3024,
-          416
+          3600,
+          432
         ],
         "id": "5a2a640d-5b9f-4b89-968e-b64d426e351c",
         "name": "Google Gemini Chat Model",
@@ -8003,10 +8031,8 @@
           "actionsUi": {
             "actionFields": [
               {
-                "object": "table",
                 "action": "insert",
-                "rows": 1,
-                "columns": 3
+                "text": "={{ $json.output }}"
               }
             ]
           }
@@ -8014,11 +8040,11 @@
         "type": "n8n-nodes-base.googleDocs",
         "typeVersion": 2,
         "position": [
-          3680,
+          4160,
           112
         ],
-        "id": "498cef95-0582-46ce-8778-07c481425a8a",
-        "name": "Update a document",
+        "id": "7c6b7b92-fdf8-49e9-9ed3-3f9466b17815",
+        "name": "Update a document1",
         "credentials": {
           "googleDocsOAuth2Api": {
             "id": "dzy8xbOq7YSB6444",
@@ -8028,30 +8054,39 @@
       },
       {
         "parameters": {
-          "operation": "update",
-          "documentURL": "={{ $('Webhook').item.json.body.google_document_id }}",
-          "actionsUi": {
-            "actionFields": [
-              {
-                "action": "insert",
-                "locationChoice": "location",
-                "text": "ffff"
-              }
-            ]
-          }
+          "promptType": "define",
+          "text": "=<role>\nYou are a business intelligence analyst who extracts and formats executive-level takeaways from structured analysis data into presentation-ready text.\n</role>\n\n<task>\nGoal: Extract key insights from structured quarterly analysis JSON and format them as concise, executive-ready takeaways for Google Docs insertion.\n\nPlan of action (follow sequentially):\n1. Parse the input JSON containing quarterly analysis data\n2. Extract high-priority insights from current quarter, previous quarter, and inter-quarter comparisons\n3. Categorize insights by priority: Critical Anomalies, Growth Drivers, Risks, and Operational Notes\n4. Format each takeaway with proper structure for Google Docs API insertion\n5. Return plain text with clear section markers and bullet formatting\n</task>\n\n<context>\nYou will receive a JSON object containing:\n- **current_quarter_analysis**: Top entities with metric values, percentages, and categorized insights\n- **previous_quarter_analysis**: Same structure for the prior period\n- **inter_quarter_comparison**: Major changes between quarters with absolute and percent changes\n- **data_quality**: Completeness score and data quality issues\n\nEach insight has:\n- **text**: The actual insight narrative\n- **category**: Classification (Anomaly, Growth Driver, Risk, Operational, Decline)\n- **confidence**: Confidence score (0.0 to 1.0)\n- **supporting_data**: Metrics and context\n\nYour output must be plain text formatted for direct insertion into Google Docs via API, with clear section headers and bullet points using standard text characters.\n</context>\n\n<extraction_rules>\n<priority_classification>\nPriority Classification:\n\n1. **CRITICAL (Must Include)**:\n   - Insights with category \"Anomaly\" and confidence >= 0.80\n   - Major changes with absolute percent_change > 1000% OR > 50% with high confidence\n   - Any insight mentioning \"validation required\", \"investigate\", or \"immediate\"\n   - Data quality issues with completeness_score < 0.85\n\n2. **HIGH (Should Include)**:\n   - Insights with category \"Risk\" and confidence >= 0.90\n   - Growth Drivers with confidence >= 0.90 and significant impact\n   - Inter-quarter changes with absolute value > 20% and confidence >= 0.85\n   - Top 3 entities by metric value in current quarter\n\n3. **MEDIUM (Include if Space Permits)**:\n   - Operational insights with confidence >= 0.90\n   - Entities showing consistent trends across quarters\n   - Minor declines (< 10%) with context\n   - Supporting data points that add clarity\n\n4. **LOW (Optional)**:\n   - Operational notes with low impact\n   - Stable accounts with minimal change\n   - Redundant information already covered\n</priority_classification>\n\n<insight_selection>\nInsight Selection Criteria:\n\nFor each category, select insights based on:\n\n**Critical Anomalies**:\n- Include ALL insights with category \"Anomaly\"\n- Prioritize by confidence score (highest first)\n- Include supporting metrics (current_metric, previous_metric, percent_change)\n- Highlight if validation or investigation is recommended\n\n**Growth Drivers**:\n- Include top 3-5 growth insights by percent_change or absolute_change\n- Focus on confidence >= 0.90\n- Include specific numbers (growth %, absolute change)\n- Note consistency across quarters if applicable\n\n**Risks & Declines**:\n- Include ALL risks with confidence >= 0.90\n- Include declines > 5% regardless of confidence\n- Provide context (is it normal fluctuation or concerning trend?)\n- Flag accounts that dropped out of top rankings\n\n**Operational Notes**:\n- Include only if adding strategic context\n- Summarize stable trends rather than listing each one\n- Focus on overall patterns rather than individual accounts\n</insight_selection>\n\n<text_formatting>\nText Formatting Rules:\n\n1. Use hierarchical structure with clear headers\n2. Use \"•\" for bullet points (not \"- \" or \"* \")\n3. Use numbers with metric formatting: \"53,805 nodes\" not \"53805 nodes\"\n4. Use percentage formatting: \"+11.2%\" not \"11.19\"\n5. Bold important terms using **term** (will be converted for Google Docs)\n6. Use em-dash (—) for emphasis, not hyphens\n7. Keep sentences concise (max 25 words per bullet)\n8. Start each bullet with action or state, not \"The account...\"\n</text_formatting>\n</extraction_rules>\n\n<output_structure>\n<document_layout>\nDocument Layout:\n\nThe output should follow this exact structure:\n\n```\nEXECUTIVE TAKEAWAYS: [METRIC NAME] - [CURRENT QUARTER] vs [PREVIOUS QUARTER]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔴 CRITICAL ANOMALIES (Require Validation)\n\n• [Highest priority anomaly with specific numbers and context]\n• [Second priority anomaly]\n• [Additional critical items...]\n\nData Quality Note: [Completeness score and major issues if < 0.85]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📈 GROWTH DRIVERS\n\n• [Top growth driver with percent change and absolute numbers]\n• [Second growth driver]\n• [Additional growth items...]\n\nOverall Trend: [Summary of aggregate growth with total change metrics]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ RISKS & DECLINES\n\n• [Highest risk item with context]\n• [Decline with percentage and interpretation]\n• [Additional risk items...]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 OPERATIONAL HIGHLIGHTS\n\n• [Key stable accounts or patterns]\n• [Notable operational trends]\n• [Context for understanding the data]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRECOMMENDATIONS\n\n• [Specific action item based on critical anomalies]\n• [Validation or investigation needed]\n• [Strategic consideration based on trends]\n```\n</document_layout>\n\n<section_details>\nSection-Specific Guidelines:\n\n**CRITICAL ANOMALIES Section**:\n- Start with the highest impact anomaly (largest absolute change or highest % with high base)\n- Include entity name, current metric, previous metric, and percent change\n- State specific recommendation (e.g., \"Validate with GTM/ETL\", \"Investigate onboarding\")\n- Group similar anomalies if applicable (e.g., \"Three accounts show >1000% growth\")\n- Always include data quality note if completeness < 0.85\n\n**GROWTH DRIVERS Section**:\n- Lead with largest absolute contributors to growth\n- Include both percentage and absolute numbers\n- Note if growth is consistent vs. one-time jump\n- End with \"Overall Trend\" line showing aggregate metrics from overall_delta_summary\n- Format: \"Overall Trend: Aggregate increased by [absolute] nodes (+[percent]%) from [prev total] to [current total]\"\n\n**RISKS & DECLINES Section**:\n- Prioritize by confidence score and magnitude\n- Provide context: \"Normal fluctuation\" vs \"Monitor for churn\"\n- Include ranking changes if significant (e.g., \"Dropped from #5 to #8\")\n- Note if decline is accelerating vs. stabilizing\n\n**OPERATIONAL HIGHLIGHTS Section**:\n- Summarize stable trends rather than listing each account\n- Include context that helps interpret other sections\n- Note data patterns or methodology considerations\n- Keep to 3-5 bullets maximum\n\n**RECOMMENDATIONS Section**:\n- Derive directly from Critical Anomalies and High Risks\n- Make action-oriented and specific\n- Include owner or team if identifiable (GTM, ETL, Ops)\n- Prioritize by urgency: Immediate → Near-term → Strategic\n</section_details>\n</output_structure>\n\n<formatting_examples>\n<good_examples>\nGood Examples:\n\n✅ **Entity Reference**:\n\"quizzical-khorana-50rbbst (53,805 nodes, 34.6% of top-10) shows massive increase vs Q2\"\n\n✅ **Percentage Formatting**:\n\"Increased by +11.2% quarter-over-quarter (from 19,407 to 21,579 nodes)\"\n\n✅ **Change Description**:\n\"Massive increase of 53,567 nodes (+22,508%) — likely new onboarding or account consolidation; validate with GTM/ETL immediately\"\n\n✅ **Risk Statement**:\n\"Declined by -455 nodes (-5.9%) vs prior quarter — monitor for potential churn or capacity reduction\"\n\n✅ **Operational Summary**:\n\"Five accounts remain stable in top-10 across both quarters with <2% variance\"\n\n✅ **Recommendation**:\n\"Validate three accounts with >1000% growth (quizzical, hardcore, upbeat) with GTM team to confirm contract start dates and ingestion logic\"\n</good_examples>\n\n<bad_examples>\nBad Examples:\n\n❌ **Too Verbose**:\n\"The account named quizzical-khorana-50rbbst, which is one of our accounts, has shown an increase in the metric we are tracking, going from a previous value to a current value\"\n\n❌ **Poor Number Formatting**:\n\"Increased by 11.19237% (from 19407 to 21579)\"\n\n❌ **Passive Voice**:\n\"A decline was observed in the account caprine-euclid-l7uwlrq\"\n\n❌ **Missing Context**:\n\"Account X increased by 50%\"\n(Should include: what metric, from what to what, why significant)\n\n❌ **Vague Recommendation**:\n\"Look into the data issues\"\n(Should be: \"Validate data completeness score of 0.78 by reviewing ETL pipeline for account name mapping consistency\")\n</bad_examples>\n</formatting_examples>\n\n<number_formatting>\n<rules>\nNumber Formatting Rules:\n\n1. **Large Numbers**: Use comma separators\n   - 53805 → 53,805\n   - 155367 → 155,367\n\n2. **Percentages**: Round to 1 decimal place, include sign\n   - 11.19 → +11.2%\n   - -5.91 → -5.9%\n   - 22507.56 → +22,508% (round to whole number for very large %)\n\n3. **Percent of Total**: Round to 1 decimal place\n   - 34.63 → 34.6%\n   - 4.52 → 4.5%\n\n4. **Confidence Scores**: Convert to percentage or use descriptive terms\n   - 0.95 → \"high confidence (95%)\" or just \"high confidence\"\n   - 0.78 → \"moderate confidence (78%)\"\n   - < 0.70 → \"low confidence\"\n\n5. **Decimal Numbers**: Round to whole numbers unless precision matters\n   - 7070.37% → 7,070%\n   - 2611.59% → 2,612%\n\n6. **Small Changes**: Use +/- with precision\n   - -172 → -172 nodes\n   - +136 → +136 nodes\n\n7. **Rank Changes**: Use # symbol and direction\n   - \"Dropped from #5 to #8\"\n   - \"Rose from #10 to #3\"\n</rules>\n\n<examples>\nFormatting Examples:\n\n**Before**: \"entity metric_value is 53805 and percent_of_total is 34.63\"\n**After**: \"53,805 nodes (34.6% of top-10)\"\n\n**Before**: \"percent_change: 11.19\"\n**After**: \"+11.2% growth\"\n\n**Before**: \"confidence: 0.85\"\n**After**: \"high confidence\" or \"(85% confidence)\"\n\n**Before**: \"absolute_change: -455, percent_change: -5.91\"\n**After**: \"-455 nodes (-5.9%)\"\n</examples>\n</number_formatting>\n\n<input_processing>\n<steps>\nInput Processing Steps:\n\n1. **Parse JSON Structure**:\n   - Verify all required sections exist (current_quarter_analysis, previous_quarter_analysis, inter_quarter_comparison)\n   - Check data_quality.completeness_score\n   - Count total insights available\n\n2. **Extract Current Quarter Insights**:\n   - Iterate through current_quarter_analysis.top_entities\n   - For each entity, extract insights array\n   - Tag each insight with entity name and metric_value for context\n   - Calculate entity rank (1st, 2nd, 3rd, etc.)\n\n3. **Extract Previous Quarter Insights**:\n   - Same process as current quarter\n   - Note which entities appear in both quarters\n   - Flag entities that disappeared or newly appeared\n\n4. **Extract Inter-Quarter Comparisons**:\n   - Process inter_quarter_comparison.major_changes array\n   - Sort by absolute_change magnitude (descending)\n   - Separate into growth vs. decline\n   - Flag extreme changes (> 1000% or > 50 with high base)\n\n5. **Categorize All Insights**:\n   - Critical Anomalies: category=\"Anomaly\" OR percent_change > 1000%\n   - Growth Drivers: category=\"Growth Driver\" OR positive major_changes\n   - Risks: category=\"Risk\" OR category=\"Decline\" OR negative changes\n   - Operational: category=\"Operational\" OR stable accounts\n\n6. **Prioritize Within Categories**:\n   - Sort by confidence score (descending)\n   - Then by magnitude (absolute_change or metric_value)\n   - Then by category priority (Anomaly > Risk > Growth > Operational)\n\n7. **Format Each Insight**:\n   - Apply number formatting rules\n   - Construct narrative sentence\n   - Add context from supporting_data if relevant\n   - Keep to max 25 words\n</steps>\n\n<edge_cases>\nEdge Cases to Handle:\n\n**Missing Data**:\n- If previous_metric is null or 0: \"New account in current quarter\"\n- If current_metric is null: \"Account no longer in top rankings\"\n- If percent_change is null: Calculate manually or state \"baseline comparison unavailable\"\n\n**Extreme Values**:\n- If percent_change > 10000%: Round to nearest thousand, flag as \"likely data issue\"\n- If confidence < 0.5: Include disclaimer \"low confidence — verify data\"\n- If metric_value is negative: Flag as \"data error — negative value impossible\"\n\n**Data Quality Issues**:\n- If completeness_score < 0.70: Add prominent warning in Critical Anomalies\n- If issues_found array has > 5 items: Summarize top 3 most critical\n- If overall_notes mentions \"ETL\" or \"mapping\": Include in recommendations\n\n**Ranking Changes**:\n- If rank_shift is null: \"First appearance in top-10\" or \"Not previously in top-10\"\n- If rank_shift > 0: \"Rose [shift] positions\"\n- If rank_shift < 0: \"Dropped [shift] positions\"\n- If rank_shift == 0: \"Maintained ranking\"\n</edge_cases>\n</input_processing>\n\n<validation_checklist>\nValidation Before Returning:\n\n- [ ] All sections are present (Critical Anomalies, Growth Drivers, Risks, Operational, Recommendations)\n- [ ] Each section has at least 1 bullet (or states \"None identified\")\n- [ ] All numbers are properly formatted with commas and appropriate rounding\n- [ ] All percentages include +/- sign\n- [ ] Entity names are spelled exactly as in input\n- [ ] Confidence scores are interpreted, not just reported as decimals\n- [ ] Section headers use proper emoji indicators (🔴 ⚠️ 📈 📊)\n- [ ] Separator lines use exactly 64 \"━\" characters\n- [ ] Bullets use \"•\" character consistently\n- [ ] Total character count is reasonable for Google Docs (< 5000 chars recommended)\n- [ ] No JSON artifacts or raw field names appear in output\n- [ ] Recommendations are actionable and specific\n- [ ] Data quality issues are prominently noted if completeness < 0.85\n- [ ] Overall trend summary is included in Growth Drivers section\n</validation_checklist>\n\n<output_requirements>\nOutput Requirements:\n\n**Format**: Plain text, UTF-8 encoded\n\n**Structure**: Exactly 6 sections in order:\n1. Title line\n2. Critical Anomalies\n3. Growth Drivers\n4. Risks & Declines\n5. Operational Highlights\n6. Recommendations\n\n**Separators**: Use \"━\" (U+2501) character for horizontal rules (64 characters wide)\n\n**Bullets**: Use \"•\" (U+2022) character\n\n**Emojis**: Use standard emoji codes:\n- 🔴 (Red Circle) for Critical\n- 📈 (Chart Increasing) for Growth\n- ⚠️ (Warning) for Risks\n- 📊 (Bar Chart) for Operational\n\n**Length Guidelines**:\n- Title: 1 line\n- Critical Anomalies: 3-7 bullets + data quality note\n- Growth Drivers: 3-5 bullets + overall trend\n- Risks & Declines: 2-5 bullets\n- Operational Highlights: 2-4 bullets\n- Recommendations: 2-4 bullets\n\n**Tone**: Professional, concise, action-oriented\n\n**Perspective**: Third-person objective (\"Account X shows...\" not \"We see account X...\")\n\n**No Preamble**: Output should start immediately with title line, no \"Here is the formatted output:\" or similar\n</output_requirements>\n\n<example_output>\nExample Output Structure:\n\n```\nEXECUTIVE TAKEAWAYS: Edge Nodes - FY2026 Q3 vs FY2026 Q2\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔴 CRITICAL ANOMALIES (Require Validation)\n\n• quizzical-khorana-50rbbst shows massive increase of 53,567 nodes (+22,508%) vs Q2 — likely new onboarding or account consolidation; validate with GTM/ETL immediately\n• hardcore-elbakyan-50xvd2z jumped from 135 to 9,680 nodes (+7,070%) — probable reclassification or new deployment; confirm contract start date\n• upbeat-ansell-7ikkus7 increased from 276 to 7,478 nodes (+2,612%) — verify data mapping and ingestion logic\n• intelligent-bose-h8omefz appears as new top account with no prior-quarter match — likely renamed or previously uncategorized\n\nData Quality Note: Completeness score of 78% indicates potential ETL or name-mapping inconsistencies; review data pipeline before executive reporting.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📈 GROWTH DRIVERS\n\n• keen-engelbart-yrawjpm delivered healthy growth of +2,172 nodes (+11.2%), from 19,407 to 21,579 — largest stable contributor\n• sharp-ptolemy-o24v40l recovered strongly with +1,073 nodes (+17.9%) vs prior quarter\n• beautiful-montalcini-msl3hcr showed consistent growth of +136 nodes (+1.7%) — stable mid-size performer\n\nOverall Trend: Top-10 aggregate increased by 58,533 nodes (+60.4%) from 96,834 to 155,367, driven primarily by three large movers noted in Critical Anomalies.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ RISKS & DECLINES\n\n• caprine-euclid-l7uwlrq declined by -455 nodes (-5.9%), dropping from #5 to #8 — monitor for potential churn or capacity reduction\n• priceless-archimedes-d0qkdzk contracted by -280 nodes (-1.6%) — likely normal fluctuation for large account, but track trend\n• ruminant-gagarin-k690duv decreased by -172 nodes (-1.0%) — minimal decline, operational monitoring sufficient\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 OPERATIONAL HIGHLIGHTS\n\n• Five accounts (keen-engelbart, priceless-archimedes, ruminant-gagarin, beautiful-montalcini, caprine-euclid) remain in top-10 across both quarters\n• Core account base shows stability with <2% variance for established accounts\n• Dataset contains strong outliers requiring validation before extrapolating trends to full population\n• Account naming inconsistencies suggest ETL review needed for accurate quarter-over-quarter tracking\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRECOMMENDATIONS\n\n• Immediate: Validate three accounts with >1000% growth (quizzical, hardcore, upbeat) with GTM team to confirm contract start dates and rule out data errors\n• Near-term: Review ETL pipeline and account name mapping logic to improve data completeness from 78% to >90%\n• Strategic: Investigate concentration risk — top account (quizzical) now holds 34.6% of top-10 aggregate, up from negligible share in Q2\n• Monitoring: Track caprine-euclid-l7uwlrq decline trajectory over next 2 quarters to distinguish normal fluctuation from churn signal\n```\n</example_output>\n\n\n<input>\n{{ $json.output.toJsonString() }}\n</input>\n",
+          "options": {}
         },
-        "type": "n8n-nodes-base.googleDocs",
-        "typeVersion": 2,
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3,
         "position": [
-          3888,
+          3664,
           112
         ],
-        "id": "7c6b7b92-fdf8-49e9-9ed3-3f9466b17815",
-        "name": "Update a document1",
+        "id": "817f602a-5d36-4cfb-8831-809c5b14cf8c",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": "gpt-5-mini",
+          "options": {
+            "responseFormat": "json_object",
+            "timeout": 360000
+          }
+        },
+        "id": "f20757ab-6429-46a0-9009-559efb948312",
+        "name": "Azure OpenAI GPT-5-mini1",
+        "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+        "typeVersion": 1,
+        "position": [
+          3760,
+          432
+        ],
         "credentials": {
-          "googleDocsOAuth2Api": {
-            "id": "dzy8xbOq7YSB6444",
-            "name": "Google Docs Cribl"
+          "azureOpenAiApi": {
+            "id": "ljEp6Un527XmKGRN",
+            "name": "Azure OpenAI gpt-5-mini"
           }
         }
       }
@@ -8195,7 +8230,7 @@
         "main": [
           [
             {
-              "node": "Update a document",
+              "node": "AI Agent",
               "type": "main",
               "index": 0
             }
@@ -8215,24 +8250,19 @@
       },
       "Google Gemini Chat Model": {
         "ai_languageModel": [
-          []
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
         ]
       },
       "OLD Pattern Detection Agent": {
         "main": [
           [],
           []
-        ]
-      },
-      "Update a document": {
-        "main": [
-          [
-            {
-              "node": "Update a document1",
-              "type": "main",
-              "index": 0
-            }
-          ]
         ]
       },
       "Update a document1": {
@@ -8244,6 +8274,22 @@
               "index": 0
             }
           ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Update a document1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Azure OpenAI GPT-5-mini1": {
+        "ai_languageModel": [
+          []
         ]
       }
     },
