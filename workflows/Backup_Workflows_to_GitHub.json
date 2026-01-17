@@ -678,7 +678,7 @@
     "node:Schedule Trigger": {
       "recurrenceRules": [
         null,
-        15,
+        17,
         14,
         50
       ]
