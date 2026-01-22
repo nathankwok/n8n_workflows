@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T22:25:44.551Z",
+  "updatedAt": "2026-01-22T18:29:24.242Z",
   "createdAt": "2025-12-20T02:14:15.837Z",
   "id": "4cCsYYYaNoTNWB3U",
   "name": "Board_Deck_Takeaways",
@@ -843,32 +843,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Fiscal Quarter Extractor": [
-      {
-        "json": {
-          "output": {
-            "today": "2025-12-22",
-            "current_fiscal_quarter": "FY2026 Q3",
-            "previous_fiscal_quarter": "FY2026 Q2",
-            "current_fiscal_half": "FY2026 H2",
-            "previous_fiscal_half": "FY2026 H1"
-          }
-        }
-      }
-    ],
-    "Create Takeaways Doc": [
-      {
-        "json": {
-          "kind": "drive#file",
-          "id": "1TN9S5sCp-DBlhYFV6a_ihTvVa6tr4pkjDb8JHL9PWyA",
-          "name": "Board_Deck_Takeaways_20251224_114757",
-          "mimeType": "application/vnd.google-apps.document"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
     "OLD Query JSON Modifier": [
       {
         "json": {
@@ -888,9 +862,38 @@
           "item": 0
         }
       }
+    ],
+    "Fiscal Quarter Extractor": [
+      {
+        "json": {
+          "output": {
+            "today": "2026-01-21",
+            "current_fiscal_quarter": "FY2026 Q4",
+            "previous_fiscal_quarter": "FY2026 Q3",
+            "current_fiscal_half": "FY2026 H2",
+            "previous_fiscal_half": "FY2026 H1"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Create Takeaways Doc": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1JOEw6ZleZhs63bLzAP4TwDQaSp6rfT9HncFsQ8PsIt8",
+          "name": "Board_Deck_Takeaways_20260121_235254",
+          "mimeType": "application/vnd.google-apps.document"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
     ]
   },
-  "versionId": "c312468e-8e3a-430d-9ddc-18f86ae7c6bf",
+  "versionId": "f17cb106-d3fb-4950-9201-3320337b8a9a",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
