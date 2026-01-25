@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-23T11:14:25.965Z",
+  "updatedAt": "2026-01-24T04:01:57.953Z",
   "createdAt": "2025-12-20T02:14:15.837Z",
   "id": "4cCsYYYaNoTNWB3U",
   "name": "Board_Deck_Takeaways",
@@ -48,7 +48,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1856,
+        2064,
         1120
       ]
     },
@@ -63,7 +63,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2944,
+        3152,
         1120
       ],
       "executeOnce": false
@@ -77,7 +77,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        3808,
+        4432,
         1456
       ],
       "executeOnce": false
@@ -117,12 +117,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(document_query_id => ({\n    json: {\n      document_query_id: document_query_id,\n      queries: drillQueries[document_query_id],\n      queryCount: drillQueries[document_query_id].length\n    }\n  }))\n\n  return drill_queries;"
+        "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(document_query_id => ({\n    json: {\n      document_query_id: document_query_id,\n      document_query_name: drillQueries[document_query_id][0][\"document_query_name\"],\n      queries: drillQueries[document_query_id],\n      queryCount: drillQueries[document_query_id].length\n    }\n  }))\n\n  return drill_queries;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2448,
+        2656,
         1120
       ],
       "id": "d9071922-dd3c-4544-8313-87cd21b0b593",
@@ -130,13 +130,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const currentItem = $input.first().json;\n\n  if (!currentItem.document_query_id || !currentItem.queries) {\n    return [{\n      json: {\n        error: 'Missing required fields: document_query_id or queries',\n        received: currentItem\n      }\n    }];\n  }\n\n  const document_query_id = currentItem.document_query_id;\n  const queries = currentItem.queries;\n\n  if (!Array.isArray(queries)) {\n    return [{\n      json: {\n        error: 'queries is not an array',\n        type: typeof queries\n      }\n    }];\n  }\n\n  return queries.map(query => ({\n    json: {\n      document_query_id: document_query_id,\n      document_query_name: query.document_query_name || '',\n      drill_name: query.drill_name || 'unnamed_drill',\n      query: query.query || {}\n    }\n  }));"
+        "jsCode": "console.log($(\"Loop UUID Item\").item.json);\n\nconst currentItem = $(\"Loop UUID Item\").item.json;\n\n\nif (!currentItem.document_query_id || !currentItem.queries) {\n  return [{\n    json: {\n      error: 'Missing required fields: document_query_id or queries',\n      received: currentItem\n    }\n  }];\n}\n\nconst document_query_id = currentItem.document_query_id;\nconst queries = currentItem.queries;\n\nif (!Array.isArray(queries)) {\n  return [{\n    json: {\n      error: 'queries is not an array',\n      type: typeof queries\n    }\n  }];\n}\n\nreturn queries.map(query => ({\n  json: {\n    document_query_id: document_query_id,\n    document_query_name: query.document_query_name || '',\n    drill_name: query.drill_name || 'unnamed_drill',\n    query: query.query || {}\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3248,
-        1296
+        4112,
+        1280
       ],
       "id": "5dfd4e0b-b9ab-4a4d-a846-c8ef49e931bd",
       "name": "Extract Queries for UUID"
@@ -152,7 +152,7 @@
       "name": "Webhook Callback Wait",
       "type": "n8n-nodes-base.wait",
       "position": [
-        5840,
+        6672,
         672
       ],
       "webhookId": "5cd058b4-48c8-449a-9c09-959a5b8a2b48",
@@ -167,7 +167,7 @@
       "name": "Update finishedSet",
       "type": "n8n-nodes-base.code",
       "position": [
-        6480,
+        7312,
         672
       ],
       "typeVersion": 2,
@@ -191,7 +191,7 @@
       "name": "Initialize finishedSet",
       "type": "n8n-nodes-base.set",
       "position": [
-        3552,
+        4176,
         512
       ],
       "executeOnce": true,
@@ -226,7 +226,7 @@
       "name": "If All Finished",
       "type": "n8n-nodes-base.if",
       "position": [
-        4752,
+        5584,
         512
       ],
       "typeVersion": 2,
@@ -240,7 +240,7 @@
       "name": "Acknowledge Finished",
       "type": "n8n-nodes-base.respondToWebhook",
       "position": [
-        6320,
+        7152,
         896
       ],
       "typeVersion": 1.1,
@@ -269,7 +269,7 @@
       "name": "Continue Workflow (noop)",
       "type": "n8n-nodes-base.noOp",
       "position": [
-        6208,
+        7040,
         352
       ],
       "typeVersion": 1,
@@ -282,7 +282,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
+        2352,
         1120
       ],
       "id": "347e89ad-1d53-4099-8d9d-20a8602b2c12",
@@ -295,7 +295,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        6336,
+        7168,
         1760
       ],
       "id": "75631430-add9-4385-b26e-6c83f12f04e6",
@@ -382,35 +382,15 @@
     },
     {
       "parameters": {
-        "folderId": "1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ",
-        "title": "=Board_Deck_Takeaways_{{ $now.format('yyyyMMdd_HHmmss') }}"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        1568,
-        1120
-      ],
-      "id": "e61568b1-3b9b-4c59-98c9-ba817d46fe30",
-      "name": "Create Takeaways Doc",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "dzy8xbOq7YSB6444",
-          "name": "Google Docs Cribl"
-        }
-      }
-    },
-    {
-      "parameters": {
         "mode": "raw",
-        "jsonOutput": "={\n  \"document_query_id\": \"{{ $('Loop Over Queries').item.json.document_query_id }}\",\n  \"document_query_name\": \"{{ $('Loop Over Queries').item.json.document_query_name }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_quarter }}\",\n  \"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_half }}\",\n  \"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_half }}\",\n  \"user_id\": \"{{ $('Global Vars').first().json.default_user_id }}\",\n  \"current_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.current_fiscal_quarter_query || {} }},\n  \"previous_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.previous_fiscal_quarter_query || {} }},\n  \"google_document_id\": \"{{ $('Create Takeaways Doc').item.json.id }}\"\n\n}\n\n\n\n",
+        "jsonOutput": "={\n  \"document_query_id\": \"{{ $('Loop Query Item').item.json.document_query_id }}\",\n  \"document_query_name\": \"{{ $('Loop Query Item').item.json.document_query_name }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_quarter }}\",\n  \"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_half }}\",\n  \"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_half }}\",\n  \"user_id\": \"{{ $('Global Vars').first().json.default_user_id }}\",\n  \"current_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.current_fiscal_quarter_query || {} }},\n  \"previous_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.previous_fiscal_quarter_query || {} }},\n  \"google_document_id\": \"{{ $('Create Takeaways Doc').item.json.id }}\"\n\n}\n\n\n\n",
         "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5184,
+        6016,
         1696
       ],
       "id": "b62a9170-658d-4907-9592-d33d8e748f5a",
@@ -422,8 +402,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4368,
-        1280
+        5104,
+        1296
       ],
       "typeVersion": 1,
       "id": "7ef40ecd-556e-48e1-addd-d5b437cee372",
@@ -437,7 +417,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        4384,
+        4864,
         1744
       ],
       "id": "5abcf832-7ccf-4c94-a988-237be2d39bec",
@@ -450,7 +430,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4736,
+        5600,
         1504
       ],
       "id": "e17ce027-26fc-465a-87d1-098a4fd7e0b0",
@@ -503,7 +483,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        4128,
+        5104,
         1728
       ],
       "id": "c307facc-4098-4a60-a627-d4538284d845",
@@ -524,7 +504,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        4176,
+        5152,
         1504
       ],
       "id": "a9cca20c-75ad-4dbd-ae3f-c04559bb043e",
@@ -721,17 +701,155 @@
           "convertFieldsToString": true
         },
         "options": {
-          "waitForSubWorkflow": true
+          "waitForSubWorkflow": false
         }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        5808,
+        6640,
         1696
       ],
       "id": "9b83e1fc-e191-413b-805b-996c7d5de321",
       "name": "Call 'Board_Deck_Omni_Query_Analysis_Subworkflow'"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=Board_Deck_Takeaways_{{ $now.format('yyyyMMdd_HHmmss') }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ",
+          "mode": "list",
+          "cachedResultName": "AI Workflow - Board Deck Takeaways",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1600,
+        1120
+      ],
+      "id": "15d9460c-b80f-4f00-9421-f1073c6e8a94",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SgST8lxFUWMslYat",
+          "name": "Google Drive Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3424,
+        1280
+      ],
+      "id": "2644febc-6619-4de2-ac6c-b17278e1c02d",
+      "name": "Loop UUID Item"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4736,
+        1504
+      ],
+      "id": "146faf1b-dcc0-44f5-8699-57d5106857e3",
+      "name": "Loop Query Item"
+    },
+    {
+      "parameters": {
+        "driveId": "0AMo0z91EPlT1Uk9PVA",
+        "folderId": "=1omG14xnIzyoMcZvRqAIdiSPm4U9DFppR",
+        "title": "={{ $('Loop Over UUIDs').item.json.document_query_name }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3744,
+        1456
+      ],
+      "id": "e61568b1-3b9b-4c59-98c9-ba817d46fe30",
+      "name": "Create Takeaways Doc Shared Drive",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "dzy8xbOq7YSB6444",
+          "name": "Google Docs Cribl"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $('Create folder').item.json.id }}",
+        "title": "={{ $json.document_query_name }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3744,
+        1280
+      ],
+      "id": "6457a53e-148f-4261-8fcd-82c8662ab477",
+      "name": "Create Takeaways Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "dzy8xbOq7YSB6444",
+          "name": "Google Docs Cribl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "- No matter how many drill query sort versions that a drill query has, this loop (which goes for each drill query) should only still input one takeaway per drill query"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5520,
+        2048
+      ],
+      "typeVersion": 1,
+      "id": "6c326fa0-6fd2-4005-ab4b-69c5de620beb",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "- No matter how many drill queries (and thus drill query sort versions) that a document query has, this loop (which goes for each document query/chart) should only still create one google doc within the folder per document query",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3456,
+        1760
+      ],
+      "typeVersion": 1,
+      "id": "8dc7f025-9cef-4f86-9278-e4d352662333",
+      "name": "Sticky Note3"
     }
   ],
   "connections": {
@@ -779,7 +897,7 @@
         ],
         [
           {
-            "node": "Extract Queries for UUID",
+            "node": "Loop UUID Item",
             "type": "main",
             "index": 0
           }
@@ -797,7 +915,7 @@
         ],
         [
           {
-            "node": "Query JSON Modifier",
+            "node": "Loop Query Item",
             "type": "main",
             "index": 0
           }
@@ -930,7 +1048,7 @@
       "main": [
         [
           {
-            "node": "Create Takeaways Doc",
+            "node": "Create folder",
             "type": "main",
             "index": 0
           }
@@ -953,17 +1071,6 @@
           {
             "node": "Fiscal Quarter Extractor",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create Takeaways Doc": {
-      "main": [
-        [
-          {
-            "node": "Load Drill Queries",
-            "type": "main",
             "index": 0
           }
         ]
@@ -1072,6 +1179,55 @@
           }
         ]
       ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Load Drill Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop UUID Item": {
+      "main": [
+        [
+          {
+            "node": "Create Takeaways Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Query Item": {
+      "main": [
+        [
+          {
+            "node": "Query JSON Modifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Takeaways Doc Shared Drive": {
+      "main": [
+        []
+      ]
+    },
+    "Create Takeaways Doc": {
+      "main": [
+        [
+          {
+            "node": "Extract Queries for UUID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1088,19 +1244,6 @@
       {
         "json": {
           "output": "{\n  \"current_fiscal_quarter_query\": {\"limit\":200,\"sorts\":[],\"table\":\"cloud_edge_nodes_fq\",\"fields\":[\"cloud_edge_nodes_fq.date[fiscal_quarter]\",\"cloud_edge_nodes_fq.org_id\",\"cloud_edge_nodes_fq.total_edge_nodes\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"cloud_edge_nodes_fq.date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\",\"is_negative\":false}],\"conjunction\":\"AND\",\"is_negative\":false},\"product__cloud_orgs.org_type\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"Customer\",\"Free\"],\"is_negative\":false},\"cloud_edge_nodes_fq.total_edge_nodes\":{\"kind\":\"GREATER_THAN\",\"type\":\"number\",\"values\":[\"0\"],\"is_negative\":false,\"is_inclusive\":false}},\"modelId\":\"912e8580-4519-4971-b8c3-1c30608c7f49\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"cloud_edge_nodes_fq\"},\n  \"previous_fiscal_quarter_query\": {\"limit\":200,\"sorts\":[],\"table\":\"cloud_edge_nodes_fq\",\"fields\":[\"cloud_edge_nodes_fq.date[fiscal_quarter]\",\"cloud_edge_nodes_fq.org_id\",\"cloud_edge_nodes_fq.total_edge_nodes\"],\"pivots\":[],\"dbtMode\":false,\"filters\":{\"cloud_edge_nodes_fq.date\":{\"type\":\"composite\",\"filters\":[{\"kind\":\"TIME_FOR_UNIT_DURATION\",\"type\":\"date\",\"left_side\":\"\"},{\"kind\":\"TIME_FOR_INTERVAL_DURATION\",\"type\":\"date\",\"left_side\":\"6 complete fiscal quarters ago\",\"right_side\":\"6 quarters\",\"is_negative\":false}],\"conjunction\":\"AND\",\"is_negative\":false},\"product__cloud_orgs.org_type\":{\"kind\":\"EQUALS\",\"type\":\"string\",\"values\":[\"Customer\",\"Free\"],\"is_negative\":false},\"cloud_edge_nodes_fq.total_edge_nodes\":{\"kind\":\"GREATER_THAN\",\"type\":\"number\",\"values\":[\"0\"],\"is_negative\":false,\"is_inclusive\":false}},\"modelId\":\"912e8580-4519-4971-b8c3-1c30608c7f49\",\"version\":8,\"controls\":[],\"rewriteSql\":true,\"row_totals\":{},\"fill_fields\":[],\"calculations\":[],\"column_limit\":50,\"join_via_map\":{},\"column_totals\":{},\"userEditedSQL\":\"\",\"dimensionIndex\":0,\"default_group_by\":true,\"custom_summary_types\":{},\"join_paths_from_topic_name\":\"cloud_edge_nodes_fq\"}\n}"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Create Takeaways Doc": [
-      {
-        "json": {
-          "kind": "drive#file",
-          "id": "1JOEw6ZleZhs63bLzAP4TwDQaSp6rfT9HncFsQ8PsIt8",
-          "name": "Board_Deck_Takeaways_20260121_235254",
-          "mimeType": "application/vnd.google-apps.document"
         },
         "pairedItem": {
           "item": 0
@@ -1124,10 +1267,52 @@
           "item": 0
         }
       }
+    ],
+    "Fiscal Quarter Extractor": [
+      {
+        "json": {
+          "output": {
+            "today": "2026-01-23",
+            "current_fiscal_quarter": "FY2026 Q3",
+            "previous_fiscal_quarter": "FY2026 Q2",
+            "current_fiscal_half": "FY2026 H2",
+            "previous_fiscal_half": "FY2026 H1"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Create folder": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1i-Q0pCIIHsMtRC1GelGp1mTdrTa777MZ",
+          "name": "Board_Deck_Takeaways_20260123_182411",
+          "mimeType": "application/vnd.google-apps.folder"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Create Takeaways Doc": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1RI2VYYgam1TWgKKJTmPqyKMlZ7D__nSg5SdNiPbxHTQ",
+          "name": "Incremental Cloud ARR and Customers Over Time",
+          "mimeType": "application/vnd.google-apps.document"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
     ]
   },
-  "versionId": "8ceb1769-5141-41ae-9021-d007b5f10f73",
-  "activeVersionId": "8ceb1769-5141-41ae-9021-d007b5f10f73",
+  "versionId": "ca109958-9630-48b3-9eb1-be2bc72df506",
+  "activeVersionId": "ca109958-9630-48b3-9eb1-be2bc72df506",
   "triggerCount": 1,
   "shared": [
     {
@@ -1139,9 +1324,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-23T11:14:25.967Z",
-    "createdAt": "2026-01-23T11:14:25.967Z",
-    "versionId": "8ceb1769-5141-41ae-9021-d007b5f10f73",
+    "updatedAt": "2026-01-24T04:01:57.955Z",
+    "createdAt": "2026-01-24T04:01:57.955Z",
+    "versionId": "ca109958-9630-48b3-9eb1-be2bc72df506",
     "workflowId": "4cCsYYYaNoTNWB3U",
     "nodes": [
       {
@@ -1186,7 +1371,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1856,
+          2064,
           1120
         ]
       },
@@ -1201,7 +1386,7 @@
         "type": "n8n-nodes-base.splitInBatches",
         "typeVersion": 3,
         "position": [
-          2944,
+          3152,
           1120
         ],
         "executeOnce": false
@@ -1215,7 +1400,7 @@
         "type": "n8n-nodes-base.splitInBatches",
         "typeVersion": 3,
         "position": [
-          3808,
+          4432,
           1456
         ],
         "executeOnce": false
@@ -1255,12 +1440,12 @@
       },
       {
         "parameters": {
-          "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(document_query_id => ({\n    json: {\n      document_query_id: document_query_id,\n      queries: drillQueries[document_query_id],\n      queryCount: drillQueries[document_query_id].length\n    }\n  }))\n\n  return drill_queries;"
+          "jsCode": "const inputData = $('Load Drill Queries').first().json;\n  const systemFields = ['headers', 'params', 'query', 'webhookUrl', 'executionMode'];\n  const drillQueries = {};\n\n  for (const [key, value] of Object.entries(inputData)) {\n    if (!systemFields.includes(key) && typeof value === 'object' && Array.isArray(value)) {\n      drillQueries[key] = value;\n    }\n  }\n\n  const uuidKeys = Object.keys(drillQueries);\n\n  if (uuidKeys.length === 0) {\n    return [{\n      json: {\n        error: 'No drill query UUIDs found in input data',\n        inputKeys: Object.keys(inputData)\n      }\n    }];\n  }\n\n  let drill_queries = uuidKeys.map(document_query_id => ({\n    json: {\n      document_query_id: document_query_id,\n      document_query_name: drillQueries[document_query_id][0][\"document_query_name\"],\n      queries: drillQueries[document_query_id],\n      queryCount: drillQueries[document_query_id].length\n    }\n  }))\n\n  return drill_queries;"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2448,
+          2656,
           1120
         ],
         "id": "d9071922-dd3c-4544-8313-87cd21b0b593",
@@ -1268,13 +1453,13 @@
       },
       {
         "parameters": {
-          "jsCode": "const currentItem = $input.first().json;\n\n  if (!currentItem.document_query_id || !currentItem.queries) {\n    return [{\n      json: {\n        error: 'Missing required fields: document_query_id or queries',\n        received: currentItem\n      }\n    }];\n  }\n\n  const document_query_id = currentItem.document_query_id;\n  const queries = currentItem.queries;\n\n  if (!Array.isArray(queries)) {\n    return [{\n      json: {\n        error: 'queries is not an array',\n        type: typeof queries\n      }\n    }];\n  }\n\n  return queries.map(query => ({\n    json: {\n      document_query_id: document_query_id,\n      document_query_name: query.document_query_name || '',\n      drill_name: query.drill_name || 'unnamed_drill',\n      query: query.query || {}\n    }\n  }));"
+          "jsCode": "console.log($(\"Loop UUID Item\").item.json);\n\nconst currentItem = $(\"Loop UUID Item\").item.json;\n\n\nif (!currentItem.document_query_id || !currentItem.queries) {\n  return [{\n    json: {\n      error: 'Missing required fields: document_query_id or queries',\n      received: currentItem\n    }\n  }];\n}\n\nconst document_query_id = currentItem.document_query_id;\nconst queries = currentItem.queries;\n\nif (!Array.isArray(queries)) {\n  return [{\n    json: {\n      error: 'queries is not an array',\n      type: typeof queries\n    }\n  }];\n}\n\nreturn queries.map(query => ({\n  json: {\n    document_query_id: document_query_id,\n    document_query_name: query.document_query_name || '',\n    drill_name: query.drill_name || 'unnamed_drill',\n    query: query.query || {}\n  }\n}));"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          3248,
-          1296
+          4112,
+          1280
         ],
         "id": "5dfd4e0b-b9ab-4a4d-a846-c8ef49e931bd",
         "name": "Extract Queries for UUID"
@@ -1290,7 +1475,7 @@
         "name": "Webhook Callback Wait",
         "type": "n8n-nodes-base.wait",
         "position": [
-          5840,
+          6672,
           672
         ],
         "webhookId": "5cd058b4-48c8-449a-9c09-959a5b8a2b48",
@@ -1305,7 +1490,7 @@
         "name": "Update finishedSet",
         "type": "n8n-nodes-base.code",
         "position": [
-          6480,
+          7312,
           672
         ],
         "typeVersion": 2,
@@ -1329,7 +1514,7 @@
         "name": "Initialize finishedSet",
         "type": "n8n-nodes-base.set",
         "position": [
-          3552,
+          4176,
           512
         ],
         "executeOnce": true,
@@ -1364,7 +1549,7 @@
         "name": "If All Finished",
         "type": "n8n-nodes-base.if",
         "position": [
-          4752,
+          5584,
           512
         ],
         "typeVersion": 2,
@@ -1378,7 +1563,7 @@
         "name": "Acknowledge Finished",
         "type": "n8n-nodes-base.respondToWebhook",
         "position": [
-          6320,
+          7152,
           896
         ],
         "typeVersion": 1.1,
@@ -1407,7 +1592,7 @@
         "name": "Continue Workflow (noop)",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          6208,
+          7040,
           352
         ],
         "typeVersion": 1,
@@ -1420,7 +1605,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2144,
+          2352,
           1120
         ],
         "id": "347e89ad-1d53-4099-8d9d-20a8602b2c12",
@@ -1433,7 +1618,7 @@
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1.1,
         "position": [
-          6336,
+          7168,
           1760
         ],
         "id": "75631430-add9-4385-b26e-6c83f12f04e6",
@@ -1520,35 +1705,15 @@
       },
       {
         "parameters": {
-          "folderId": "1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ",
-          "title": "=Board_Deck_Takeaways_{{ $now.format('yyyyMMdd_HHmmss') }}"
-        },
-        "type": "n8n-nodes-base.googleDocs",
-        "typeVersion": 2,
-        "position": [
-          1568,
-          1120
-        ],
-        "id": "e61568b1-3b9b-4c59-98c9-ba817d46fe30",
-        "name": "Create Takeaways Doc",
-        "credentials": {
-          "googleDocsOAuth2Api": {
-            "id": "dzy8xbOq7YSB6444",
-            "name": "Google Docs Cribl"
-          }
-        }
-      },
-      {
-        "parameters": {
           "mode": "raw",
-          "jsonOutput": "={\n  \"document_query_id\": \"{{ $('Loop Over Queries').item.json.document_query_id }}\",\n  \"document_query_name\": \"{{ $('Loop Over Queries').item.json.document_query_name }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_quarter }}\",\n  \"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_half }}\",\n  \"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_half }}\",\n  \"user_id\": \"{{ $('Global Vars').first().json.default_user_id }}\",\n  \"current_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.current_fiscal_quarter_query || {} }},\n  \"previous_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.previous_fiscal_quarter_query || {} }},\n  \"google_document_id\": \"{{ $('Create Takeaways Doc').item.json.id }}\"\n\n}\n\n\n\n",
+          "jsonOutput": "={\n  \"document_query_id\": \"{{ $('Loop Query Item').item.json.document_query_id }}\",\n  \"document_query_name\": \"{{ $('Loop Query Item').item.json.document_query_name }}\",\n  \"drill_name\": \"{{ $('Loop Over Queries').item.json.drill_name }}\",\n  \"current_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_quarter }}\",\n  \"previous_fiscal_quarter\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_quarter }}\",\n  \"current_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.current_fiscal_half }}\",\n  \"previous_fiscal_half\": \"{{ $('Fiscal Quarter Extractor').first().json.output.previous_fiscal_half }}\",\n  \"user_id\": \"{{ $('Global Vars').first().json.default_user_id }}\",\n  \"current_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.current_fiscal_quarter_query || {} }},\n  \"previous_fiscal_quarter_query\": {{ $('Parse Modified Query AI Output1').item.json.previous_fiscal_quarter_query || {} }},\n  \"google_document_id\": \"{{ $('Create Takeaways Doc').item.json.id }}\"\n\n}\n\n\n\n",
           "includeOtherFields": true,
           "options": {}
         },
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          5184,
+          6016,
           1696
         ],
         "id": "b62a9170-658d-4907-9592-d33d8e748f5a",
@@ -1560,8 +1725,8 @@
         },
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          4368,
-          1280
+          5104,
+          1296
         ],
         "typeVersion": 1,
         "id": "7ef40ecd-556e-48e1-addd-d5b437cee372",
@@ -1575,7 +1740,7 @@
         "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
         "typeVersion": 1.3,
         "position": [
-          4384,
+          4864,
           1744
         ],
         "id": "5abcf832-7ccf-4c94-a988-237be2d39bec",
@@ -1588,7 +1753,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          4736,
+          5600,
           1504
         ],
         "id": "e17ce027-26fc-465a-87d1-098a4fd7e0b0",
@@ -1641,7 +1806,7 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
         "typeVersion": 1,
         "position": [
-          4128,
+          5104,
           1728
         ],
         "id": "c307facc-4098-4a60-a627-d4538284d845",
@@ -1662,7 +1827,7 @@
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3,
         "position": [
-          4176,
+          5152,
           1504
         ],
         "id": "a9cca20c-75ad-4dbd-ae3f-c04559bb043e",
@@ -1859,17 +2024,155 @@
             "convertFieldsToString": true
           },
           "options": {
-            "waitForSubWorkflow": true
+            "waitForSubWorkflow": false
           }
         },
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.3,
         "position": [
-          5808,
+          6640,
           1696
         ],
         "id": "9b83e1fc-e191-413b-805b-996c7d5de321",
         "name": "Call 'Board_Deck_Omni_Query_Analysis_Subworkflow'"
+      },
+      {
+        "parameters": {
+          "resource": "folder",
+          "name": "=Board_Deck_Takeaways_{{ $now.format('yyyyMMdd_HHmmss') }}",
+          "driveId": {
+            "__rl": true,
+            "value": "My Drive",
+            "mode": "list",
+            "cachedResultName": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ",
+            "mode": "list",
+            "cachedResultName": "AI Workflow - Board Deck Takeaways",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1dSd5PWJ0BH1ksydt-GnYJraDhwLnAbGZ"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          1600,
+          1120
+        ],
+        "id": "15d9460c-b80f-4f00-9421-f1073c6e8a94",
+        "name": "Create folder",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "SgST8lxFUWMslYat",
+            "name": "Google Drive Cribl"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": []
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          3424,
+          1280
+        ],
+        "id": "2644febc-6619-4de2-ac6c-b17278e1c02d",
+        "name": "Loop UUID Item"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": []
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4736,
+          1504
+        ],
+        "id": "146faf1b-dcc0-44f5-8699-57d5106857e3",
+        "name": "Loop Query Item"
+      },
+      {
+        "parameters": {
+          "driveId": "0AMo0z91EPlT1Uk9PVA",
+          "folderId": "=1omG14xnIzyoMcZvRqAIdiSPm4U9DFppR",
+          "title": "={{ $('Loop Over UUIDs').item.json.document_query_name }}"
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          3744,
+          1456
+        ],
+        "id": "e61568b1-3b9b-4c59-98c9-ba817d46fe30",
+        "name": "Create Takeaways Doc Shared Drive",
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "dzy8xbOq7YSB6444",
+            "name": "Google Docs Cribl"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "folderId": "={{ $('Create folder').item.json.id }}",
+          "title": "={{ $json.document_query_name }}"
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          3744,
+          1280
+        ],
+        "id": "6457a53e-148f-4261-8fcd-82c8662ab477",
+        "name": "Create Takeaways Doc",
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "dzy8xbOq7YSB6444",
+            "name": "Google Docs Cribl"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "- No matter how many drill query sort versions that a drill query has, this loop (which goes for each drill query) should only still input one takeaway per drill query"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          5520,
+          2048
+        ],
+        "typeVersion": 1,
+        "id": "6c326fa0-6fd2-4005-ab4b-69c5de620beb",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "- No matter how many drill queries (and thus drill query sort versions) that a document query has, this loop (which goes for each document query/chart) should only still create one google doc within the folder per document query",
+          "height": 208
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          3456,
+          1760
+        ],
+        "typeVersion": 1,
+        "id": "8dc7f025-9cef-4f86-9278-e4d352662333",
+        "name": "Sticky Note3"
       }
     ],
     "connections": {
@@ -1917,7 +2220,7 @@
           ],
           [
             {
-              "node": "Extract Queries for UUID",
+              "node": "Loop UUID Item",
               "type": "main",
               "index": 0
             }
@@ -1935,7 +2238,7 @@
           ],
           [
             {
-              "node": "Query JSON Modifier",
+              "node": "Loop Query Item",
               "type": "main",
               "index": 0
             }
@@ -2068,7 +2371,7 @@
         "main": [
           [
             {
-              "node": "Create Takeaways Doc",
+              "node": "Create folder",
               "type": "main",
               "index": 0
             }
@@ -2091,17 +2394,6 @@
             {
               "node": "Fiscal Quarter Extractor",
               "type": "ai_languageModel",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Create Takeaways Doc": {
-        "main": [
-          [
-            {
-              "node": "Load Drill Queries",
-              "type": "main",
               "index": 0
             }
           ]
@@ -2205,6 +2497,55 @@
           [
             {
               "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create folder": {
+        "main": [
+          [
+            {
+              "node": "Load Drill Queries",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop UUID Item": {
+        "main": [
+          [
+            {
+              "node": "Create Takeaways Doc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Query Item": {
+        "main": [
+          [
+            {
+              "node": "Query JSON Modifier",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Takeaways Doc Shared Drive": {
+        "main": [
+          []
+        ]
+      },
+      "Create Takeaways Doc": {
+        "main": [
+          [
+            {
+              "node": "Extract Queries for UUID",
               "type": "main",
               "index": 0
             }
