@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-15T21:38:11.000Z",
+  "updatedAt": "2026-01-27T03:30:52.534Z",
   "createdAt": "2025-09-29T05:52:07.550Z",
   "id": "7FCTtH9OsXu8HDxI",
   "name": "ask-data_Omni_Dashboard_Search",
@@ -80,7 +80,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       }
     },
@@ -1616,7 +1616,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       },
       "disabled": true
@@ -2045,7 +2045,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       },
       "disabled": true
@@ -2177,7 +2177,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       }
     },
@@ -2425,7 +2425,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       }
     },
@@ -2595,7 +2595,7 @@
       "credentials": {
         "azureOpenAiApi": {
           "id": "N96DE6AiByL8h8kA",
-          "name": "Azure Open AI o4-mini"
+          "name": "Azure OpenAI o4-mini"
         }
       },
       "disabled": true
@@ -2739,6 +2739,19 @@
       "typeVersion": 1,
       "id": "33f68e75-6c1f-4efd-84f6-fcd55aa0301e",
       "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## Failed run to debug\n```\n[\n  {\n    \"headers\": {\n      \"host\": \"n8n-relayer-1.app.n8n.cloud\",\n      \"user-agent\": \"Zapier\",\n      \"content-length\": \"1496\",\n      \"accept\": \"*/*\",\n      \"accept-encoding\": \"gzip, br\",\n      \"authorization\": \"Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=\",\n      \"cdn-loop\": \"cloudflare; loops=1; subreqs=1\",\n      \"cf-connecting-ip\": \"3.227.254.111\",\n      \"cf-ew-via\": \"15\",\n      \"cf-ipcountry\": \"US\",\n      \"cf-ray\": \"9c42af6fd07d0798-IAD\",\n      \"cf-visitor\": \"{\\\"scheme\\\":\\\"https\\\"}\",\n      \"cf-worker\": \"n8n.cloud\",\n      \"content-type\": \"application/json; charset=utf-8\",\n      \"x-forwarded-for\": \"3.227.254.111, 172.70.43.12\",\n      \"x-forwarded-host\": \"n8n-relayer-1.app.n8n.cloud\",\n      \"x-forwarded-port\": \"443\",\n      \"x-forwarded-proto\": \"https\",\n      \"x-forwarded-server\": \"traefik-prod-users-gwc-72-585f59b6c7-kgpvq\",\n      \"x-is-trusted\": \"yes\",\n      \"x-real-ip\": \"3.227.254.111\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"channel_id\": \"C02GRDZS7QF\",\n      \"channel_name\": \"ask-data\",\n      \"conversation_id\": \"C02GRDZS7QF\",\n      \"event_id\": \"1769458528.020600\",\n      \"event_timestamp\": \"2026-01-26T20:15:28.020Z\",\n      \"is_message_user_bot\": \"False\",\n      \"message_text\": \"Hi Team,\\n\\nI inherited the Niantic account, and received an email stating low usage from our team, I was directed to put my request here.\\n\\nBefore I reach out to the customer, I’d like to verify if the data in Omni is accurate. Could you confirm if their current utilization metrics are pulling correctly and any other data usage metrics which could be helpful? Thank you in advance.\",\n      \"message_thread_ts\": \"1769458499.680019\",\n      \"message_thread_ts_time\": \"2026-01-26T20:14:59.000Z\",\n      \"message_timestamp\": \"2026-01-26T20:14:59.680Z\",\n      \"message_ts\": \"1769458499.680019\",\n      \"message_user_email\": \"bkubota@cribl.io\",\n      \"message_user_first_name\": \"Blake\",\n      \"message_user_id\": \"U0A6TGF09QV\",\n      \"message_user_last_name\": \"Kubota\",\n      \"message_user_name\": \"blake_kubota\",\n      \"reaction\": \"omni\",\n      \"reaction_user_email\": \"pgupta@cribl.io\",\n      \"reaction_user_id\": \"U02CBV3GSM9\",\n      \"team_domain\": \"cribl\",\n      \"team_id\": \"T3XQYAF26\",\n      \"thread_conversation_text\": \"Hi Team,\\n\\nI inherited the Niantic account, and received an email stating low usage from our team, I was directed to put my request here.\\n\\nBefore I reach out to the customer, I’d like to verify if the data in Omni is accurate. Could you confirm if their current utilization metrics are pulling correctly and any other data usage metrics which could be helpful? Thank you in advance.\"\n    },\n    \"webhookUrl\": \"https://n8n-relayer-1.app.n8n.cloud/webhook/ask-data-dashboard-discovery-8394a134-6af3-4ec0-b605-3270129037cc\",\n    \"executionMode\": \"production\"\n  }\n]\n```"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -720,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "e7f0259f-4eb2-46ff-9435-9b21f324dd69",
+      "name": "Sticky Note13"
     }
   ],
   "connections": {
@@ -7954,8 +7967,8 @@
       }
     ]
   },
-  "versionId": "8da12e40-e856-42a1-95ef-2d6607679a5c",
-  "activeVersionId": "8da12e40-e856-42a1-95ef-2d6607679a5c",
+  "versionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
+  "activeVersionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
   "triggerCount": 1,
   "shared": [
     {
@@ -7967,9 +7980,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-07T06:45:42.203Z",
-    "createdAt": "2025-12-07T06:45:42.203Z",
-    "versionId": "8da12e40-e856-42a1-95ef-2d6607679a5c",
+    "updatedAt": "2026-01-27T03:30:52.548Z",
+    "createdAt": "2026-01-27T03:30:52.548Z",
+    "versionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
     "workflowId": "7FCTtH9OsXu8HDxI",
     "nodes": [
       {
@@ -8046,7 +8059,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         }
       },
@@ -9582,7 +9595,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         },
         "disabled": true
@@ -10011,7 +10024,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         },
         "disabled": true
@@ -10143,7 +10156,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         }
       },
@@ -10391,7 +10404,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         }
       },
@@ -10561,7 +10574,7 @@
         "credentials": {
           "azureOpenAiApi": {
             "id": "N96DE6AiByL8h8kA",
-            "name": "Azure Open AI o4-mini"
+            "name": "Azure OpenAI o4-mini"
           }
         },
         "disabled": true
@@ -10705,6 +10718,19 @@
         "typeVersion": 1,
         "id": "33f68e75-6c1f-4efd-84f6-fcd55aa0301e",
         "name": "Sticky Note11"
+      },
+      {
+        "parameters": {
+          "content": "## Failed run to debug\n```\n[\n  {\n    \"headers\": {\n      \"host\": \"n8n-relayer-1.app.n8n.cloud\",\n      \"user-agent\": \"Zapier\",\n      \"content-length\": \"1496\",\n      \"accept\": \"*/*\",\n      \"accept-encoding\": \"gzip, br\",\n      \"authorization\": \"Basic emFwaWVyOldNRXY4NDlmcGZGVlpYNkdoQjM2MGFmT3JmMWtfRFF2TlhfOFRSSjEzS1U=\",\n      \"cdn-loop\": \"cloudflare; loops=1; subreqs=1\",\n      \"cf-connecting-ip\": \"3.227.254.111\",\n      \"cf-ew-via\": \"15\",\n      \"cf-ipcountry\": \"US\",\n      \"cf-ray\": \"9c42af6fd07d0798-IAD\",\n      \"cf-visitor\": \"{\\\"scheme\\\":\\\"https\\\"}\",\n      \"cf-worker\": \"n8n.cloud\",\n      \"content-type\": \"application/json; charset=utf-8\",\n      \"x-forwarded-for\": \"3.227.254.111, 172.70.43.12\",\n      \"x-forwarded-host\": \"n8n-relayer-1.app.n8n.cloud\",\n      \"x-forwarded-port\": \"443\",\n      \"x-forwarded-proto\": \"https\",\n      \"x-forwarded-server\": \"traefik-prod-users-gwc-72-585f59b6c7-kgpvq\",\n      \"x-is-trusted\": \"yes\",\n      \"x-real-ip\": \"3.227.254.111\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"channel_id\": \"C02GRDZS7QF\",\n      \"channel_name\": \"ask-data\",\n      \"conversation_id\": \"C02GRDZS7QF\",\n      \"event_id\": \"1769458528.020600\",\n      \"event_timestamp\": \"2026-01-26T20:15:28.020Z\",\n      \"is_message_user_bot\": \"False\",\n      \"message_text\": \"Hi Team,\\n\\nI inherited the Niantic account, and received an email stating low usage from our team, I was directed to put my request here.\\n\\nBefore I reach out to the customer, I’d like to verify if the data in Omni is accurate. Could you confirm if their current utilization metrics are pulling correctly and any other data usage metrics which could be helpful? Thank you in advance.\",\n      \"message_thread_ts\": \"1769458499.680019\",\n      \"message_thread_ts_time\": \"2026-01-26T20:14:59.000Z\",\n      \"message_timestamp\": \"2026-01-26T20:14:59.680Z\",\n      \"message_ts\": \"1769458499.680019\",\n      \"message_user_email\": \"bkubota@cribl.io\",\n      \"message_user_first_name\": \"Blake\",\n      \"message_user_id\": \"U0A6TGF09QV\",\n      \"message_user_last_name\": \"Kubota\",\n      \"message_user_name\": \"blake_kubota\",\n      \"reaction\": \"omni\",\n      \"reaction_user_email\": \"pgupta@cribl.io\",\n      \"reaction_user_id\": \"U02CBV3GSM9\",\n      \"team_domain\": \"cribl\",\n      \"team_id\": \"T3XQYAF26\",\n      \"thread_conversation_text\": \"Hi Team,\\n\\nI inherited the Niantic account, and received an email stating low usage from our team, I was directed to put my request here.\\n\\nBefore I reach out to the customer, I’d like to verify if the data in Omni is accurate. Could you confirm if their current utilization metrics are pulling correctly and any other data usage metrics which could be helpful? Thank you in advance.\"\n    },\n    \"webhookUrl\": \"https://n8n-relayer-1.app.n8n.cloud/webhook/ask-data-dashboard-discovery-8394a134-6af3-4ec0-b605-3270129037cc\",\n    \"executionMode\": \"production\"\n  }\n]\n```"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -720,
+          1040
+        ],
+        "typeVersion": 1,
+        "id": "e7f0259f-4eb2-46ff-9435-9b21f324dd69",
+        "name": "Sticky Note13"
       }
     ],
     "connections": {
@@ -11684,7 +11710,7 @@
         ]
       }
     },
-    "authors": "system migration",
+    "authors": "Nathan K",
     "name": null,
     "description": null
   },
