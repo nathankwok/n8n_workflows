@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-27T03:30:52.534Z",
+  "updatedAt": "2026-01-28T21:36:15.243Z",
   "createdAt": "2025-09-29T05:52:07.550Z",
   "id": "7FCTtH9OsXu8HDxI",
   "name": "ask-data_Omni_Dashboard_Search",
@@ -7967,8 +7967,8 @@
       }
     ]
   },
-  "versionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
-  "activeVersionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
+  "versionId": "ce23ab6a-b14a-4901-b8bc-b89e2e1abdd9",
+  "activeVersionId": "ce23ab6a-b14a-4901-b8bc-b89e2e1abdd9",
   "triggerCount": 1,
   "shared": [
     {
@@ -7980,9 +7980,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-27T03:30:52.548Z",
-    "createdAt": "2026-01-27T03:30:52.548Z",
-    "versionId": "3093dbed-b6bd-49ef-8ad6-ea576a41e14d",
+    "updatedAt": "2026-01-28T21:36:15.246Z",
+    "createdAt": "2026-01-28T21:36:15.246Z",
+    "versionId": "ce23ab6a-b14a-4901-b8bc-b89e2e1abdd9",
     "workflowId": "7FCTtH9OsXu8HDxI",
     "nodes": [
       {
